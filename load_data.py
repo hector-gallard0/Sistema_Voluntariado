@@ -266,6 +266,6 @@ tables = [
 ]
 
 dbName = "voluntariadodb"
-swDelete = 'y'  
-swInsert = 'n' 
+swDelete = 'n'  
+swInsert = 'y' 
 main(tables, dbName, swDelete, swInsert)
