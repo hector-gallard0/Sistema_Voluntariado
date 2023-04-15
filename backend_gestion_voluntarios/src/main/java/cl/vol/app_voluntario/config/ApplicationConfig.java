@@ -1,6 +1,6 @@
 package cl.vol.app_voluntario.config;
 
-import cl.vol.app_voluntario.user.UserRepository;
+import cl.vol.app_voluntario.usuario.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository repository;
+    private final UsuarioRepository repository;
 
     @Bean
     public UserDetailsService userDetailsService(){

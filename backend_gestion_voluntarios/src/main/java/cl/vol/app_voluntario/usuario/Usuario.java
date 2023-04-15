@@ -1,4 +1,4 @@
-package cl.vol.app_voluntario.user;
+package cl.vol.app_voluntario.usuario;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 //getters y setters
 @Data
@@ -18,19 +17,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "\"user\"")
-public class User implements UserDetails {
+@Table(name = "usuario")
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "nombre")
+    private String nombre;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "apellido")
+    private String apellido;
 
     @Column(name = "email")
     private String email;
@@ -38,12 +37,22 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_rol",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_rol")
+    )
+    private List<Rol> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Rol rol : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + rol.getNombre()));
+        }
+        return authorities;
     }
 
     @Override
