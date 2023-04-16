@@ -1,6 +1,6 @@
 package cl.vol.app_voluntario.config;
 
-import cl.vol.app_voluntario.usuario.UsuarioRepository;
+import cl.vol.app_voluntario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

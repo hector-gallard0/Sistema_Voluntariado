@@ -1,11 +1,13 @@
-package cl.vol.app_voluntario.usuario;
+package cl.vol.app_voluntario.model;
 
+import cl.vol.app_voluntario.model.Usuario;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -13,7 +15,7 @@ import java.util.Set;
 @Table(name = "rol")
 public class Rol {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "id_rol")
     private int id;
 
@@ -21,6 +23,7 @@ public class Rol {
     private String nombre;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<Usuario> usuarios = new HashSet<>();
+    @JsonBackReference
+    private List<Usuario> usuarios = new ArrayList<>();
 
 }

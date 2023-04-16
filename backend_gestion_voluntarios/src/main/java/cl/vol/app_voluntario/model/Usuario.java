@@ -1,4 +1,4 @@
-package cl.vol.app_voluntario.usuario;
+package cl.vol.app_voluntario.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue
-    @Column(name = "id")
+    @Column(name = "id_usuario")
     private Integer id;
 
     @Column(name = "nombre")
@@ -37,7 +37,6 @@ public class Usuario implements UserDetails {
     @Column(name = "password")
     private String password;
 
-
     @ManyToMany
     @JoinTable(
             name = "usuario_rol",
@@ -45,6 +44,10 @@ public class Usuario implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "id_rol")
     )
     private List<Rol> roles = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "id_coordinador")
+    Coordinador coordinador;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

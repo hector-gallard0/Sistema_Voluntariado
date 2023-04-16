@@ -1,4 +1,4 @@
-package cl.vol.app_voluntario.auth;
+package cl.vol.app_voluntario.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

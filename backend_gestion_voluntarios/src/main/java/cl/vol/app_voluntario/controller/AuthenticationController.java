@@ -1,5 +1,9 @@
-package cl.vol.app_voluntario.auth;
+package cl.vol.app_voluntario.controller;
 
+import cl.vol.app_voluntario.request.AuthenticationRequest;
+import cl.vol.app_voluntario.response.AuthenticationResponse;
+import cl.vol.app_voluntario.service.AuthenticationService;
+import cl.vol.app_voluntario.request.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

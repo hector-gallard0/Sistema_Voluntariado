@@ -1,5 +1,6 @@
-package cl.vol.app_voluntario.usuario;
+package cl.vol.app_voluntario.repository;
 
+import cl.vol.app_voluntario.model.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

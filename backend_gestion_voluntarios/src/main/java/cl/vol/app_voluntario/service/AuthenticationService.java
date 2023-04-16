@@ -1,12 +1,16 @@
-package cl.vol.app_voluntario.auth;
+package cl.vol.app_voluntario.service;
 
 
+import cl.vol.app_voluntario.request.AuthenticationRequest;
+import cl.vol.app_voluntario.response.AuthenticationResponse;
+import cl.vol.app_voluntario.request.RegisterRequest;
 import cl.vol.app_voluntario.config.JwtService;
 import cl.vol.app_voluntario.errors.ExistingUserException;
-import cl.vol.app_voluntario.usuario.Rol;
-import cl.vol.app_voluntario.usuario.RolRepository;
-import cl.vol.app_voluntario.usuario.Usuario;
-import cl.vol.app_voluntario.usuario.UsuarioRepository;
+import cl.vol.app_voluntario.errors.RolNotFoundException;
+import cl.vol.app_voluntario.model.Rol;
+import cl.vol.app_voluntario.repository.RolRepository;
+import cl.vol.app_voluntario.model.Usuario;
+import cl.vol.app_voluntario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,19 +40,23 @@ public class AuthenticationService {
         }
 
         List<Rol> roles = new ArrayList<>();
+        Optional<Rol> rolCoordinador = rolRepository.findById(1);
+        Optional<Rol> rolVoluntario = rolRepository.findById(2);
 
-        if(request.isCoordinador() && request.isVoluntario()){
-                roles.add(rolRepository.findById(1).get());
-                roles.add(rolRepository.findById(2).get());
-        }
-        else if(request.isVoluntario()){
-            roles.add(rolRepository.findById(1).get());
-        }
-        else if(request.isCoordinador()){
-            roles.add(rolRepository.findById(2).get());
-        }
-        else{
 
+        if(!rolCoordinador.isPresent() || !rolVoluntario.isPresent()){
+            throw new RolNotFoundException("No existe el rol asignado.");
+        }
+
+        if(request.isVoluntario()){
+            roles.add(rolVoluntario.get());
+        }
+
+        if(request.isCoordinador()){
+            roles.add(rolCoordinador.get());
+        }
+        else if(roles.isEmpty()){
+            throw new RolNotFoundException("El rol asignado no es válido para este usuario.");
         }
 
         var user = Usuario.builder()
