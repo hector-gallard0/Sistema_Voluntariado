@@ -14,7 +14,7 @@ public class RegisterRequest {
     private String apellido;
     private String email;
     private String password;
-    private int institucion;
+    private int id_institucion;
     private boolean voluntario;
     private boolean coordinador;
 }

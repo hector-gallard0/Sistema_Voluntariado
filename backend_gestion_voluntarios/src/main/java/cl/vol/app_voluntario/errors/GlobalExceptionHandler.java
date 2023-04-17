@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(NoRolException.class)
+    @ExceptionHandler(RolNotFoundException.class)
     public ResponseEntity<AuthenticationResponse> handleRolNotFoundException(RolNotFoundException e) {
         return ResponseEntity
                 .badRequest()

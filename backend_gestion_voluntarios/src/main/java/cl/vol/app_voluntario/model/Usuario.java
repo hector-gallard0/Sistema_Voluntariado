@@ -1,5 +1,7 @@
 package cl.vol.app_voluntario.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +23,8 @@ import java.util.*;
 public class Usuario implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq")
+    @SequenceGenerator(name = "usuario_seq", sequenceName = "usuario_seq", allocationSize = 1)
     @Column(name = "id_usuario")
     private Integer id;
 
@@ -43,11 +46,16 @@ public class Usuario implements UserDetails {
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol")
     )
+    @JsonManagedReference
     private List<Rol> roles = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "id_coordinador")
+    @OneToOne(mappedBy = "usuario")
+    @JsonManagedReference
     Coordinador coordinador;
+
+    @OneToOne(mappedBy = "usuario")
+    @JsonManagedReference
+    Voluntario voluntario;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

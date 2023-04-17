@@ -21,9 +21,4 @@ public class Rol {
 
     @Column(name = "nombre")
     private String nombre;
-
-    @ManyToMany(mappedBy = "roles")
-    @JsonBackReference
-    private List<Usuario> usuarios = new ArrayList<>();
-
 }

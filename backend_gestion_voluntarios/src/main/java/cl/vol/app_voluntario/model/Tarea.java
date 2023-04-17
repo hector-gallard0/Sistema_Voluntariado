@@ -1,11 +1,13 @@
 package cl.vol.app_voluntario.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -30,10 +32,7 @@ public class Tarea {
     private int voluntariosRequeridos;
 
     @Column(name = "cant_vol_inscritos")
-    private String voluntariosInscritos;
-
-    @ManyToOne
-    private Emergencia emergencia;
+    private int voluntariosInscritos;
 
     @Column(name = "fecha_inicio")
     private Date fechaInicio;
@@ -41,9 +40,14 @@ public class Tarea {
     @Column(name = "fecha_fin")
     private Date fechaFin;
 
-    @ManyToOne
-    private EstadoTarea estado;
+    @OneToOne(mappedBy = "tarea", cascade = CascadeType.ALL)
+    private Estado estado;
 
-    @ManyToMany(mappedBy = "tareas")
-    private List<Voluntario> voluntarios;
+    @ManyToMany
+    @JoinTable(
+            name = "tarea_habilidad",
+            joinColumns = @JoinColumn(name = "id_tarea"),
+            inverseJoinColumns = @JoinColumn(name = "id_eme_habilidad")
+    )
+    private List<EmeHabilidad> emeHabilidades = new ArrayList<>();
 }

@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .disable()
                 //white list
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
+                .requestMatchers("/api/v1/**")
                 .permitAll()
                 //requieren autorización
                 .anyRequest()

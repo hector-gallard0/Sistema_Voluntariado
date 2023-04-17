@@ -1,6 +1,9 @@
 package cl.vol.app_voluntario.service;
 
 
+import cl.vol.app_voluntario.model.Coordinador;
+import cl.vol.app_voluntario.model.Voluntario;
+import cl.vol.app_voluntario.repository.*;
 import cl.vol.app_voluntario.request.AuthenticationRequest;
 import cl.vol.app_voluntario.response.AuthenticationResponse;
 import cl.vol.app_voluntario.request.RegisterRequest;
@@ -8,9 +11,7 @@ import cl.vol.app_voluntario.config.JwtService;
 import cl.vol.app_voluntario.errors.ExistingUserException;
 import cl.vol.app_voluntario.errors.RolNotFoundException;
 import cl.vol.app_voluntario.model.Rol;
-import cl.vol.app_voluntario.repository.RolRepository;
 import cl.vol.app_voluntario.model.Usuario;
-import cl.vol.app_voluntario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +26,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UsuarioRepository repository;
+    private final UsuarioRepository usuarioRepository;
+    private final InstitucionRepository institucionRepository;
+    private final CoordinadorRepository coordinadorRepository;
+    private final VoluntarioRepository voluntarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -33,7 +37,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         // buscar usuario por email
-        Optional<Usuario> existingUser = repository.findByEmail(request.getEmail());
+        Optional<Usuario> existingUser = usuarioRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             // usuario ya existe
             throw new ExistingUserException("Ya existe un usuario con este correo electrónico.");
@@ -48,12 +52,16 @@ public class AuthenticationService {
             throw new RolNotFoundException("No existe el rol asignado.");
         }
 
+        Voluntario voluntario = null;
+        Coordinador coordinador = null;
         if(request.isVoluntario()){
             roles.add(rolVoluntario.get());
+            voluntario = new Voluntario();
         }
 
         if(request.isCoordinador()){
             roles.add(rolCoordinador.get());
+            coordinador = new Coordinador();
         }
         else if(roles.isEmpty()){
             throw new RolNotFoundException("El rol asignado no es válido para este usuario.");
@@ -66,7 +74,19 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(roles)
                 .build();
-        repository.save(user);
+        usuarioRepository.save(user);
+
+        if(voluntario != null){
+            voluntario.setUsuario(user);
+            voluntarioRepository.save(voluntario);
+        }
+
+        if(coordinador != null){
+            coordinador.setUsuario(user);
+            coordinador.setInstitucion(institucionRepository.findById(request.getId_institucion()).get());
+            coordinadorRepository.save(coordinador);
+        }
+
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -82,7 +102,7 @@ public class AuthenticationService {
         );
 
         //en este punto el usuario esta autenticado
-        var user = repository.findByEmail(request.getEmail())
+        var user = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);

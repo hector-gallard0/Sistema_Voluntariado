@@ -24,8 +24,4 @@ public class Habilidad {
 
     @Column(name = "descripcion")
     private String descripcion;
-
-    @ManyToMany(mappedBy = "habilidades")
-    @JsonBackReference
-    private List<Emergencia> emergencias = new ArrayList<>();
 }

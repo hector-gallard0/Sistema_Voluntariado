@@ -5,13 +5,17 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "estado_tarea")
-public class EstadoTarea {
+@Table(name = "estado")
+public class Estado {
     @Id
     @GeneratedValue
-    @Column(name = "id_estado_tarea")
+    @Column(name = "id_estado")
     private int id;
 
     @Column(name = "descripcion")
     private String descripcion;
+
+    @OneToOne
+    @JoinColumn(name = "id_tarea")
+    private Tarea tarea;
 }
