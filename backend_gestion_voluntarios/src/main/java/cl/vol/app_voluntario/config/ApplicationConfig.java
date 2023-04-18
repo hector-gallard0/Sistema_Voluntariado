@@ -1,6 +1,7 @@
 package cl.vol.app_voluntario.config;
 
 import cl.vol.app_voluntario.repository.UsuarioRepository;
+import cl.vol.app_voluntario.repository.UsuarioRepositoryImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UsuarioRepository repository;
+    private final UsuarioRepositoryImp usuarioRepository;
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> repository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return usuarioRepository::findByEmail;
     }
 
     @Bean

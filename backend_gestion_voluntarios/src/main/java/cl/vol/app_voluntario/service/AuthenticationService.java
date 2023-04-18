@@ -15,6 +15,7 @@ import cl.vol.app_voluntario.model.Usuario;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         // buscar usuario por email
-        Optional<Usuario> existingUser = usuarioRepository.findByEmail(request.getEmail());
-        if (existingUser.isPresent()) {
+        if (usuarioRepository.findByEmail(request.getEmail()) != null) {
             // usuario ya existe
             throw new ExistingUserException("Ya existe un usuario con este correo electrónico.");
         }
@@ -102,8 +102,11 @@ public class AuthenticationService {
         );
 
         //en este punto el usuario esta autenticado
-        var user = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+        var user = usuarioRepository.findByEmail(request.getEmail());
+
+        if(user == null){
+            throw new UsernameNotFoundException("El usuario no existe.");
+        }
 
         var jwtToken = jwtService.generateToken(user);
 

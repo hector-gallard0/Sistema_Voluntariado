@@ -1,7 +1,9 @@
 package cl.vol.app_voluntario.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ import java.util.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "usuario")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Usuario implements UserDetails {
 
     @Id
@@ -56,6 +59,18 @@ public class Usuario implements UserDetails {
     @OneToOne(mappedBy = "usuario")
     @JsonManagedReference
     Voluntario voluntario;
+
+    @JsonProperty("roles")
+    public List<Rol> getRoles(){
+        if(roles == null){
+            roles = new ArrayList<>();
+        }
+        return roles;
+    }
+
+    public void addRol(Rol rol){
+        roles.add(rol);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
