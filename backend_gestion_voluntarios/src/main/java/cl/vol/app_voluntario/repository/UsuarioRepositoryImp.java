@@ -17,6 +17,9 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Autowired
     private Sql2o sql2o;
 
+    @Autowired
+    private RolRepository rolRepository;
+
     @Override
     public List<Usuario> findAll(){
         List<Usuario> usuarios = null;
@@ -26,11 +29,7 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
                     .addColumnMapping("id_usuario", "id")
                     .executeAndFetch(Usuario.class);
             for (Usuario usuario : usuarios) {
-                String rolSql = "SELECT r.* FROM rol r INNER JOIN usuario_rol ur ON r.id_rol = ur.id_rol WHERE ur.id_usuario = :id_usuario";
-                List<Rol> roles = con.createQuery(rolSql)
-                        .addColumnMapping("id_rol", "id")
-                        .addParameter("id_usuario", usuario.getId())
-                        .executeAndFetch(Rol.class);
+                List<Rol> roles = rolRepository.findRolesByUserId(usuario.getId());
                 usuario.setRoles(roles);
             }
         }
@@ -44,23 +43,53 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
         try (Connection con = sql2o.open()) {
             String sql = "SELECT * FROM usuario WHERE email = :email";
             usuario = con.createQuery(sql)
+                    .addColumnMapping("id_usuario", "id")
                     .addParameter("email", email)
                     .executeAndFetchFirst(Usuario.class);
+            List<Rol> roles = rolRepository.findRolesByUserId(usuario.getId());
+            usuario.setRoles(roles);
         }
         return usuario;
     }
 
     @Override
-    public void save(Usuario usuario) {
+    public boolean save(Usuario usuario) {
         try (Connection con = sql2o.open()) {
-            String sql = "INSERT INTO usuario (nombre, apellido, email, password) " +
-                    "VALUES (:nombre, :apellido, :email)";
+            Integer id = con.createQuery("SELECT nextval('usuario_seq')")
+                    .executeScalar(Integer.class);
+
+            String sql = "INSERT INTO usuario (id_usuario, nombre, apellido, email, password) " +
+                    "VALUES (:id_usuario, :nombre, :apellido, :email, :password)";
             con.createQuery(sql)
+                    .addColumnMapping("id_usuario", "id")
+                    .addParameter("id_usuario", id)
                     .addParameter("nombre", usuario.getNombre())
                     .addParameter("apellido", usuario.getApellido())
                     .addParameter("email", usuario.getEmail())
                     .addParameter("password", usuario.getPassword())
                     .executeUpdate();
+            sql = "INSERT INTO usuario_rol (id_usuario, id_rol)" +
+                    "VALUES (:id_usuario, :id_rol)";
+            con.createQuery(sql)
+                    .addColumnMapping()
+            return true;
+        }catch(Error e) {
+            return false;
         }
+    }
+
+    @Override
+    public Usuario findById(int id) {
+        Usuario usuario = null;
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT * FROM usuario WHERE id_usuario = :id_usuario";
+            usuario = con.createQuery(sql)
+                    .addColumnMapping("id_usuario", "id")
+                    .addParameter("id_usuario", id)
+                    .executeAndFetchFirst(Usuario.class);
+            List<Rol> roles = rolRepository.findRolesByUserId(usuario.getId());
+            usuario.setRoles(roles);
+        }
+        return usuario;
     }
 }
