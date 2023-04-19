@@ -7,26 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(ExistingUserException.class)
-    public ResponseEntity<AuthenticationResponse> handleExistingUserException(ExistingUserException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(AuthenticationResponse.builder()
-                        .errorMessage(e.getMessage())
-                        .build());
-    }
-
-    @ExceptionHandler(NoRolException.class)
-    public ResponseEntity<AuthenticationResponse> handleNoRolException(NoRolException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(AuthenticationResponse.builder()
-                        .errorMessage(e.getMessage())
-                        .build());
-    }
-
-    @ExceptionHandler(RolNotFoundException.class)
-    public ResponseEntity<AuthenticationResponse> handleRolNotFoundException(RolNotFoundException e) {
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<AuthenticationResponse> handleAuthenticationException(AuthenticationException e) {
         return ResponseEntity
                 .badRequest()
                 .body(AuthenticationResponse.builder()

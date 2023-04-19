@@ -1,7 +1,9 @@
 package cl.vol.app_voluntario.controller;
 
 import cl.vol.app_voluntario.model.Usuario;
+import cl.vol.app_voluntario.request.AuthenticationRequest;
 import cl.vol.app_voluntario.request.RegisterRequest;
+import cl.vol.app_voluntario.response.AuthenticationResponse;
 import cl.vol.app_voluntario.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -9,22 +11,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/usuarios")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    //CREATE
-    @PostMapping("/")
-    public boolean createUsuario(
+    //CREATE o REGISTRO
+    @PostMapping("/usuarios")
+    public AuthenticationResponse createUsuario(
             @RequestBody RegisterRequest request
     ){
         return usuarioService.createUsuario(request);
     }
 
+    //LOGIN
+    @PostMapping("/login")
+    public AuthenticationResponse authentication(
+            @RequestBody AuthenticationRequest request
+            ){
+        return usuarioService.authentication(request);
+    }
+
     //READ
-    @GetMapping("/")
+    @GetMapping("/usuarios")
     public List<Usuario> getUsuarios(){
         return usuarioService.getUsuarios();
     }

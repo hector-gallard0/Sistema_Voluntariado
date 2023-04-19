@@ -1,5 +1,8 @@
 package cl.vol.app_voluntario.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +19,7 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Usuario implements UserDetails {
 
     private Integer id;
@@ -23,7 +27,7 @@ public class Usuario implements UserDetails {
     private String apellido;
     private String email;
     private String password;
-    private List<Rol> roles = new ArrayList<>();
+    private List<Rol> roles;
     Coordinador coordinador;
     Voluntario voluntario;
 
