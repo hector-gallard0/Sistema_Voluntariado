@@ -16,18 +16,14 @@ public class EmergenciaService {
     private final EmergenciaRepository emergenciaRepository;
     private final InstitucionRepository institucionRepository;
     public Emergencia createEmergencia(CreateEmergenciaRequest request){
-        try{
-            Institucion institucion = institucionRepository.findById(request.getId_institucion());
-            Emergencia emergencia = new Emergencia();
-            emergencia.setNombre(request.getNombre());
-            emergencia.setDescripcion(request.getDescripcion());
-            emergencia.setFechaInicio(request.getFechaInicio());
-            emergencia.setFechaFin(request.getFechaFin());
-            emergencia.setInstitucion(institucion);
-            return emergenciaRepository.save(emergencia);
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
+        Institucion institucion = institucionRepository.findById(request.getId_institucion());
+        Emergencia emergencia = new Emergencia();
+        emergencia.setNombre(request.getNombre());
+        emergencia.setDescripcion(request.getDescripcion());
+        emergencia.setFechaInicio(request.getFechaInicio());
+        emergencia.setFechaFin(request.getFechaFin());
+        emergencia.setInstitucion(institucion);
+        return emergenciaRepository.save(emergencia);
     }
 
     public List<Emergencia> getEmergencias(){

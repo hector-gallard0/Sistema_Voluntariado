@@ -84,8 +84,8 @@ public class UsuarioService {
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
-        }catch(Error e){
-            throw new AuthenticationException("Ha ocurrido un error en el registro del usuario.");
+        }catch(Exception e){
+            throw new AuthenticationException("Ha ocurrido un error en el registro del usuario.\n" + e.getMessage());
         }
     }
     public Usuario getUsuario(int id) {
