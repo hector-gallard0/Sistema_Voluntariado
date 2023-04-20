@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface RolRepository {
     Rol findById(int idRol);
-    List<Rol> findByUserId(int idUsuario);
+    List<Rol> findAllByUserId(int idUsuario);
 }

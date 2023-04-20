@@ -5,45 +5,52 @@ import cl.vol.app_voluntario.request.AuthenticationRequest;
 import cl.vol.app_voluntario.request.RegisterRequest;
 import cl.vol.app_voluntario.response.AuthenticationResponse;
 import cl.vol.app_voluntario.service.UsuarioService;
+import cl.vol.app_voluntario.util.ValidationUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
     //CREATE o REGISTRO
-    @PostMapping("/usuarios")
-    public AuthenticationResponse createUsuario(
-            @RequestBody RegisterRequest request
+    @PostMapping("/register")
+    public ResponseEntity<?> createUsuario(
+            @Valid @RequestBody RegisterRequest request,
+            BindingResult bindingResult
     ){
-        return usuarioService.createUsuario(request);
+        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(usuarioService.createUsuario(request), HttpStatus.CREATED);
     }
 
     //LOGIN
     @PostMapping("/login")
-    public AuthenticationResponse authentication(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<?> authentication(
+            @Valid @RequestBody AuthenticationRequest request,
+            BindingResult bindingResult
             ){
-        return usuarioService.authentication(request);
+        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(usuarioService.authentication(request), HttpStatus.OK);
     }
 
     //READ
-    @GetMapping("/usuarios")
-    public List<Usuario> getUsuarios(){
-        return usuarioService.getUsuarios();
+    @GetMapping
+    public ResponseEntity<?> getUsuarios(){
+        return new ResponseEntity<>(usuarioService.getUsuarios(), HttpStatus.FOUND);
     }
 
     //READ 1
-    @GetMapping("/usuarios/{id}")
-    public Usuario getUsuario(@PathVariable Integer id){
-        return usuarioService.getUsuario(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUsuario(@PathVariable Integer id){
+        return new ResponseEntity<>(usuarioService.getUsuario(id), HttpStatus.FOUND);
     }
-
-
 }

@@ -1,9 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.errors.QueryException;
 import cl.vol.app_voluntario.model.Institucion;
-import cl.vol.app_voluntario.model.Rol;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
@@ -17,45 +14,39 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
     @Override
     public Institucion findById(Integer idInstitucion) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT * FROM institucion WHERE id_institucion = :idInstitucion";
+            String sql = "SELECT * FROM institucion WHERE id_institucion = :id_institucion";
             return con.createQuery(sql)
                     .addColumnMapping("id_institucion", "id")
                     .addColumnMapping("nombre", "nombre")
                     .addColumnMapping("descripcion", "descripcion")
-                    .addParameter("idInstitucion", idInstitucion)
+                    .addParameter("id_institucion", idInstitucion)
                     .executeAndFetchFirst(Institucion.class);
-        }catch (Exception e){
-            throw new QueryException("Institución no encontrada.\n" + e.getMessage());
         }
     }
 
     @Override
     public Institucion findByEmergenciaId(Integer idEmergencia) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT i.* FROM emergencia e JOIN institucion i ON e.id_institucion = i.id_institucion AND e.id_emergencia = :idEmergencia";
+            String sql = "SELECT i.* FROM emergencia e JOIN institucion i ON e.id_institucion = i.id_institucion AND e.id_emergencia = :id_emergencia";
             return con.createQuery(sql)
                     .addColumnMapping("id_institucion", "id")
                     .addColumnMapping("nombre", "nombre")
                     .addColumnMapping("descripcion", "descripcion")
-                    .addParameter("idEmergencia", idEmergencia)
+                    .addParameter("id_emergencia", idEmergencia)
                     .executeAndFetchFirst(Institucion.class);
-        }catch (Exception e){
-            throw new QueryException("Institución no encontrada.\n" + e.getMessage());
         }
     }
 
     @Override
     public Institucion findByCoordinadorId(Integer idCoordinador) {
         try(Connection con = sql2o.open()){
-            String rolSql = "SELECT i.* FROM coordinador c JOIN institucion i ON c.id_institucion = i.id_institucion AND c.id_coordinador = :idCoordinador";
+            String rolSql = "SELECT i.* FROM coordinador c JOIN institucion i ON c.id_institucion = i.id_institucion AND c.id_coordinador = :id_coordinador";
             return con.createQuery(rolSql)
                     .addColumnMapping("id_institucion", "id")
                     .addColumnMapping("nombre", "nombre")
                     .addColumnMapping("descripcion", "descripcion")
-                    .addParameter("idCoordinador", idCoordinador)
+                    .addParameter("id_coordinador", idCoordinador)
                     .executeAndFetchFirst(Institucion.class);
-        }catch (Exception e){
-            throw new QueryException("Institución no encontrada.\n" + e.getMessage());
         }
     }
 }

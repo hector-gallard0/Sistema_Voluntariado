@@ -17,26 +17,22 @@ public class EstadoRepositoryImp implements EstadoRepository{
     @Override
     public Estado findByTareaId(Integer idTarea) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT e.* FROM estado e JOIN tarea t ON t.id_estado = e.id_estado AND t.id_tarea = :idTarea";
+            String sql = "SELECT e.* FROM estado e JOIN tarea t ON t.id_estado = e.id_estado AND t.id_tarea = :id_tarea";
             return con.createQuery(sql)
                     .addColumnMapping("id_estado", "id")
-                    .addParameter("idTarea", idTarea)
+                    .addParameter("id_tarea", idTarea)
                     .executeAndFetchFirst(Estado.class);
-        }catch(Exception e){
-            throw new QueryException("Estado no encontrado.\n" + e.getMessage());
         }
     }
 
     @Override
     public Estado findById(Integer idEstado) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT * FROM estado WHERE id_estado = :idEstado";
+            String sql = "SELECT e.*  FROM estado e WHERE e.id_estado = :id_estado";
             return con.createQuery(sql)
                     .addColumnMapping("id_estado", "id")
-                    .addParameter("idEstado", idEstado)
+                    .addParameter("id_estado", idEstado)
                     .executeAndFetchFirst(Estado.class);
-        }catch(Exception e){
-            throw new QueryException("Estado no encontrado.\n" + e.getMessage());
         }
     }
 }

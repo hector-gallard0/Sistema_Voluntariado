@@ -18,7 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -47,16 +49,13 @@ public class UsuarioService {
                 throw new AuthenticationException("El correo electronico ya existe.");
             }
 
-
             //guardar usuario
             Usuario usuario = new Usuario();
             usuario.setNombre(request.getNombre());
             usuario.setApellido(request.getApellido());
             usuario.setEmail(request.getEmail());
             usuario.setPassword(passwordEncoder.encode(request.getPassword()));
-            usuarioRepository.save(usuario);
-
-            Usuario usuarioBD = usuarioRepository.findByEmail(usuario.getEmail());
+            Usuario usuarioBD = usuarioRepository.save(usuario);
 
             //guardar roles
             List<Rol> roles = new ArrayList<>();
@@ -78,9 +77,16 @@ public class UsuarioService {
                 roles.add(rolRepository.findById(1));
             }
 
-            usuarioRepository.saveUserRoles(usuarioRepository.findByEmail(usuario.getEmail()).getId(), roles);
+           usuarioBD = usuarioRepository.saveUserRoles(usuarioBD.getId(), roles);
 
-            var jwtToken = jwtService.generateToken(usuarioBD);
+            Map<String, Object> extraClaims = new HashMap<>();
+            extraClaims.put("idUsuario", usuarioBD.getId());
+            List<String> roleNames = new ArrayList<>();
+            for(Rol rol : usuarioBD.getRoles()){
+                roleNames.add(rol.getNombre());
+            }
+            extraClaims.put("roles", roleNames);
+            var jwtToken = jwtService.generateToken(extraClaims, usuarioBD);
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();

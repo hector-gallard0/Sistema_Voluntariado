@@ -1,8 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.errors.QueryException;
 import cl.vol.app_voluntario.model.Habilidad;
-import cl.vol.app_voluntario.model.Tarea;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -17,49 +15,43 @@ public class HabilidadRepositoryImp implements  HabilidadRepository{
 
     @Override
     public Habilidad save(Habilidad habilidad) {
-        try (Connection con = sql2o.open()) {
+        try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO habilidad (id_habilidad, descripcion) " +
                     "VALUES (:id_habilidad, :descripcion)";
-            Integer rows = con.createQuery(sql)
+            con.createQuery(sql)
                     .addColumnMapping("id_habilidad", "id")
                     .addParameter("id_habilidad", id)
                     .addParameter("descripcion", habilidad.getDescripcion())
                     .executeUpdate()
                     .getResult();
+            con.commit();
             return findById(id);
-        }catch (Exception e){
-            throw new QueryException("Error al crear la habilidad.\n" + e.getMessage());
         }
     }
 
     @Override
     public Habilidad findById(Integer idHabilidad) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_habilidad, descripcion FROM habilidad WHERE id_habilidad = :idHabilidad";
+            String sql = "SELECT h.id_habilidad, h.descripcion FROM habilidad h WHERE h.id_habilidad = :id_habilidad";
             return con.createQuery(sql)
                     .addColumnMapping("id_habilidad", "id")
-                    .addParameter("idHabilidad", idHabilidad)
+                    .addParameter("id_habilidad", idHabilidad)
                     .executeAndFetchFirst(Habilidad.class);
-        }catch (Exception e){
-            throw new QueryException("Habilidad no encontrada.\n" + e.getMessage());
         }
     }
 
     @Override
     public List<Habilidad> findAllByVoluntarioId(Integer idVoluntario) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_habilidad, descripcion " +
+            String sql = "SELECT h.id_habilidad, h.descripcion " +
                     "FROM habilidad h " +
-                    "JOIN vol_habilidad vh ON vh.id_voluntario = :idVoluntario AND vh.id_habilidad = h.id_habilidad";
-            List<Habilidad> habilidades = con.createQuery(sql)
+                    "JOIN vol_habilidad vh ON vh.id_voluntario = :id_voluntario AND vh.id_habilidad = h.id_habilidad";
+            return con.createQuery(sql)
                     .addColumnMapping("id_habilidad", "id")
-                    .addParameter("idVoluntario", idVoluntario)
+                    .addParameter("id_voluntario", idVoluntario)
                     .executeAndFetch(Habilidad.class);
-            return habilidades;
-        }catch(Exception e){
-            throw new QueryException("Habilidades no encontradas.\n" + e.getMessage());
         }
     }
 }

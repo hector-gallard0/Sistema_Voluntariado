@@ -3,6 +3,7 @@ package cl.vol.app_voluntario.controller;
 import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
 import cl.vol.app_voluntario.service.HabilidadService;
+import cl.vol.app_voluntario.util.ValidationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,22 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/habilidades")
 @RequiredArgsConstructor
 public class HabilidadController {
     private final HabilidadService habilidadService;
 
     //CREATE HABILIDAD
-    @PostMapping("/habilidades")
     public ResponseEntity<?> createHabilidad(
             @Valid @RequestBody Habilidad request,
             BindingResult bindingResult
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>("Campos incorrectos", HttpStatus.BAD_REQUEST);
-        try{
-            return new ResponseEntity<>(habilidadService.createHabilidad(request.getDescripcion()), HttpStatus.CREATED);
-        }catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(habilidadService.createHabilidad(request.getDescripcion()), HttpStatus.CREATED);
     }
 }

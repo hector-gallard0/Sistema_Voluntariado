@@ -26,9 +26,9 @@ public class SecurityConfig {
                 .disable()
 //                white list
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, "/api/v1/usuarios")
+                .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/login")
                 .permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/login")
+                .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/register")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/**")
                 .hasRole("COORDINADOR")

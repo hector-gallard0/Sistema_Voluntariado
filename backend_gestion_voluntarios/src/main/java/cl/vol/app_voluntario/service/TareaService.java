@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.service;
 
+import cl.vol.app_voluntario.errors.InvalidDatesException;
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Estado;
 import cl.vol.app_voluntario.model.Tarea;
@@ -7,6 +8,7 @@ import cl.vol.app_voluntario.repository.EmergenciaRepository;
 import cl.vol.app_voluntario.repository.EstadoRepository;
 import cl.vol.app_voluntario.repository.TareaRepository;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
+import cl.vol.app_voluntario.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class TareaService {
     private final EstadoRepository estadoRepository;
 
     public Tarea createTarea(CreateTareaRequest request){
+        if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())){
+            throw new InvalidDatesException("La fecha de inicio debe ser menor a la fecha final");
+        };
         Emergencia emergencia = emergenciaRepository.findById(request.getId_emergencia());
         Estado estado = estadoRepository.findById(request.getId_estado());
         Tarea tarea = new Tarea();

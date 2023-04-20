@@ -17,26 +17,22 @@ public class RolRepositoryImp implements RolRepository{
     @Override
     public Rol findById(int idRol) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT * FROM rol WHERE id_rol = :idRol";
+            String sql = "SELECT * FROM rol WHERE id_rol = :id_rol";
             return con.createQuery(sql)
                     .addColumnMapping("id_rol", "id")
-                    .addParameter("idRol", idRol)
+                    .addParameter("id_rol", idRol)
                     .executeAndFetchFirst(Rol.class);
-        }catch(Exception e){
-            throw new QueryException("Rol no encontrado.\n" + e.getMessage());
         }
     }
 
     @Override
-    public List<Rol> findByUserId(int idUsuario) {
+    public List<Rol> findAllByUserId(int idUsuario) {
         try(Connection con = sql2o.open()){
-            String rolSql = "SELECT r.* FROM rol r INNER JOIN usuario_rol ur ON r.id_rol = ur.id_rol WHERE ur.id_usuario = :idUsuario";
+            String rolSql = "SELECT r.* FROM rol r INNER JOIN usuario_rol ur ON r.id_rol = ur.id_rol WHERE ur.id_usuario = :id_usuario";
             return con.createQuery(rolSql)
                     .addColumnMapping("id_rol", "id")
-                    .addParameter("idUsuario", idUsuario)
+                    .addParameter("id_usuario", idUsuario)
                     .executeAndFetch(Rol.class);
-        }catch (Exception e){
-            throw new QueryException("Roles no encontrados.\n" + e.getMessage());
         }
     }
 }

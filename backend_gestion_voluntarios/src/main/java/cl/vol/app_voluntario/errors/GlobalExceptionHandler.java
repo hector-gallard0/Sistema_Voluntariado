@@ -19,13 +19,18 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(String message){
-        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    @ExceptionHandler(QueryException.class)
+    public ResponseEntity<?> handleQueryException(QueryException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(QueryException.class)
-    public ResponseEntity<?> handleQueryException(QueryException e, HttpStatus status){
-        return new ResponseEntity<>(e.getMessage(), status);
+    @ExceptionHandler(InstitucionNotFoundException.class)
+    public ResponseEntity<?> handleInstitucionNotFoundException(InstitucionNotFoundException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidDatesException.class)
+    public ResponseEntity<?> handleInvalidDatesException(InvalidDatesException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

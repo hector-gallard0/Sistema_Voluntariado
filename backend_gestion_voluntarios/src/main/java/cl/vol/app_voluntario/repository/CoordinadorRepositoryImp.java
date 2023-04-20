@@ -17,49 +17,47 @@ public class CoordinadorRepositoryImp implements CoordinadorRepository{
 
     @Override
     public Coordinador save(Coordinador coordinador) {
-        try (Connection con = sql2o.open()) {
+        try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('coordinador_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO coordinador (id_coordinador, id_usuario, id_institucion)" +
-                    "VALUES (:idCoordinador, :idUsuario, :idInstitucion)";
+                    "VALUES (:id_coordinador, :id_usuario, :id_institucion)";
             con.createQuery(sql)
                     .addColumnMapping("id_coordinador", "id")
-                    .addParameter("idCoordinador", id)
-                    .addParameter("idUsuario", coordinador.getUsuario().getId())
-                    .addParameter("idInstitucion", coordinador.getInstitucion().getId())
-                    .executeUpdate();
+                    .addParameter("id_coordinador", id)
+                    .addParameter("id_usuario", coordinador.getUsuario().getId())
+                    .addParameter("id_institucion", coordinador.getInstitucion().getId())
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
             return findById(id);
-        }catch(Exception e){
-            throw new QueryException("No se pudo crear el coordinador.\n" + e.getMessage());
         }
     }
 
     private Coordinador findById(Integer idCoordinador) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_coordinador FROM coordinador WHERE id_coordinador = :idCoordinador";
+            String sql = "SELECT c.id_coordinador FROM coordinador c WHERE c.id_coordinador = :id_coordinador";
             Coordinador coordinador = con.createQuery(sql)
                     .addColumnMapping("id_coordinador", "id")
-                    .addParameter("idCoordinador", idCoordinador)
+                    .addParameter("id_coordinador", idCoordinador)
                     .executeAndFetchFirst(Coordinador.class);
+            if(coordinador == null) return null;
             coordinador.setInstitucion(institucionRepository.findByCoordinadorId(idCoordinador));
             return coordinador;
-        }catch (Exception e){
-            throw new QueryException("Coordinador no encontrado\n." + e.getMessage());
         }
     }
 
     @Override
     public Coordinador findByUserId(Integer idUsuario) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT c.id_coordinador FROM coordinador c WHERE c.id_usuario = :idUsuario";
+            String sql = "SELECT c.id_coordinador FROM coordinador c WHERE c.id_usuario = :id_usuario";
             Coordinador coordinador = con.createQuery(sql)
                     .addColumnMapping("id_coordinador", "id")
-                    .addParameter("idUsuario", idUsuario)
+                    .addParameter("id_usuario", idUsuario)
                     .executeAndFetchFirst(Coordinador.class);
+            if(coordinador == null) return null;
             coordinador.setInstitucion(institucionRepository.findByCoordinadorId(coordinador.getId()));
             return coordinador;
-        }catch (Exception e){
-            throw new QueryException("Coordinador no encontrado.\n" + e.getMessage());
         }
     }
 }

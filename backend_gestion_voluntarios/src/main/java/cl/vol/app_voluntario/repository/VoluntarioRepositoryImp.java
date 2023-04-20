@@ -19,51 +19,45 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
 
     @Override
     public Voluntario save(Voluntario voluntario) {
-        try (Connection con = sql2o.open()) {
+        try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('voluntario_seq')")
                     .executeScalar(Integer.class);
-
             String sql = "INSERT INTO voluntario (id_voluntario, id_usuario)" +
-                    "VALUES (:idVoluntario, :idUsuario)";
+                    "VALUES (:id_voluntario, :id_usuario)";
             con.createQuery(sql)
-                    .addColumnMapping("id_voluntario", "id")
-                    .addParameter("idVoluntario", id)
-                    .addParameter("idUsuario", voluntario.getUsuario().getId())
-                    .executeUpdate();
+                .addColumnMapping("id_voluntario", "id")
+                .addParameter("id_voluntario", id)
+                .addParameter("id_usuario", voluntario.getUsuario().getId())
+                .executeUpdate()
+                .getResult();
+            con.commit();
             return findById(id);
-        }catch(Exception e) {
-            throw new QueryException("No se pudo crear el voluntario.\n" + e.getMessage());
         }
     }
 
     @Override
     public Voluntario findById(Integer idVoluntario) {
         try(Connection con = sql2o.open()){
-            String rolSql = "SELECT id_voluntario FROM voluntario WHERE id_voluntario = :idVoluntario";
+            String rolSql = "SELECT id_voluntario FROM voluntario WHERE id_voluntario = :id_voluntario";
             Voluntario voluntario = con.createQuery(rolSql)
                     .addColumnMapping("id_voluntario", "id")
-                    .addParameter("id_usuario", idVoluntario)
+                    .addParameter("id_voluntario", idVoluntario)
                     .executeAndFetchFirst(Voluntario.class);
+            if(voluntario == null) return null;
             voluntario.setTareas(tareaRepository.findAllByVoluntarioId(idVoluntario));
             voluntario.setHabilidades(habilidadRepository.findAllByVoluntarioId(idVoluntario));
             return voluntario;
-        }catch (Exception e){
-            throw new QueryException("Voluntario no encontrado.\n" + e.getMessage());
         }
     }
 
     @Override
     public Voluntario findVoluntarioByUserId(Integer idUsuario){
         try(Connection con = sql2o.open()){
-            Voluntario voluntario = null;
-            String rolSql = "SELECT id_voluntario FROM voluntario WHERE id_usuario = :idUsuario";
-            voluntario = con.createQuery(rolSql)
+            String rolSql = "SELECT id_voluntario FROM voluntario WHERE id_usuario = :id_usuario";
+            return con.createQuery(rolSql)
                     .addColumnMapping("id_voluntario", "id")
                     .addParameter("id_usuario", idUsuario)
                     .executeAndFetchFirst(Voluntario.class);
-            return voluntario;
-        }catch (Exception e){
-            throw new QueryException("Voluntario no encontrado.\n" + e.getMessage());
         }
     }
 
@@ -73,15 +67,15 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
             Integer id = con.createQuery("SELECT nextval('vol_habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO vol_habilidad (id_voluntario_habilidad, id_voluntario, id_habilidad)" +
-                    "VALUES (:idVoluntarioHabilidad, :idVoluntario, :idHabilidad)";
+                    "VALUES (:id_voluntario_habilidad, :id_voluntario, :id_voluntario)";
             con.createQuery(sql)
-                    .addParameter("idVoluntarioHabilidad", id)
-                    .addParameter("idVoluntario", idVoluntario)
-                    .addParameter("idHabilidad", idHabilidad)
-                    .executeUpdate();
+                    .addParameter("id_voluntario_habilidad", id)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
             return habilidadRepository.findById(idHabilidad);
-        }catch(Exception e) {
-            throw new QueryException("No se pudo crear la habilidad para el usuario.\n" + e.getMessage());
         }
     }
 }
