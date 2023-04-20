@@ -40,8 +40,8 @@ public class UsuarioController {
     }
 
     //READ 1
-    @GetMapping("/{id}")
-    public Usuario getUsuario(@PathVariable int id){
+    @GetMapping("/usuarios/{id}")
+    public Usuario getUsuario(@PathVariable Integer id){
         return usuarioService.getUsuario(id);
     }
 

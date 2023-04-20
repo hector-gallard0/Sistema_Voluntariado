@@ -5,5 +5,6 @@ import cl.vol.app_voluntario.model.Rol;
 import java.util.List;
 
 public interface RolRepository {
-    Rol findById(int i);
+    Rol findById(int idRol);
+    List<Rol> findByUserId(int idUsuario);
 }

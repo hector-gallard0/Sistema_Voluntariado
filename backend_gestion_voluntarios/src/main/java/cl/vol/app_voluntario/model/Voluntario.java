@@ -16,5 +16,5 @@ public class Voluntario {
     private Integer id;
     private Usuario usuario;
     private List<Tarea> tareas;
-    private List<Habilidad> habilidades = new ArrayList<>();
+    private List<Habilidad> habilidades;
 }

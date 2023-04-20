@@ -1,9 +1,9 @@
-package cl.vol.app_voluntario.model;
+package cl.vol.app_voluntario.request;
 
+import cl.vol.app_voluntario.model.Emergencia;
+import cl.vol.app_voluntario.model.Estado;
+import cl.vol.app_voluntario.model.Habilidad;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,11 +12,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Tarea {
+@AllArgsConstructor
+@Data
+public class CreateTareaRequest {
     private Integer id;
     private String nombre;
     private String descripcion;
@@ -26,7 +25,6 @@ public class Tarea {
     private Date fechaInicio;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date fechaFin;
-    private Estado estado;
-    private List<Habilidad> habilidades = new ArrayList<>();
-    private Emergencia emergencia;
+    private Integer id_estado;
+    private Integer id_emergencia;
 }
