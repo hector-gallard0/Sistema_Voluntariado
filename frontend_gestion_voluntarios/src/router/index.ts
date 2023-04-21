@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import { TasksListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView } from '@/views/index'
+import { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView } from '@/views/index'
 import useAuth from '@/store/auth'
+
+interface RouteMeta extends Record<string, unknown> {
+	requireAuth?: boolean;
+	roles?: string[];
+}
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -15,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/',
 		name: 'tasks',
-		component: TasksListView,
+		component: TaskListView,
 		meta: {
 			requireAuth: true,
 			roles: ['COORDINADOR']
@@ -53,7 +58,8 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'login',
 		component: LoginView,
 		meta: {
-			requireAuth: false
+			requireAuth: false,
+			roles: []
 		}
 	},
 	{
@@ -61,7 +67,8 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'register',
 		component: RegisterView,
 		meta: {
-			requireAuth: false
+			requireAuth: false,
+			roles: []
 		}
 	}
 ]
@@ -72,7 +79,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-	const isAuth = 
+	const auth = useAuth();
+	const meta = to.meta as RouteMeta;
+	if(to.meta.requireAuth && auth.token == null){
+		next('login');
+	} else if(to.meta.requireAuth && meta.roles?.includes(auth.rol)){
+		next();
+	} else{
+		next();
+	}
 })
 
 export default router

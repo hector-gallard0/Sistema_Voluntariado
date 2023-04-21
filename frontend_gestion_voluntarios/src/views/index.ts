@@ -1,4 +1,4 @@
-import TaskListView from './tareas/TasksListView.vue'
+import TaskListView from './tareas/TaskListView.vue'
 import TaskView from './tareas/TaskView.vue'
 import CreateTaskView from './tareas/CreateTaskView.vue';
 import EditTaskView from './tareas/EditTaskView.vue'
