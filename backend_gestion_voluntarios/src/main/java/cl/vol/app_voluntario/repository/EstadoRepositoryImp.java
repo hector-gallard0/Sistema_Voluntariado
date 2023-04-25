@@ -1,10 +1,7 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.errors.QueryException;
-import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Estado;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;

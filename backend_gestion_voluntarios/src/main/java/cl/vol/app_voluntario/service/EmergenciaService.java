@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.service;
 
+import cl.vol.app_voluntario.errors.ApiErrorException;
 import cl.vol.app_voluntario.errors.InstitucionNotFoundException;
 import cl.vol.app_voluntario.errors.InvalidDatesException;
 import cl.vol.app_voluntario.model.Emergencia;
@@ -25,7 +26,7 @@ public class EmergenciaService {
             throw new InvalidDatesException("La fecha de inicio debe ser menor a la fecha final");
         };
         Institucion institucion = institucionRepository.findById(request.getId_institucion());
-        if(institucion == null) throw new InstitucionNotFoundException("La institución no existe.\n");
+        if(institucion == null) throw new ApiErrorException("La institución no existe.\n");
         Emergencia emergencia = new Emergencia();
         emergencia.setNombre(request.getNombre());
         emergencia.setDescripcion(request.getDescripcion());

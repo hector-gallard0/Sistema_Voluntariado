@@ -1,6 +1,5 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.errors.QueryException;
 import cl.vol.app_voluntario.model.Rol;
 import cl.vol.app_voluntario.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Override
     public Usuario findByEmail(String email){
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_usuario, nombre, apellido, password FROM usuario WHERE email = :email";
+            String sql = "SELECT id_usuario, nombre, apellido, email, password FROM usuario WHERE email = :email";
             Usuario usuario = con.createQuery(sql)
                     .addColumnMapping("id_usuario", "id")
                     .addParameter("email", email)
@@ -86,8 +85,6 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
             }
             con.commit();
             return findById(idUsuario);
-        }catch(Exception e) {
-            throw new QueryException("No se han podido crear los roles");
         }
     }
 

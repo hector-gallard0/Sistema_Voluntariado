@@ -1,6 +1,5 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.errors.QueryException;
 import cl.vol.app_voluntario.model.Coordinador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Ranking implements Serializable {
+public class    Ranking implements Serializable {
     private int id;
     private int puntaje;
     private int flagInvitado;

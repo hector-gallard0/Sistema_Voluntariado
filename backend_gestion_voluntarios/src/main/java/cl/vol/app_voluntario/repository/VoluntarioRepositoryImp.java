@@ -1,6 +1,5 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.errors.QueryException;
 import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Voluntario;
 import org.springframework.beans.factory.annotation.Autowired;

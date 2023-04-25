@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //getters y setters
 @Builder
@@ -30,14 +35,6 @@ public class Usuario implements UserDetails {
     private List<Rol> roles;
     Coordinador coordinador;
     Voluntario voluntario;
-
-    @JsonProperty("roles")
-    public List<Rol> getRoles(){
-        if(roles == null){
-            roles = new ArrayList<>();
-        }
-        return roles;
-    }
 //
 //    public void addRol(Rol rol){
 //        roles.add(rol);
@@ -45,11 +42,9 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Rol rol : roles) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + rol.getNombre()));
-        }
-        return authorities;
+        return roles.stream()
+                .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.getNombre()))
+                .collect(Collectors.toList());
     }
 
     @Override

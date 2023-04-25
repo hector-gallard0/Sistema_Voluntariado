@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.config;
 
+import cl.vol.app_voluntario.model.Rol;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -31,6 +30,7 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
+
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
         return Jwts
                 .builder()
@@ -66,5 +66,16 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public Map<String, Object> createExtraClaimsWithIdAndRoles(Integer idUsuario, List<Rol> roles){
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("idUsuario", idUsuario);
+        List<String> roleNames = new ArrayList<>();
+        for(Rol rol : roles){
+            roleNames.add(rol.getNombre());
+        }
+        extraClaims.put("roles", roleNames);
+        return extraClaims;
     }
 }

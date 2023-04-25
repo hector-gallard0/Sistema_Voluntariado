@@ -1,11 +1,14 @@
 package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Institucion;
+import cl.vol.app_voluntario.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
+
+import java.util.List;
 
 @Repository
 public class InstitucionRepositoryImp implements  InstitucionRepository{
@@ -47,6 +50,16 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
                     .addColumnMapping("descripcion", "descripcion")
                     .addParameter("id_coordinador", idCoordinador)
                     .executeAndFetchFirst(Institucion.class);
+        }
+    }
+
+    @Override
+    public List<Institucion> findAll() {
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT * FROM institucion";
+            return con.createQuery(sql)
+                    .addColumnMapping("id_institucion", "id")
+                    .executeAndFetch(Institucion.class);
         }
     }
 }

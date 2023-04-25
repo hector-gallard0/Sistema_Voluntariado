@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
 		}
 	},
 	{
-		path: '/',
+		path: '/tasks',
 		name: 'tasks',
 		component: TaskListView,
 		meta: {
@@ -88,6 +88,8 @@ router.beforeEach((to, from, next) => {
 	} else{
 		next();
 	}
+
+	next('login');
 })
 
 export default router

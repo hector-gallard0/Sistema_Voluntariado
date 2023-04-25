@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +24,7 @@ public class RegisterRequest {
     @NotBlank(message = "Debe ingresar una contraseña.")
     private String password;
     @NotNull(message = "Debe ingresar una institución.")
-    private Integer id_institucion;
+    private Integer idInstitucion;
     @NotNull(message = "Debe ingresar si el usuario es voluntario o no.")
     private boolean voluntario;
     @NotNull(message = "Debe ingresar si el usuario es coordinador o no.")

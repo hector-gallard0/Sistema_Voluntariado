@@ -1,7 +1,7 @@
 package cl.vol.app_voluntario.service;
 
 import cl.vol.app_voluntario.config.JwtService;
-import cl.vol.app_voluntario.errors.AuthenticationException;
+import cl.vol.app_voluntario.errors.*;
 import cl.vol.app_voluntario.model.Coordinador;
 import cl.vol.app_voluntario.model.Rol;
 import cl.vol.app_voluntario.model.Usuario;
@@ -37,16 +37,16 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public AuthenticationResponse createUsuario(RegisterRequest request) {
+    public void createUsuario(RegisterRequest request) {
         try{
             if(!request.isVoluntario() && !request.isCoordinador()){
-                throw new AuthenticationException("No hay roles para asignar a este usuario.");
+                throw new ApiErrorException("No ha seleccionado el tipo de usuario a crear.");
             }
-            else if(institucionRepository.findById(request.getId_institucion()) == null){
-                throw new AuthenticationException("No hay una institucion para asignar a este usuario.");
+            else if(request.isCoordinador() && institucionRepository.findById(request.getIdInstitucion()) == null){
+                throw new ApiErrorException("La institución seleccionada no existe.");
             }
             else if(usuarioRepository.findByEmail(request.getEmail()) != null){
-                throw new AuthenticationException("El correo electronico ya existe.");
+                throw new ApiErrorException("El correo electronico ya existe.");
             }
 
             //guardar usuario
@@ -72,34 +72,24 @@ public class UsuarioService {
             if(request.isCoordinador()){
                 Coordinador coordinador = new Coordinador();
                 coordinador.setUsuario(usuarioBD);
-                coordinador.setInstitucion(institucionRepository.findById(request.getId_institucion()));
+                coordinador.setInstitucion(institucionRepository.findById(request.getIdInstitucion()));
                 coordinadorRepository.save(coordinador);
                 roles.add(rolRepository.findById(1));
             }
 
            usuarioBD = usuarioRepository.saveUserRoles(usuarioBD.getId(), roles);
-
-            Map<String, Object> extraClaims = new HashMap<>();
-            extraClaims.put("idUsuario", usuarioBD.getId());
-            List<String> roleNames = new ArrayList<>();
-            for(Rol rol : usuarioBD.getRoles()){
-                roleNames.add(rol.getNombre());
-            }
-            extraClaims.put("roles", roleNames);
-            var jwtToken = jwtService.generateToken(extraClaims, usuarioBD);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
         }catch(Exception e){
-            throw new AuthenticationException("Ha ocurrido un error en el registro del usuario.\n" + e.getMessage());
+            throw new ApiErrorException(e.getMessage());
         }
     }
     public Usuario getUsuario(int id) {
         return usuarioRepository.findById(id);
     }
 
-    public AuthenticationResponse authentication(AuthenticationRequest request) {
+    public String authentication(AuthenticationRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail());
+
+        System.out.println("AUTH EMAIL = " + usuario);
 
         if(usuario == null){
             throw new AuthenticationException("El usuario no existe.");
@@ -112,10 +102,8 @@ public class UsuarioService {
                 )
         );
 
-        var jwtToken = jwtService.generateToken(usuario);
-
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        Map<String, Object> extraClaims = jwtService.createExtraClaimsWithIdAndRoles(usuario.getId(), usuario.getRoles());
+        var jwtToken = jwtService.generateToken(extraClaims, usuario);
+        return jwtToken;
     }
 }

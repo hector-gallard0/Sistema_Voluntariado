@@ -1,9 +1,8 @@
 package cl.vol.app_voluntario.controller;
 
-import cl.vol.app_voluntario.model.Usuario;
 import cl.vol.app_voluntario.request.AuthenticationRequest;
 import cl.vol.app_voluntario.request.RegisterRequest;
-import cl.vol.app_voluntario.response.AuthenticationResponse;
+import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.UsuarioService;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import jakarta.validation.Valid;
@@ -13,10 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api/v1/usuarios")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class UsuarioController {
 
@@ -24,12 +23,27 @@ public class UsuarioController {
 
     //CREATE o REGISTRO
     @PostMapping("/register")
-    public ResponseEntity<?> createUsuario(
+    public ResponseEntity<ApiResponse> createUsuario(
             @Valid @RequestBody RegisterRequest request,
             BindingResult bindingResult
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(usuarioService.createUsuario(request), HttpStatus.CREATED);
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>
+                (new ApiResponse().builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .messages(ValidationUtil.getValidationErrors(bindingResult))
+                    .build(),
+                    HttpStatus.BAD_REQUEST);
+        };
+
+        usuarioService.createUsuario(request);
+
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(new HashMap<>().put("exito", "Usuario registrado con éxito."))
+                        .build(),
+                        HttpStatus.OK);
     }
 
     //LOGIN
@@ -38,18 +52,32 @@ public class UsuarioController {
             @Valid @RequestBody AuthenticationRequest request,
             BindingResult bindingResult
             ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(usuarioService.authentication(request), HttpStatus.OK);
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>
+                    (new ApiResponse().builder()
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .messages(ValidationUtil.getValidationErrors(bindingResult))
+                            .build(),
+                            HttpStatus.BAD_REQUEST);
+        };
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(new HashMap<>().put("exito", "Iniciando sesión."))
+                        .data(new HashMap<>().put("token", usuarioService.authentication(request)))
+                        .build(),
+                        HttpStatus.OK);
     }
 
     //READ
-    @GetMapping
+    @GetMapping("/usuarios")
     public ResponseEntity<?> getUsuarios(){
+        System.out.println("get usuarios");
         return new ResponseEntity<>(usuarioService.getUsuarios(), HttpStatus.FOUND);
     }
 
     //READ 1
-    @GetMapping("/{id}")
+    @GetMapping("/usuarios/{id}")
     public ResponseEntity<?> getUsuario(@PathVariable Integer id){
         return new ResponseEntity<>(usuarioService.getUsuario(id), HttpStatus.FOUND);
     }

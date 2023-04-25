@@ -1,16 +1,16 @@
+import { API_URL } from '@/globals';
 import {defineStore} from 'pinia';
 
 const useAuth = defineStore('auth', {
     state: () => {
         return {
             token: null,
-            rol: "",
-            baseURL: "http://localhost:8080/api/v1"
+            rol: "",        
         }
     },
     actions: {
         async register(nombre:string, apellido:string, email:string, password:string, idInstitucion:number, voluntario:boolean, coordinador:boolean){
-            const uri = `${this.baseURL}/usuarios/register`
+            const uri = `${API_URL}/register`
             const rawResponse = await fetch(uri, {
                 method: 'POST',
                 headers: {
@@ -27,13 +27,12 @@ const useAuth = defineStore('auth', {
                     'coordinador': coordinador
                 })
             })
-            const response = await rawResponse.json();
-            console.log(response);
-            //TO DO MANAGE RESPONSE
+            const response = await rawResponse.json();            
+            return response;
 
         },
         async login(email:string, password:string){
-            const uri = `${this.baseURL}/usuarios/login`
+            const uri = `${API_URL}/usuarios/login`
             const rawResponse = await fetch(uri, {
                 method: 'POST',
                 headers: {
@@ -46,7 +45,12 @@ const useAuth = defineStore('auth', {
                 })
             })
             const response = await rawResponse.json();
-            console.log(response);
+            
+            if(response.status == 200){
+                this.token = response.data.token;
+            }
+
+            return response;
             //TO DO MANAGE RESPONSE
         }
     }
