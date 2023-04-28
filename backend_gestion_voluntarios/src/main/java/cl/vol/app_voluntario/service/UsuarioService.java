@@ -103,7 +103,7 @@ public class UsuarioService {
         );
 
         Map<String, Object> extraClaims = jwtService.createExtraClaimsWithIdAndRoles(usuario.getId(), usuario.getRoles());
-        var jwtToken = jwtService.generateToken(extraClaims, usuario);
-        return jwtToken;
+        return jwtService.generateToken(extraClaims, usuario);
+
     }
 }

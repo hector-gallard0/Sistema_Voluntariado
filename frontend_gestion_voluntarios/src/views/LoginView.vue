@@ -9,6 +9,7 @@
                         id="email"
                         v-model="user.email"
                         placeholder="Ingresa tu email"
+                        type="email"
                         required
                         ></b-form-input>
                 </b-form-group>
@@ -18,6 +19,7 @@
                     id="password"
                     v-model="user.password"
                     placeholder="Ingresa tu contraseña"
+                    type="password"
                     required
                     ></b-form-input>
                 </b-form-group>
@@ -83,15 +85,15 @@ const messages = ref<object>({});
 const submitLoginForm = async () => {
     const response = await store.login(user.value.email ?? '', user.value.password ?? '');
     console.log(response);
-    if(response.status == 200 ){
-        success.value = true;
-        error.value = false;
-        messages.value = response.messages || "Usuario registrado con éxito.";
-        router.push({name: "login"});
-    }else{
-        error.value = true;
-        success.value = false;
-        messages.value = response.messages || "Hubo un error al registrar al usuario, intente nuevamente.";            
-    }
+    // if(response.status == 200 ){
+    //     success.value = true;
+    //     error.value = false;
+    //     messages.value = response.messages || "Usuario registrado con éxito.";
+    //     router.push({name: "login"});
+    // }else{
+    //     error.value = true;
+    //     success.value = false;
+    //     messages.value = response.messages || "Hubo un error al registrar al usuario, intente nuevamente.";            
+    // }
 }
 </script>

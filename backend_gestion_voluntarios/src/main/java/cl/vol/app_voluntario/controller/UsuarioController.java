@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -60,11 +61,15 @@ public class UsuarioController {
                             .build(),
                             HttpStatus.BAD_REQUEST);
         };
+        System.out.println("Solicitando login");
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("token",  usuarioService.authentication(request));
+
         return new ResponseEntity<>
                 (new ApiResponse().builder()
                         .status(HttpStatus.OK.value())
-                        .messages(new HashMap<>().put("exito", "Iniciando sesión."))
-                        .data(new HashMap<>().put("token", usuarioService.authentication(request)))
+                        .messages("Éxito")
+                        .data(dataMap)
                         .build(),
                         HttpStatus.OK);
     }

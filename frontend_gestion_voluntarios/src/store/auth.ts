@@ -32,11 +32,11 @@ const useAuth = defineStore('auth', {
 
         },
         async login(email:string, password:string){
-            const uri = `${API_URL}/usuarios/login`
+            const uri = `${API_URL}/login`
             const rawResponse = await fetch(uri, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'Application/json',
+                headers: {     
+                    'Content-Type': 'Application/json',               
                     'Accept': 'Application/json'
                 },
                 body: JSON.stringify({
@@ -47,7 +47,7 @@ const useAuth = defineStore('auth', {
             const response = await rawResponse.json();
             
             if(response.status == 200){
-                this.token = response.data.token;
+                this.token = response.data.token;               
             }
 
             return response;
