@@ -1,17 +1,16 @@
 import { API_URL } from '@/globals';
-import AuthData from '@/interfaces/AuthData';
+import TokenPayload from '@/interfaces/TokenPayload';
 import { parseJwt } from '@/services/JwtService';
 import {defineStore} from 'pinia';
+import router from '@/router';
 
-const authData:AuthData = {
-    token: '',
-    tokenPayload: {}
-}
+const tokenPayload:TokenPayload = {}
 
 const useAuth = defineStore('auth', {
     state: () => {
         return {
-            authData
+            token: null,
+            tokenPayload
         }
     },
     actions: {
@@ -54,14 +53,22 @@ const useAuth = defineStore('auth', {
             const response = await rawResponse.json();
                         
             if(response.status == 200){
-                this.authData.token = response.data.token;
-                this.authData.tokenPayload = parseJwt(this.authData.token);
-                console.log(this.authData.tokenPayload);
+                this.token = response.data.token;
+                this.tokenPayload = this.token ? parseJwt(this.token) : null;
+                console.log(this.tokenPayload);
             }            
 
             return response;
             //TO DO MANAGE RESPONSE
+        },
+        logout(){
+            this.token = null;
+            this.tokenPayload = {};
+            router.push('/login');            
         }
+    },
+    persist: {
+        enabled: true
     }
 })
 

@@ -8,9 +8,9 @@ export default interface Tarea {
     descripcion?: string;
     voluntariosRequeridos?: number;
     voluntariosInscritos?: number;
-    fechaInicio: Date;
-    fechaFin: Date;
-    estado: Estado;
-    habilidades: Habilidad[];
-    emergencia: Emergencia;
+    fechaInicio?: string;
+    fechaFin?: string;
+    estado?: Estado;
+    habilidades?: Habilidad[];
+    emergencia?: Emergencia;
 }

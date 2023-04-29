@@ -81,19 +81,19 @@ const router = createRouter({
 router.beforeEach((to) => {
 	const auth = useAuth();
 	const meta = to.meta as RouteMeta;
-	console.log(to.meta.requireAuth, auth.authData.token);
-	console.log(auth.authData.token.length)
-	if(to.meta.requireAuth && (auth.authData.token == null || auth.authData.token.length === 0)){		
+	console.log(to.meta.requireAuth, auth.token);
+	console.log(auth.token)
+	if(to.meta.requireAuth && (auth.token == null || auth.token == null)){		
 		return { name: 'login' }
-	} else if(to.meta.requireAuth && meta.roles?.find(r => r === auth.authData.tokenPayload.rol?.nombre)){
+	} else if(to.meta.requireAuth && meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre)){
 		console.log("Roles requeridos", meta.roles);
-		console.log("Roles que posee ", auth.authData.tokenPayload.rol?.nombre);
-		console.log("Resultado find ", meta.roles?.find(r => r === auth.authData.tokenPayload.rol?.nombre));
+		console.log("Roles que posee ", auth.tokenPayload.rol?.nombre);
+		console.log("Resultado find ", meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre));
 		return true;
-	} else if(to.meta.requireAuth && !meta.roles?.find(r => r === auth.authData.tokenPayload.rol?.nombre)){
+	} else if(to.meta.requireAuth && !meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre)){
 		console.log("Roles requeridos", meta.roles);
-		console.log("Roles que posee ", auth.authData.tokenPayload.rol?.nombre);
-		console.log("Resultado find ", meta.roles?.find(r => r === auth.authData.tokenPayload.rol?.nombre));
+		console.log("Roles que posee ", auth.tokenPayload.rol?.nombre);
+		console.log("Resultado find ", meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre));
 		alert('No posee permisos');
 		return false;
 	} 

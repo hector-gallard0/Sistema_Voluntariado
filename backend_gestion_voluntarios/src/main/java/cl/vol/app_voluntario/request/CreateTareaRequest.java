@@ -16,15 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class CreateTareaRequest {
-    private Integer id;
     private String nombre;
     private String descripcion;
     private Integer voluntariosRequeridos;
-    private Integer voluntariosInscritos;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date fechaInicio;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date fechaFin;
-    private Integer id_estado;
     private Integer id_emergencia;
 }

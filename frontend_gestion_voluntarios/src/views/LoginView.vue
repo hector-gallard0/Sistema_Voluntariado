@@ -49,15 +49,9 @@
                     </div>
                 </div>
             </div>
-
-
-            </div>
-            <b-card class="mt-3" header="Form Data Result">
-                <pre class="m-0">{{ user }}</pre>                
-                <pre class="m-0">{{ idRol }}</pre>
-            </b-card>
-        </div>    
-    </template>
+        </div>            
+    </div>    
+</template>
 
 <script setup lang="ts">
 import { ref } from 'vue'

@@ -24,12 +24,12 @@ public class TareaService {
             throw new InvalidDatesException("La fecha de inicio debe ser menor a la fecha final");
         };
         Emergencia emergencia = emergenciaRepository.findById(request.getId_emergencia());
-        Estado estado = estadoRepository.findById(request.getId_estado());
+        Estado estado = estadoRepository.findById(0);
         Tarea tarea = new Tarea();
         tarea.setNombre(request.getNombre());
         tarea.setDescripcion(request.getDescripcion());
         tarea.setVoluntariosRequeridos(request.getVoluntariosRequeridos());
-        tarea.setVoluntariosInscritos(request.getVoluntariosInscritos());
+        tarea.setVoluntariosInscritos(0);
         tarea.setFechaInicio(request.getFechaInicio());
         tarea.setFechaFin(request.getFechaFin());
         tarea.setEmergencia(emergencia);
