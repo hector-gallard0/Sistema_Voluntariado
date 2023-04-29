@@ -8,6 +8,7 @@
                         <b-form-input
                         id="email"
                         v-model="user.email"
+                        type="email"
                         placeholder="Ingresa tu email"
                         required
                         ></b-form-input>
@@ -17,6 +18,7 @@
                     <b-form-input
                     id="password"
                     v-model="user.password"
+                    type="password"
                     placeholder="Ingresa tu contraseña"
                     required
                     ></b-form-input>
@@ -40,7 +42,7 @@
                 </div>
                 <div class="w-100" v-if="success">
                     <div class="d-flex justify-content-center" v-for="(message, i) in messages" :key="i">
-                        <div class="d-flex justify-content-center alert alert-danger w-50 py-3 my-4" role="success">
+                        <div class="d-flex justify-content-center alert alert-success w-50 py-3 my-4" role="success">
                             <SuccessSVG/>
                             <span class="mx-2">{{ message }}</span>                                                                
                         </div>        
@@ -81,13 +83,13 @@ const success = ref<boolean>(false);
 const messages = ref<object>({});
 
 const submitLoginForm = async () => {
-    const response = await store.login(user.value.email ?? '', user.value.password ?? '');
+    const response = await store.login(user.value.email ?? '', user.value.password ?? '', idRol.value ?? '');
     console.log(response);
     if(response.status == 200 ){
         success.value = true;
         error.value = false;
         messages.value = response.messages || "Usuario registrado con éxito.";
-        router.push({name: "login"});
+        router.push({name: "tasks"});
     }else{
         error.value = true;
         success.value = false;

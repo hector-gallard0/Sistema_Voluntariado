@@ -1,11 +1,17 @@
 import { API_URL } from '@/globals';
+import AuthData from '@/interfaces/AuthData';
+import { parseJwt } from '@/services/JwtService';
 import {defineStore} from 'pinia';
+
+const authData:AuthData = {
+    token: '',
+    tokenPayload: {}
+}
 
 const useAuth = defineStore('auth', {
     state: () => {
         return {
-            token: null,
-            rol: "",        
+            authData
         }
     },
     actions: {
@@ -31,8 +37,8 @@ const useAuth = defineStore('auth', {
             return response;
 
         },
-        async login(email:string, password:string){
-            const uri = `${API_URL}/usuarios/login`
+        async login(email:string, password:string, idRol:number){
+            const uri = `${API_URL}/login`
             const rawResponse = await fetch(uri, {
                 method: 'POST',
                 headers: {
@@ -41,14 +47,17 @@ const useAuth = defineStore('auth', {
                 },
                 body: JSON.stringify({
                     'email': email,
-                    'password': password
+                    'password': password,
+                    'idRol': idRol
                 })
-            })
+            })            
             const response = await rawResponse.json();
-            
+                        
             if(response.status == 200){
-                this.token = response.data.token;
-            }
+                this.authData.token = response.data.token;
+                this.authData.tokenPayload = parseJwt(this.authData.token);
+                console.log(this.authData.tokenPayload);
+            }            
 
             return response;
             //TO DO MANAGE RESPONSE

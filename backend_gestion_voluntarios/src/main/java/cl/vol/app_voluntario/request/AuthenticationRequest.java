@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class AuthenticationRequest {
     private String email;
     @NotBlank(message = "Debe ingresar una contraseña.")
     private String password;
+    @NotNull(message = "Debe ingresar el tipo de usuario.")
+    private Integer idRol;
 }

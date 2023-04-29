@@ -78,4 +78,11 @@ public class JwtService {
         extraClaims.put("roles", roleNames);
         return extraClaims;
     }
+
+    public Map<String, Object> createExtraClaimWithIdAndRol(Integer idUsuario, Rol rol){
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("idUsuario", idUsuario);
+        extraClaims.put("rol", rol);
+        return extraClaims;
+    }
 }

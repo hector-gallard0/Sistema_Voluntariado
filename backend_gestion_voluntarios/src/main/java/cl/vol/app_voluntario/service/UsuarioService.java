@@ -102,8 +102,9 @@ public class UsuarioService {
                 )
         );
 
-        Map<String, Object> extraClaims = jwtService.createExtraClaimsWithIdAndRoles(usuario.getId(), usuario.getRoles());
-        var jwtToken = jwtService.generateToken(extraClaims, usuario);
-        return jwtToken;
+        Rol rol = rolRepository.findById(request.getIdRol());
+        Map<String, Object> extraClaims = jwtService.createExtraClaimWithIdAndRol(usuario.getId(), rol);
+
+        return jwtService.generateToken(extraClaims, usuario);
     }
 }
