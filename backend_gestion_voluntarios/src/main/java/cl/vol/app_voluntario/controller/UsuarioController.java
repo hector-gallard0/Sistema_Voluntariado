@@ -61,28 +61,16 @@ public class UsuarioController {
                             .build(),
                             HttpStatus.BAD_REQUEST);
         };
-<<<<<<< HEAD
 
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Iniciando sesión.");
         Map<String, String> data = new HashMap<>();
         data.put("token", usuarioService.authentication(request));
-=======
-        System.out.println("Solicitando login");
-        Map<String, String> dataMap = new HashMap<>();
-        dataMap.put("token",  usuarioService.authentication(request));
->>>>>>> b599b3f1e7684c5f0671be5ebca1780769887856
-
         return new ResponseEntity<>
                 (new ApiResponse().builder()
                         .status(HttpStatus.OK.value())
-<<<<<<< HEAD
                         .messages(messages)
                         .data(data)
-=======
-                        .messages("Éxito")
-                        .data(dataMap)
->>>>>>> b599b3f1e7684c5f0671be5ebca1780769887856
                         .build(),
                         HttpStatus.OK);
     }
