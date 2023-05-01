@@ -21,7 +21,7 @@
             Tareas
           </a>
           <ul class="dropdown-menu">
-            <li><router-link to="/tasks" class="nav-item nav-link" active-class="active">Ver tareas</router-link></li>
+            <li><router-link to="/tasks" class="nav-item nav-link" active-class="active">Administrar tareas</router-link></li>
             <li><router-link to="/task/create" class="nav-item nav-link" active-class="active">Crear tarea</router-link></li>          
           </ul>
         </li>

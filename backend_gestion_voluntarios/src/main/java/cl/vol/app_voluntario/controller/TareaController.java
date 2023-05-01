@@ -4,6 +4,7 @@ import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Tarea;
 import cl.vol.app_voluntario.request.CreateEmergenciaRequest;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
+import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.TareaService;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import jakarta.validation.Valid;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/tareas")
@@ -28,7 +33,24 @@ public class TareaController {
             @Valid @RequestBody CreateTareaRequest request,
             BindingResult bindingResult
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(tareaService.createTarea(request), HttpStatus.CREATED);
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>
+                    (new ApiResponse().builder()
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .messages(ValidationUtil.getValidationErrors(bindingResult))
+                            .build(),
+                            HttpStatus.BAD_REQUEST);
+        };
+
+        tareaService.createTarea(request);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Tarea creada con éxito.");
+
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(messages)
+                        .build(),
+                        HttpStatus.OK);
     }
 }

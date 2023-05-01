@@ -23,5 +23,5 @@ public class CreateTareaRequest {
     private Date fechaInicio;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date fechaFin;
-    private Integer id_emergencia;
+    private Integer idEmergencia;
 }

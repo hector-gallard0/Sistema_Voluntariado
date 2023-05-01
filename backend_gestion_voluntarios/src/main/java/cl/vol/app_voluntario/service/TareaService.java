@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.service;
 
+import cl.vol.app_voluntario.errors.ApiErrorException;
 import cl.vol.app_voluntario.errors.InvalidDatesException;
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Estado;
@@ -19,14 +20,15 @@ public class TareaService {
     private final EmergenciaRepository emergenciaRepository;
     private final EstadoRepository estadoRepository;
 
-    public Tarea createTarea(CreateTareaRequest request){
-        if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())){
-            throw new InvalidDatesException("La fecha de inicio debe ser menor a la fecha final");
-        };
-        Emergencia emergencia = emergenciaRepository.findById(request.getId_emergencia());
+    public void createTarea(CreateTareaRequest request){
+        if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())) throw new ApiErrorException("La fecha de inicio debe ser menor a la fecha final");
+        Emergencia emergencia = emergenciaRepository.findById(request.getIdEmergencia());
+        if(emergencia == null) throw new ApiErrorException("Emergencia no encontrada.");
         Estado estado = estadoRepository.findById(0);
+        if(estado == null) throw new ApiErrorException("Estado no encontrado.");
         Tarea tarea = new Tarea();
         tarea.setNombre(request.getNombre());
+        if(request.getDescripcion().length() > 300) throw new ApiErrorException("La descripción puede ser de máximo 300 caracteres.");
         tarea.setDescripcion(request.getDescripcion());
         tarea.setVoluntariosRequeridos(request.getVoluntariosRequeridos());
         tarea.setVoluntariosInscritos(0);
@@ -34,7 +36,7 @@ public class TareaService {
         tarea.setFechaFin(request.getFechaFin());
         tarea.setEmergencia(emergencia);
         tarea.setEstado(estado);
-        return tareaRepository.save(tarea);
+        tareaRepository.save(tarea);
     }
 
 }

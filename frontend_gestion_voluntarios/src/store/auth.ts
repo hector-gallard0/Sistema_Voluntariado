@@ -23,13 +23,13 @@ const useAuth = defineStore('auth', {
                     'Accept': 'Application/json'
                 },
                 body: JSON.stringify({
-                    'nombre': nombre,
-                    'apellido': apellido,
-                    'email': email,
-                    'password': password,
-                    'idInstitucion': idInstitucion,
-                    'voluntario': voluntario,
-                    'coordinador': coordinador
+                    nombre,
+                    apellido,
+                    email,
+                    password,
+                    idInstitucion,
+                    voluntario,
+                    coordinador
                 })
             })
             const response = await rawResponse.json();            
@@ -45,9 +45,7 @@ const useAuth = defineStore('auth', {
                     'Accept': 'Application/json'
                 },
                 body: JSON.stringify({
-                    'email': email,
-                    'password': password,
-                    'idRol': idRol
+                    email, password, idRol
                 })
             })            
             const response = await rawResponse.json();
