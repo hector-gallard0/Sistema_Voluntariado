@@ -15,7 +15,8 @@
             role="button" 
             data-bs-toggle="dropdown" 
             aria-expanded="false" 
-            active-class="active"
+            active-class="active"     
+            ref="tareasNavItem"       
             v-if="auth.token && auth.tokenPayload.rol?.nombre == 'COORDINADOR'"  
           >
             Tareas
@@ -39,7 +40,23 @@
 
 <script setup lang="ts">
   import useAuth from './store/auth'; 
-  const auth = useAuth();  
+  import { onMounted, ref, watch } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  const auth = useAuth();    
+  const tareasNavItem = ref<HTMLElement|null>(null);
+  const pathName = ref<string>(window.location.pathname);
+  const router = useRouter();
+  const route = useRoute();
+  const currentPath = ref(route.path);
+  onMounted(() => {
+
+    console.log(currentPath.value);
+  });
+  watch(pathName, (newPathName) => {
+    if(newPathName.includes('task')){
+      tareasNavItem.value?.classList.add('active');
+    }
+  })
 </script>
 
 <style>
