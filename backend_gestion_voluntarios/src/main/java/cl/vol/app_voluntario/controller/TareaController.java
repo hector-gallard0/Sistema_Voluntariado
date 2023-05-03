@@ -12,23 +12,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/tareas")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class TareaController {
     private final TareaService tareaService;
 
+    //READ
+    @GetMapping("/tareas")
+    public ResponseEntity<?> getTareas(){
+        return new ResponseEntity<>(tareaService.getTareas(), HttpStatus.OK);
+    };
+
     //CREATE
-    @PostMapping
+    @PostMapping("/tareas")
     public ResponseEntity<?> createTarea(
             @Valid @RequestBody CreateTareaRequest request,
             BindingResult bindingResult

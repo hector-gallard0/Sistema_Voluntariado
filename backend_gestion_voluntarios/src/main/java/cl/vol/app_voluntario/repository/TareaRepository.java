@@ -10,4 +10,6 @@ public interface TareaRepository {
     Tarea findById(Integer idTarea);
 
     List<Tarea> findAllByVoluntarioId(Integer idVoluntario);
+
+    List<Tarea> findAll();
 }

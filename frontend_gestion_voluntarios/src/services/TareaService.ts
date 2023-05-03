@@ -1,8 +1,7 @@
 import { API_URL } from "@/globals"
 import Tarea from "@/interfaces/Tarea";
 
-const createTask = async (tarea:Tarea, idEmergencia:number, token:string) => {
-    const {nombre, descripcion, voluntariosRequeridos, fechaInicio, fechaFin} = tarea;
+const createTask = async ({nombre, descripcion, voluntariosRequeridos, fechaInicio, fechaFin}:Tarea, idEmergencia:number, token:string) => {
     const response = await fetch(`${API_URL}/tareas`,{
         method: 'POST',
         headers: {
@@ -23,4 +22,16 @@ const createTask = async (tarea:Tarea, idEmergencia:number, token:string) => {
     return rawResponse;
 }
 
-export { createTask }
+const getTasks = async (token:string) => {
+    const response = await fetch(`${API_URL}/tareas`,{
+        method: 'GET',
+        headers: {
+            'Accept': 'Application/json',        
+            'Authorization': `Bearer ${token}`
+        }        
+    })
+    const rawResponse = await response.json();
+    return rawResponse;
+}
+
+export { createTask, getTasks }

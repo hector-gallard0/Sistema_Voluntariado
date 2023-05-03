@@ -84,4 +84,22 @@ public class TareaRepositoryImp implements TareaRepository{
             return tareas;
         }
     }
+
+    @Override
+    public List<Tarea> findAll() {
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin FROM tarea";
+            List<Tarea> tareas = con.createQuery(sql)
+                    .addColumnMapping("id_tarea", "id")
+                    .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
+                    .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
+                    .addColumnMapping("fecha_inicio", "fechaInicio")
+                    .addColumnMapping("fecha_fin", "fechaFin")
+                    .executeAndFetch(Tarea.class);
+            for (Tarea tarea : tareas){
+                tarea.setEstado(estadoRepository.findByTareaId(tarea.getId()));
+            }
+            return tareas;
+        }
+    }
 }

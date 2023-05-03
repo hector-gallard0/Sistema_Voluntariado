@@ -13,6 +13,8 @@ import cl.vol.app_voluntario.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TareaService {
@@ -39,4 +41,7 @@ public class TareaService {
         tareaRepository.save(tarea);
     }
 
+    public List<Tarea> getTareas() {
+        return tareaRepository.findAll();
+    }
 }

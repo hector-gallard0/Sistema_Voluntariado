@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
   import useAuth from './store/auth'; 
-  import { ref, watch } from 'vue';
+  import {  ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
   const auth = useAuth();    
   const tareasNavItem = ref<HTMLElement|null>(null);    

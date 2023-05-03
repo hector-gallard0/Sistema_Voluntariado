@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .permitAll()
 //                requieren autorización
                 .anyRequest()
-                .authenticated()
+                .hasRole("COORDINADOR")
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
