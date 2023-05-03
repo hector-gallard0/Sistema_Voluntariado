@@ -1,36 +1,51 @@
 <template>
 <div class="d-flex flex-column align-items-center">
     <h1 class="mb-5">Lista de tareas</h1>
-    <div class="w-75">
-        <b-table striped hover :fields="fields" :items="items"></b-table>
+    <div class="w-75" v-if="items.length > 0 && fields.length > 0 && rows > 0">
+        <b-table                       
+        striped hover            
+        id="task-table" 
+            :current-page="currentPage"
+            :per-page="perPage"
+            :items="items"
+            :fields="fields" 
+            >
+            <template #cell(acciones)>
+                <ThreeDots/>
+            </template>
+        </b-table>
+        <b-pagination        
+            v-model="currentPage"            
+            :total-rows="rows"
+            :per-page="perPage"
+            aria-controls="task-table"
+        ></b-pagination>
+
     </div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, h } from 'vue';
+import { onMounted, ref, computed } from 'vue';
+import { TableField, TableItem } from 'bootstrap-vue-next';
 import { getTasks } from '@/services/TareaService';
 import ThreeDots from '@/components/ThreeDots.vue'
 import Tarea from '@/interfaces/Tarea';
 import useAuth from '@/store/auth';
 
-const auth = useAuth();
-
-const fields = ref<object[]>([
-    {key: 'nombre', field: 'Nombre'},
-    {key: 'voluntarios', field: 'Voluntarios'},
-    {key: 'fechaInicio', field: 'Fecha inicio'},
-    {key: 'fechaFin', field: 'Fecha fin'},
-    {key: 'estado', field: 'Estado'},
-     {key: 'acciones', field: 'Acciones', thClass: 'text-center', tdClass: 'text-center', formatter: (value: any, key: any, item: any) => {
-        return h('svg', {xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', fill: 'currentColor', class: 'bi bi-three-dots', viewBox: '0 0 16 16'}, [
-            h('path', {d: 'M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'})
-        ]);
-    }}
-
+const fields = ref<TableField[]>([
+    {key: 'nombre', label: 'Nombre'},
+    {key: 'voluntarios', label: 'Voluntarios'},
+    {key: 'fechaInicio', label: 'Fecha inicio'},
+    {key: 'fechaFin', label: 'Fecha fin'},
+    {key: 'estado', label: 'Estado'},
+    {key: 'acciones', label: 'Acciones', thClass: 'text-center', tdClass: 'text-center'}
 ])
-
-const items = ref<object[]>([]);
+const items = ref<TableItem[]>([]);
+const auth = useAuth();
+const currentPage = ref<number>(1);
+const perPage = ref<number>(10);
+const rows = computed<number>(() => items.value.length);
 
 onMounted(async () => {    
     if(auth.token != null){
@@ -43,13 +58,12 @@ onMounted(async () => {
                 voluntarios: `${voluntariosInscritos}/${voluntariosRequeridos}`,
                 fechaInicio,
                 fechaFin,
-                estado: estado?.descripcion,
-                ThreeDots
+                estado: estado?.descripcion
             })
         )
-        console.log(items.value);
-    }
+    }    
 })
+
 </script>
 
 <style scoped>

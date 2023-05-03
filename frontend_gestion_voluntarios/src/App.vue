@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar class="mb-5" variant="white" toggleable="lg">      
+    <b-navbar class="mb-5" toggleable="lg">      
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse class="justify-content-center" id="nav-collapse" is-nav>        
         <b-navbar-nav>
