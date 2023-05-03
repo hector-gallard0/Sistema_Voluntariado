@@ -10,8 +10,7 @@ const getEmergencias = async (token:string) => {
         'Authorization': `Bearer ${token}`
       }
     });
-    const emergencias:Emergencia[] = await rawResponse.json();
-    console.log(emergencias);
+    const emergencias:Emergencia[] = await rawResponse.json();    
     return emergencias;
 }
 

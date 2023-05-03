@@ -81,7 +81,7 @@
 import { ref, onMounted } from 'vue'
 import Usuario from "@/interfaces/Usuario"
 import Institucion from '@/interfaces/Institucion';
-import { getInstituciones } from '@/services/InstitucionesService';
+import { getInstituciones } from '@/services/InstitucionService';
 import useAuth from '@/store/auth';
 import ErrorSVG from '@/components/ErrorSVG.vue'
 import SuccessSVG from '@/components/SuccessSVG.vue'

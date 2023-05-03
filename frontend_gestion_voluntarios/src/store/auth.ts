@@ -52,8 +52,7 @@ const useAuth = defineStore('auth', {
                         
             if(response.status == 200){
                 this.token = response.data.token;
-                this.tokenPayload = this.token ? parseJwt(this.token) : null;
-                console.log(this.tokenPayload);
+                this.tokenPayload = this.token ? parseJwt(this.token) : null;            
             }            
 
             return response;
