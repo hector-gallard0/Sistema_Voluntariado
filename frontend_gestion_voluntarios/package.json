@@ -1,6 +1,7 @@
 {
   "name": "frontend_gestion_voluntarios",
   "version": "0.1.0",
+  "license": "",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

@@ -104,7 +104,6 @@ public class UsuarioService {
 
         Rol rol = rolRepository.findById(request.getIdRol());
         Map<String, Object> extraClaims = jwtService.createExtraClaimWithIdAndRol(usuario.getId(), rol);
-
         return jwtService.generateToken(extraClaims, usuario);
     }
 }

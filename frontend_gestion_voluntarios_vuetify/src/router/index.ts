@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import LoggedInLayout from '@/layouts/LoggedInLayout.vue'
+import NotLoggedInLayout from '@/layouts/NotLoggedInLayout.vue'
 import { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView } from '@/views/index'
 import { useAuth } from '@/store/auth'
 
@@ -13,6 +15,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'home',
 		component: HomeView,
 		meta: {
+			layout: LoggedInLayout,
 			requireAuth: true,
 			roles: ['COORDINADOR', 'VOLUNTARIO']
 		}
@@ -22,6 +25,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'tasks',
 		component: TaskListView,
 		meta: {
+			layout: LoggedInLayout,
 			requireAuth: true,
 			roles: ['COORDINADOR']
 		}
@@ -31,6 +35,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'createTask',
 		component: CreateTaskView,
 		meta: {
+			layout: LoggedInLayout,
 			requireAuth: true,
 			roles: ['COORDINADOR']
 		}
@@ -40,6 +45,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'task',
 		component: TaskView,
 		meta: {
+			layout: LoggedInLayout,
 			requireAuth: true,
 			roles: ['COORDINADOR']
 		}
@@ -49,6 +55,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'editTask',
 		component: EditTaskView,
 		meta: {
+			layout: LoggedInLayout,
 			requireAuth: true,
 			roles: ['COORDINADOR']
 		}
@@ -58,6 +65,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'login',
 		component: LoginView,
 		meta: {
+			layout: NotLoggedInLayout,
 			requireAuth: false,
 			roles: []
 		}
@@ -67,6 +75,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'register',
 		component: RegisterView,
 		meta: {
+			layout: NotLoggedInLayout,
 			requireAuth: false,
 			roles: []
 		}
@@ -81,11 +90,12 @@ const router = createRouter({
 router.beforeEach((to) => {
 	const auth = useAuth();
 	const meta = to.meta as RouteMeta;	
-	if(to.meta.requireAuth && (auth.token == null || auth.token == null)){		
+	console.log("token payload", auth.tokenPayload);
+	if(meta.requireAuth && auth.token == null){		
 		return { name: 'login' }
-	} else if(to.meta.requireAuth && meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre)){		
+	} else if(meta.requireAuth && meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre)){		
 		return true;
-	} else if(to.meta.requireAuth && !meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre)){		
+	} else if(meta.requireAuth && !meta.roles?.find(r => r === auth.tokenPayload.rol?.nombre)){		
 		alert('No posee permisos');
 		return false;
 	} 
