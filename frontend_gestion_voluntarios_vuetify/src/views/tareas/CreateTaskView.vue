@@ -19,15 +19,13 @@
                     required
                 ></v-text-field>
                 <v-text-field
-                    v-model="tarea.fechaInicio"
-                    prepend-inner-icon="mdi-calendar-clock-outline"
+                    v-model="tarea.fechaInicio"                    
                     label="Fecha inicio"
                     type="date"                                        
                     required
-                ></v-text-field>
+                ></v-text-field>            
                 <v-text-field
-                    v-model="tarea.fechaFin"
-                    prepend-inner-icon=""
+                    v-model="tarea.fechaFin"                                  
                     label="Fecha fin"
                     type="date"
                     required
@@ -59,7 +57,7 @@ const show = ref<boolean>(false);
 const tarea = ref<Tarea>({
     nombre: "",
     descripcion: "",
-    voluntariosRequeridos: 0,    
+    voluntariosRequeridos: undefined,    
     fechaInicio: "",
     fechaFin: ""
 });
