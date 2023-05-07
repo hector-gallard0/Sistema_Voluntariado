@@ -12,6 +12,7 @@
                     type="email"
                     required
                 ></v-text-field>
+                
                 <v-text-field
                     v-model="user.password"                                                       
                     prepend-inner-icon="mdi-lock-outline"
@@ -19,6 +20,7 @@
                     type="password"
                     required
                 ></v-text-field>
+
                 <v-select
                     v-model="idRol"
                     prepend-inner-icon="mdi-account-wrench-outline"

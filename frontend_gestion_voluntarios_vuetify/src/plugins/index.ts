@@ -9,8 +9,9 @@ import { loadFonts } from './webfontloader'
 import vuetify from './vuetify'
 import pinia from '../store'
 import router from '../router'
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
+import 'v-calendar/style.css';
+
 
 
 // Types
@@ -22,5 +23,7 @@ export function registerPlugins (app: App) {
     .use(vuetify)
     .use(router)
     .use(pinia)
-    .component('VueDatePicker', VueDatePicker)
+    .use(setupCalendar, {})
+    .component('VCalendar', Calendar)
+    .component('VDatePicker', DatePicker)
 }
