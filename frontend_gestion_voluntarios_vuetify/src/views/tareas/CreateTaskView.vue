@@ -1,6 +1,9 @@
 <template>
     <v-container class="d-flex align-center h-screen">
         <v-container class="d-flex flex-column align-center">
+            <v-sheet width="500px" class="my-5">
+                <v-btn color="terciary" variant="outlined" @click="$router.push('/tasks')">Volver</v-btn>
+            </v-sheet>
             <v-card width="500px" class="pa-5 text-center">
                 <p class="text-h4 mb-5">Crear tarea</p>
                 <v-divider></v-divider>

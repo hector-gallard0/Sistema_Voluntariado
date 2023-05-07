@@ -1,6 +1,9 @@
 <template>
     <div class="mb-5" :aria-hidden="show ? 'true' : undefined">
-        <h1 class="mb-3">Crear Tarea</h1>        
+        <div>
+            <v-btn icon="mdi-arrow-left-bold-circle-outline"></v-btn>
+            <h1 class="mb-3">Crear Tarea</h1>        
+        </div>
         <div class="d-flex flex-column">
             <div class="w-100" v-if="error">
             <div class="d-flex justify-content-center" v-for="(message, i) in messages" :key="i">

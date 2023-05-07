@@ -18,12 +18,15 @@
                 @update:items-per-page="updateItemsPerPage"
             >                    
                 <template v-slot:item.acciones="{ item }">
-                    <v-btn  color="primary">Editar</v-btn>
-                    <v-btn  color="error">Eliminar</v-btn>
+                    <v-btn icon="mdi-eye-outline" variant="text"></v-btn>
+                    <v-btn icon="mdi-pencil-outline" variant="text"></v-btn>
+                    <v-btn icon="mdi-delete-outline" variant="text"></v-btn>
                 </template>
-
             </v-data-table>
         </v-container>
+        <router-link to="/tasks/create">
+            <v-btn color="primary">Crear tarea</v-btn>
+        </router-link>
     </v-container>
 </template>
 
@@ -60,11 +63,11 @@ const pagination = ref({
 })
 const headers = ref<DataTableHeader[]>([
     { title: 'Nombre', key: 'nombre' },
-    { title: 'Voluntarios', key: 'voluntarios'},
-    { title: 'Fecha inicio', key: 'fechaInicio' },
-    { title: 'Fecha fin', key: 'fechaFin' },
-    { title: 'Estado', key: 'estado' },
-    { title: 'Acciones', key: 'acciones', sortable: false}
+    { title: 'Voluntarios', key: 'voluntarios', sortable: false, align: 'center'},
+    { title: 'Fecha inicio', key: 'fechaInicio', sortable: false, align: 'center' },
+    { title: 'Fecha fin', key: 'fechaFin', sortable: false, align: 'center' },
+    { title: 'Estado', key: 'estado', sortable: false, align: 'center' },
+    { title: 'Acciones', key: 'acciones', sortable: false, align: 'center'}
 ])
 const items = ref<object[]>([])
 const totalItems = computed(() => items.value.length);

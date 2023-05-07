@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
 		}
 	},
 	{
-		path: '/task/create',
+		path: '/tasks/create',
 		name: 'createTask',
 		component: CreateTaskView,
 		meta: {
@@ -41,7 +41,7 @@ const routes: Array<RouteRecordRaw> = [
 		}
 	},
 	{
-		path: '/task/:id',
+		path: '/tasks/:id',
 		name: 'task',
 		component: TaskView,
 		meta: {
@@ -51,7 +51,7 @@ const routes: Array<RouteRecordRaw> = [
 		}
 	},
 	{
-		path: '/task/:id/edit',
+		path: '/tasks/:id/edit',
 		name: 'editTask',
 		component: EditTaskView,
 		meta: {
