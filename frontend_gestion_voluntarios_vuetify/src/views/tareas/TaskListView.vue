@@ -3,6 +3,7 @@
         <h1>Tareas</h1>
         <v-container>
             <v-data-table
+                v-if="items"
                 v-model:page="page"
                 :headers="headers"
                 :items="items"
@@ -17,9 +18,9 @@
                 @update:page="updatePage"
                 @update:items-per-page="updateItemsPerPage"
             >                    
-                <template v-slot:item.acciones="{ item }">
-                    <v-btn icon="mdi-eye-outline" variant="text"></v-btn>
-                    <v-btn icon="mdi-pencil-outline" variant="text"></v-btn>
+                <template v-slot:item.acciones="{ item }">                    
+                    <v-btn icon="mdi-eye-outline" variant="text" @click="$router.push(`/tasks/${item.value}`)"></v-btn>
+                    <v-btn icon="mdi-pencil-outline" variant="text" @click="$router.push(`/tasks/${item.value}/edit`)"></v-btn>
                     <v-btn icon="mdi-delete-outline" variant="text"></v-btn>
                 </template>
             </v-data-table>
@@ -89,7 +90,8 @@ onMounted(async () => {
                 voluntarios: `${tarea.voluntariosInscritos}/${tarea.voluntariosRequeridos}`,
                 fechaInicio: tarea.fechaInicio,
                 fechaFin: tarea.fechaFin,
-                estado: tarea.estado?.descripcion
+                estado: tarea.estado?.descripcion,
+                id: tarea.id
             })
         })
     }

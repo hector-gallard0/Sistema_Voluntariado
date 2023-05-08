@@ -102,4 +102,37 @@ public class TareaRepositoryImp implements TareaRepository{
             return tareas;
         }
     }
+
+    @Override
+    public void set(Tarea tarea){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE tarea " +
+                    "SET descripcion = :descripcion, " +
+                    "nombre = :nombre, " +
+                    "cant_vol_requeridos = :cant_vol_requeridos, " +
+                    "cant_vol_inscritos = :cant_vol_inscritos, " +
+                    "fecha_inicio = :fecha_inicio, " +
+                    "fecha_fin = :fecha_fin, " +
+                    "id_emergencia = :id_emergencia, " +
+                    "id_estado = :id_estado " +
+                    "WHERE id_tarea = :id_tarea";
+            con.createQuery(sql)
+                    .addColumnMapping("id_tarea", "id")
+                    .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
+                    .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
+                    .addColumnMapping("fecha_inicio", "fechaInicio")
+                    .addColumnMapping("fecha_fin", "fechaFin")
+                    .addParameter("id_tarea", tarea.getId())
+                    .addParameter("nombre", tarea.getNombre())
+                    .addParameter("descripcion", tarea.getDescripcion())
+                    .addParameter("cant_vol_requeridos", tarea.getVoluntariosRequeridos())
+                    .addParameter("cant_vol_inscritos", tarea.getVoluntariosInscritos())
+                    .addParameter("fecha_inicio", tarea.getFechaInicio())
+                    .addParameter("fecha_fin", tarea.getFechaFin())
+                    .addParameter("id_emergencia", tarea.getEmergencia().getId())
+                    .addParameter("id_estado", tarea.getEstado().getId())
+                    .executeUpdate();
+            con.commit();
+        }
+    }
 }

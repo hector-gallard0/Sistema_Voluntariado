@@ -44,4 +44,46 @@ public class TareaService {
     public List<Tarea> getTareas() {
         return tareaRepository.findAll();
     }
+
+    public Tarea getTarea(Integer id) {
+        try{
+            return tareaRepository.findById(id);
+        }catch(Exception e){
+            throw new ApiErrorException("Tarea no encontrada.");
+        }
+    }
+
+    public void updateTarea(Integer id, CreateTareaRequest newTarea){
+        try{
+            Tarea tarea = tareaRepository.findById(id);
+            if(tarea == null) throw new ApiErrorException("La tarea a actualizar no existe");
+            if(newTarea.getNombre() != null) {
+                tarea.setNombre(newTarea.getNombre());
+            }
+            if(newTarea.getDescripcion() != null){
+                tarea.setDescripcion(newTarea.getDescripcion());
+            }
+            if(newTarea.getFechaInicio() != null){
+                tarea.setFechaInicio(newTarea.getFechaInicio());
+            }
+            if(newTarea.getFechaFin() != null){
+                tarea.setFechaFin(newTarea.getFechaFin());
+            }
+            if(newTarea.getVoluntariosInscritos() != null){
+                tarea.setVoluntariosInscritos(newTarea.getVoluntariosInscritos());
+            }
+            if(newTarea.getVoluntariosRequeridos() != null){
+                tarea.setVoluntariosInscritos(newTarea.getVoluntariosRequeridos());
+            }
+            if(newTarea.getIdEmergencia() != null){
+                tarea.setEmergencia(emergenciaRepository.findById(newTarea.getIdEmergencia()));
+            }
+            if(newTarea.getIdEstado() != null){
+                tarea.setEstado(estadoRepository.findById(newTarea.getIdEstado()));
+            }
+            tareaRepository.set(tarea);
+        }catch(Exception e){
+            throw new ApiErrorException("Error al actualizar la tarea." + e.getMessage());
+        }
+    }
 }

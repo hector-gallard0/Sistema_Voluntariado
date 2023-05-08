@@ -19,9 +19,11 @@ public class CreateTareaRequest {
     private String nombre;
     private String descripcion;
     private Integer voluntariosRequeridos;
+    private Integer voluntariosInscritos;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date fechaInicio;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date fechaFin;
     private Integer idEmergencia;
+    private Integer idEstado;
 }

@@ -30,6 +30,12 @@ public class TareaController {
         return new ResponseEntity<>(tareaService.getTareas(), HttpStatus.OK);
     };
 
+    //READ ONE
+    @GetMapping("/tareas/{id}")
+    public ResponseEntity<?> getTarea(@PathVariable Integer id){
+        return new ResponseEntity<>(tareaService.getTarea(id), HttpStatus.FOUND);
+    };
+
     //CREATE
     @PostMapping("/tareas")
     public ResponseEntity<?> createTarea(
@@ -56,4 +62,21 @@ public class TareaController {
                         .build(),
                         HttpStatus.OK);
     }
+
+    //TAREA UPDATE
+    @PutMapping("/tareas/{id}")
+    public ResponseEntity<?> upateTarea(@PathVariable Integer id,
+                                        @Valid @RequestBody CreateTareaRequest request){
+        tareaService.updateTarea(id, request);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Tarea editada con éxito.");
+
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(messages)
+                        .build(),
+                        HttpStatus.OK);
+    };
+
 }

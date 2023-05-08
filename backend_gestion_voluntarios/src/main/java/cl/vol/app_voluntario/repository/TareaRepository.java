@@ -12,4 +12,6 @@ public interface TareaRepository {
     List<Tarea> findAllByVoluntarioId(Integer idVoluntario);
 
     List<Tarea> findAll();
+
+    void set(Tarea tarea);
 }

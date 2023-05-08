@@ -34,4 +34,39 @@ const getTasks = async (token:string) => {
     return rawResponse;
 }
 
-export { createTask, getTasks }
+const getTask = async (token:string, id:number) => {
+    const response = await fetch(`${API_URL}/tareas/${id}`,{
+        method: 'GET',
+        headers: {
+            'Accept': 'Application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    const rawResponse = await response.json();    
+    return rawResponse;
+}
+
+const updateTask = async ({id, nombre, descripcion, voluntariosInscritos, voluntariosRequeridos, fechaInicio, fechaFin}:Tarea, idEmergencia:number, idEstado:number, token:string) => {
+    const response = await fetch(`${API_URL}/tareas/${id}`,{
+        method: 'PUT',
+        headers: {
+            'Accept': 'Application/json',
+            'Content-type': 'Application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            nombre,
+            descripcion,
+            voluntariosInscritos,
+            voluntariosRequeridos,
+            fechaInicio,
+            fechaFin,
+            idEstado,
+            idEmergencia
+        })
+    })
+    const rawResponse = await response.json();
+    return rawResponse;
+}
+
+export { createTask, getTasks, getTask, updateTask }

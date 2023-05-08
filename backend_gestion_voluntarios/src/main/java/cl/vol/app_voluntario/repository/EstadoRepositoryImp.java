@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.util.List;
+
 @Repository
 public class EstadoRepositoryImp implements EstadoRepository{
     @Autowired
@@ -30,6 +32,16 @@ public class EstadoRepositoryImp implements EstadoRepository{
                     .addColumnMapping("id_estado", "id")
                     .addParameter("id_estado", idEstado)
                     .executeAndFetchFirst(Estado.class);
+        }
+    }
+
+    @Override
+    public List<Estado> findAll() {
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT e.*  FROM estado e";
+            return con.createQuery(sql)
+                    .addColumnMapping("id_estado", "id")
+                    .executeAndFetch(Estado.class);
         }
     }
 }
