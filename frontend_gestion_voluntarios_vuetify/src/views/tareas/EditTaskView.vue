@@ -1,5 +1,5 @@
 <template>
-    <v-container class="d-flex align-center h-screen">
+    <v-container>
         <v-container class="d-flex flex-column align-center">
             <v-sheet width="500px" class="my-5">
                 <v-btn color="terciary" variant="outlined" @click="$router.push('/tasks')">Volver</v-btn>
@@ -29,7 +29,7 @@
                 <v-text-field
                     v-model="task.voluntariosInscritos"                                                       
                     prepend-inner-icon="mdi-lock-outline"
-                    label="Voluntarios requeridos"                    
+                    label="Voluntarios inscritos"                    
                     type="number"
                     required
                 ></v-text-field>                            

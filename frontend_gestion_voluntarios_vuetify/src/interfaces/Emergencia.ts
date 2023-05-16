@@ -7,6 +7,6 @@ export default interface Emergencia {
     descripcion?: string;
     fechaInicio?: Date;
     fechaFin?: Date;
-    habilidades?: Habilidad;
+    habilidades?: Habilidad[];
     tareas?: Tarea;
 }
