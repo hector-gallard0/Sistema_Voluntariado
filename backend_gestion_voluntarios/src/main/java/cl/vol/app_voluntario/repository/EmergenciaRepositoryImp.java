@@ -14,6 +14,8 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     private Sql2o sql2o;
     @Autowired
     private InstitucionRepository institucionRepository;
+    @Autowired
+    private HabilidadRepository habilidadRepository;
     @Override
     public Emergencia save(Emergencia emergencia) {
         try (Connection con = sql2o.beginTransaction()) {
@@ -68,6 +70,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                     .executeAndFetch(Emergencia.class);
             for (Emergencia emergencia : emergencias) {
                 emergencia.setInstitucion(institucionRepository.findByEmergenciaId(emergencia.getId()));
+                emergencia.setHabilidades(habilidadRepository.findAllByEmergenciaId(emergencia.getId()));
             }
             return emergencias;
         }
@@ -87,6 +90,36 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
             //ACA FALTAN LAS HABILIDADES Y TAREAS
             emergencia.setInstitucion(institucionRepository.findByEmergenciaId(emergencia.getId()));
             return emergencia;
+        }
+    }
+
+    @Override
+    public Integer findEmeHabilidadIdByHabilidadId(Integer idHabilidad){
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :id_habilidad";
+            return con.createQuery(sql)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .executeScalar(Integer.class);
+        }
+    }
+
+    @Override
+    public List<Emergencia> findAllByHabilidadId(Integer idHabilidad){
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT e.id_emergencia, e.nombre, e.descripcion, e.fecha_inicio, e.fecha_fin " +
+                    "FROM emergencia e " +
+                    "JOIN eme_habilidad eh ON e.id_emergencia = eh.id_emergencia AND eh.id_habilidad = :id_habilidad";
+            List<Emergencia> emergencias = con.createQuery(sql)
+                    .addColumnMapping("id_emergencia", "id" )
+                    .addColumnMapping("fecha_inicio", "fechaInicio")
+                    .addColumnMapping("fecha_fin", "fechaFin")
+                    .addParameter("id_habilidad", idHabilidad)
+                    .executeAndFetch(Emergencia.class);
+            for (Emergencia emergencia : emergencias) {
+                emergencia.setInstitucion(institucionRepository.findByEmergenciaId(emergencia.getId()));
+                emergencia.setHabilidades(habilidadRepository.findAllByEmergenciaId(emergencia.getId()));
+            }
+            return emergencias;
         }
     }
 }

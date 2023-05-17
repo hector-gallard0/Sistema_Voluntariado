@@ -51,6 +51,7 @@ public class TareaController {
                             HttpStatus.BAD_REQUEST);
         };
 
+        System.out.println(request);
         tareaService.createTarea(request);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Tarea creada con éxito.");

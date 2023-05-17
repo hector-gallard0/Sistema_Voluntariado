@@ -10,4 +10,7 @@ public interface EmergenciaRepository {
     List<Emergencia> findAll();
 
     Emergencia findByTareaId(Integer idTarea);
+    Integer findEmeHabilidadIdByHabilidadId(Integer idHabilidad);
+
+    List<Emergencia> findAllByHabilidadId(Integer idHabilidad);
 }

@@ -26,4 +26,5 @@ public class CreateTareaRequest {
     private Date fechaFin;
     private Integer idEmergencia;
     private Integer idEstado;
+    private Integer[] idsHabilidades;
 }

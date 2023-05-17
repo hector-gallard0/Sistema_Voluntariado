@@ -10,4 +10,6 @@ public interface HabilidadRepository {
     Habilidad findById(Integer idHabilidad);
 
     List<Habilidad> findAllByVoluntarioId(Integer idVoluntario);
+
+    List<Habilidad> findAllByEmergenciaId(Integer idEmergencia);
 }

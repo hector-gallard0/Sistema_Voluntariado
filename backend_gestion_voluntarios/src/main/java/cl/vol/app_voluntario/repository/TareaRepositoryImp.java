@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
+import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Tarea;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -40,7 +41,32 @@ public class TareaRepositoryImp implements TareaRepository{
                 .addParameter("id_estado", tarea.getEstado().getId())
                 .executeUpdate();
             con.commit();
+            if(!saveTareaHabilidad(id, tarea.getHabilidades())) {
+                con.rollback();
+                return null;
+            }
             return findById(id);
+        }
+    }
+
+    @Override
+    public boolean saveTareaHabilidad(Integer idTarea, List<Habilidad> habilidades){
+        try (Connection con = sql2o.beginTransaction()) {
+            for(Habilidad habilidad : habilidades){
+                Integer idEmeHabilidad = emergenciaRepository.findEmeHabilidadIdByHabilidadId(habilidad.getId());
+                if(idEmeHabilidad == null) return false;
+                Integer id = con.createQuery("SELECT nextval('tarea_habilidad_seq')")
+                        .executeScalar(Integer.class);
+                String sql = "INSERT INTO tarea_habilidad (id_tarea_habilidad, id_eme_habilidad, id_tarea) " +
+                        "VALUES (:id_tarea_habilidad, :id_eme_habilidad, :id_tarea)";
+                con.createQuery(sql)
+                        .addParameter("id_tarea_habilidad", id)
+                        .addParameter("id_eme_habilidad", idEmeHabilidad)
+                        .addParameter("id_tarea", idTarea)
+                        .executeUpdate();
+            }
+            con.commit();
+            return true;
         }
     }
 
@@ -135,4 +161,5 @@ public class TareaRepositoryImp implements TareaRepository{
             con.commit();
         }
     }
+
 }
