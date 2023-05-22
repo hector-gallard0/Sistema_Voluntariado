@@ -17,6 +17,8 @@ public class TareaRepositoryImp implements TareaRepository{
     private EmergenciaRepository emergenciaRepository;
     @Autowired
     private EstadoRepository estadoRepository;
+    @Autowired
+    private HabilidadRepository habilidadRepository;
     @Override
     public Tarea save(Tarea tarea) {
         try (Connection con = sql2o.beginTransaction()) {
@@ -85,6 +87,7 @@ public class TareaRepositoryImp implements TareaRepository{
             if (tarea == null) return null;
             tarea.setEmergencia(emergenciaRepository.findByTareaId(tarea.getId()));
             tarea.setEstado(estadoRepository.findByTareaId(tarea.getId()));
+            tarea.setHabilidades(habilidadRepository.findAllByTareaId(tarea.getId()));
             return tarea;
         }
     }

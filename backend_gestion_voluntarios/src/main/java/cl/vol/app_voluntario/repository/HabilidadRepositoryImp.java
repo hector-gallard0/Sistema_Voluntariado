@@ -67,4 +67,23 @@ public class HabilidadRepositoryImp implements  HabilidadRepository{
                     .executeAndFetch(Habilidad.class);
         }
     }
+
+    @Override
+    public List<Habilidad> findAllByTareaId(Integer idTarea) {
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT h.id_habilidad, h.descripcion " +
+                    "FROM tarea t " +
+                    "JOIN tarea_habilidad th " +
+                    "ON t.id_tarea = th.id_tarea " +
+                    "JOIN eme_habilidad eh " +
+                    "ON th.id_eme_habilidad = eh.id_eme_habilidad " +
+                    "JOIN habilidad h " +
+                    "ON h.id_habilidad = eh.id_habilidad " +
+                    "AND t.id_tarea = :id_tarea";
+            return con.createQuery(sql)
+                    .addColumnMapping("id_habilidad", "id")
+                    .addParameter("id_tarea", idTarea)
+                    .executeAndFetch(Habilidad.class);
+        }
+    }
 }

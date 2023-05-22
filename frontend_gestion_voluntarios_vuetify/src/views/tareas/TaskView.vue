@@ -40,7 +40,18 @@
                 <div class="d-flex">                    
                     <p>{{ task.voluntariosInscritos }}/{{ task.voluntariosRequeridos }} voluntarios</p>
                 </div>
-            </v-card-item>                        
+            </v-card-item>       
+            
+            <v-card-item>                    
+                <p class="text-subtitle-2"><v-icon icon="mdi-card-text-outline" class="mr-2"></v-icon>Habilidades</p>
+            </v-card-item>            
+            <v-divider></v-divider>
+            <v-card-item>
+                <div>                   
+                    <p v-for="(habilidad, i) in task.habilidades" :key="task.id" class="mb-2">{{ (i + 1) + ". " + habilidad.descripcion }}</p>
+                </div>
+            </v-card-item>
+
             <v-card-actions>
                 <div class="w-100 d-flex justify-end">
                     <v-btn color="primary" @click="$router.push(`/tasks/${route.params.id}/edit`)">
