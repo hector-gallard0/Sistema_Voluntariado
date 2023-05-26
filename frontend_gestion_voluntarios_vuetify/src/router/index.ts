@@ -11,6 +11,10 @@ interface RouteMeta extends Record<string, unknown> {
 
 const routes: Array<RouteRecordRaw> = [
 	{
+		path: '/',
+		redirect: {path: '/login'}
+	},
+	{
 		path: '/home',
 		name: 'home',
 		component: HomeView,

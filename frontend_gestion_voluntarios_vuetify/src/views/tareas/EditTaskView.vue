@@ -82,6 +82,17 @@
                     required
                 ></v-select>
 
+                <v-select
+                    v-model="idsHabilidades"
+                    chips
+                    prepend-inner-icon="mdi-tools"
+                    label="Habilidades"
+                    :items="emergencias.find(e => e.id == idEmergencia)?.habilidades"
+                    item-title="descripcion"
+                    item-value="id"   
+                    multiple                    
+                ></v-select>   
+
                 <v-textarea 
                     v-model="task.descripcion"
                     prepend-inner-icon="mdi-text-long"    
@@ -106,12 +117,12 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
 import Tarea from "@/interfaces/Tarea"
+import Emergencia from '@/interfaces/Emergencia'
 import {useAuth} from '@/store/auth'
 import { getEmergencias } from '@/services/EmergenciaService'
 import { updateTask, getTask } from '@/services/TareaService'
 import { getEstados } from '@/services/EstadoService';
 import { useRoute } from 'vue-router'
-import Estado from '@/interfaces/Estado'
 
 const route = useRoute();
 const auth = useAuth();
@@ -133,6 +144,8 @@ const estadoItems = ref<object[]>([]);
 const idEstado = ref<number|undefined>(undefined);
 const idEmergencia = ref<number|undefined>(undefined);
 const items = ref<object[]>([])
+const idsHabilidades = ref<number[]|undefined>(undefined);
+const emergencias = ref<Emergencia[]>([]);
 
 const show = ref<boolean>(false);
 const error = ref<boolean>(false);
@@ -140,8 +153,8 @@ const success = ref<boolean>(false);
 const messages = ref<object>({});
 
 onMounted(async () => {
-    const emergencias = await getEmergencias(auth.token || "");    
-    emergencias.map(emergencia => 
+    emergencias.value = await getEmergencias(auth.token || "");    
+    emergencias.value.map(emergencia => 
         items.value?.push({
             value: emergencia.id,
             label: emergencia.nombre
@@ -149,7 +162,14 @@ onMounted(async () => {
     )
     
     task.value = await getTask(auth.token || "", parseInt(`${route.params.id}`) ?? -1);
-    idEmergencia.value = task.value.emergencia?.id; 
+    idEmergencia.value = task.value.emergencia?.id;     
+    idsHabilidades.value = task.value.habilidades ? [] : undefined;     
+    task.value.habilidades?.map(habilidad => {        
+        if(habilidad.id){
+            console.log("Habilidad ", habilidad);
+            idsHabilidades.value?.push(habilidad.id);
+        }       
+    })    
 
     const estados = await getEstados(auth.token || "");
     estados.map(estado => 
@@ -159,7 +179,7 @@ onMounted(async () => {
         })
     )
 
-    idEstado.value = task.value.estado?.id;
+    idEstado.value = task.value.estado?.id;    
     console.log(task.value);
 })
 

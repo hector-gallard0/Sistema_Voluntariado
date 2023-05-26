@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column align-center mb-10">
         <v-sheet width="500px" class="my-5">
-            <v-btn color="terciary" variant="outlined" @click="$router.push('/tasks')">Volver</v-btn>
+            <v-btn color="terciary"  @click="$router.push('/tasks')">Volver</v-btn>
         </v-sheet>
         <v-card 
             width="500px" 
@@ -14,7 +14,7 @@
             <v-select
                 v-model="idEmergencia"
                 prepend-inner-icon="mdi-account-wrench-outline"
-                variant="outlined"
+                
                 :items="items"
                 item-title="label"
                 item-value="value"                    
@@ -25,7 +25,7 @@
             <v-text-field
                 v-model="tarea.nombre"                                                       
                 prepend-inner-icon="mdi-email-outline"
-                variant="outlined"
+                
                 label="Nombre"                    
                 required
             ></v-text-field>
@@ -33,7 +33,7 @@
             <v-text-field
                 v-model="tarea.voluntariosRequeridos"                                                       
                 prepend-inner-icon="mdi-lock-outline"
-                variant="outlined"
+                
                 label="Voluntarios requeridos"                    
                 type="number"
                 required
@@ -42,7 +42,7 @@
             <v-text-field
                 v-model="tarea.fechaInicio"   
                 prepend-inner-icon="mdi-calendar-start-outline"                                                                                     
-                variant="outlined"
+                
                 label="Fecha inicio"                                                         
                 readonly
                 required                            
@@ -57,8 +57,7 @@
 
             <v-text-field
                 v-model="tarea.fechaFin"   
-                prepend-inner-icon="mdi-calendar-end-outline"                                                                                     
-                variant="outlined"
+                prepend-inner-icon="mdi-calendar-end-outline"                                                                                                     
                 label="Fecha fin"                                                         
                 readonly
                 required                            
@@ -79,14 +78,12 @@
                 :items="emergencias.find(e => e.id == idEmergencia)?.habilidades"
                 item-title="descripcion"
                 item-value="id"   
-                multiple
-                variant="outlined"
+                multiple            
             ></v-select>            
                             
             <v-textarea 
                 v-model="tarea.descripcion"
-                prepend-inner-icon="mdi-text-long"    
-                variant="outlined"
+                prepend-inner-icon="mdi-text-long"                    
                 label="Descripción"                
             />
 
