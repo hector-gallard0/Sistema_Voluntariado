@@ -116,4 +116,23 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
             return usuario;
         }
     }
+
+    @Override
+    public List<Usuario> findAllByRoleId(Integer idRol){
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.email " +
+                    "FROM usuario u " +
+                    "JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario " +
+                    "JOIN rol r ON r.id_rol = ur.id_rol AND r.id_rol = :id_rol ";
+            List<Usuario> usuarios = con.createQuery(sql)
+                    .addColumnMapping("id_usuario", "id")
+                    .addParameter("id_rol", idRol)
+                    .executeAndFetch(Usuario.class);
+            for (Usuario usuario : usuarios) {
+                usuario.setRoles(rolRepository.findAllByUserId(usuario.getId()));
+                usuario.setCoordinador(coordinadorRepository.findByUserId(usuario.getId()));
+            }
+            return usuarios;
+        }
+    }
 }

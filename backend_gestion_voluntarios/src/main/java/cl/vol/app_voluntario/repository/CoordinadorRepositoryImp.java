@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.util.List;
+
 @Repository
 public class CoordinadorRepositoryImp implements CoordinadorRepository{
 
@@ -33,7 +35,8 @@ public class CoordinadorRepositoryImp implements CoordinadorRepository{
         }
     }
 
-    private Coordinador findById(Integer idCoordinador) {
+    @Override
+    public Coordinador findById(Integer idCoordinador) {
         try (Connection con = sql2o.open()) {
             String sql = "SELECT c.id_coordinador FROM coordinador c WHERE c.id_coordinador = :id_coordinador";
             Coordinador coordinador = con.createQuery(sql)
