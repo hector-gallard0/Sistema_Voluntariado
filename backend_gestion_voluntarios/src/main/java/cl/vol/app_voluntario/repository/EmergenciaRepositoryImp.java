@@ -1,6 +1,7 @@
 package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Emergencia;
+import cl.vol.app_voluntario.model.Tarea;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -120,6 +121,31 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                 emergencia.setHabilidades(habilidadRepository.findAllByEmergenciaId(emergencia.getId()));
             }
             return emergencias;
+        }
+    }
+
+    @Override
+    public void set(Emergencia emergencia){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE emergencia " +
+                    "SET descripcion = :descripcion, " +
+                    "nombre = :nombre, " +
+                    "fecha_inicio = :fecha_inicio, " +
+                    "fecha_fin = :fecha_fin, " +
+                    "id_institucion = :id_institucion " +
+                    "WHERE id_emergencia = :id_emergencia";
+            con.createQuery(sql)
+                    .addColumnMapping("id_emergencia", "id")
+                    .addColumnMapping("fecha_inicio", "fechaInicio")
+                    .addColumnMapping("fec.ha_fin", "fechaFin")
+                    .addParameter("id_emergencia", emergencia.getId())
+                    .addParameter("nombre", emergencia.getNombre())
+                    .addParameter("descripcion", emergencia.getDescripcion())
+                    .addParameter("fecha_inicio", emergencia.getFechaInicio())
+                    .addParameter("fecha_fin", emergencia.getFechaFin())
+                    .addParameter("id_institucion", emergencia.getInstitucion().getId())
+                    .executeUpdate();
+            con.commit();
         }
     }
 }

@@ -15,17 +15,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CreateEmergenciaRequest {
-    @NotBlank(message = "El nombre no puede estar vacio.")
-    private String nombre;
+public class CreateEstadoRequest {
     @NotBlank(message = "La descripción no puede estar vacia.")
     private String descripcion;
-    @NotNull(message = "Debe ingresar una fecha válida.")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date fechaInicio;
-    @NotNull(message = "Debe ingresar una fecha válida.")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date fechaFin;
-    @NotNull(message = "Debe ingresar una institución válida.")
-    private Integer id_institucion;
 }

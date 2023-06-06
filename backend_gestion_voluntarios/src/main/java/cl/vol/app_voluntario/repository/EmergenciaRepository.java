@@ -1,6 +1,7 @@
 package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Emergencia;
+import cl.vol.app_voluntario.model.Tarea;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface EmergenciaRepository {
     Integer findEmeHabilidadIdByHabilidadId(Integer idHabilidad);
 
     List<Emergencia> findAllByHabilidadId(Integer idHabilidad);
+
+    void set(Emergencia emergencia);
 }

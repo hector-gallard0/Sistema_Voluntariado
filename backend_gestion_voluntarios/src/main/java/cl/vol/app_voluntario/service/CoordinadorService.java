@@ -14,7 +14,7 @@ import java.util.List;
 public class CoordinadorService {
     private final UsuarioRepository usuarioRepository;
     private final CoordinadorRepository coordinadorRepository;
-
+    
     public List<Usuario> getCoordinadores(){
         try{
             return usuarioRepository.findAllByRoleId(1);
