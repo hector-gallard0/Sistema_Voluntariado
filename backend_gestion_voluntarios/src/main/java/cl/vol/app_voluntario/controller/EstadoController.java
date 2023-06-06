@@ -46,7 +46,7 @@ public class EstadoController {
         return new ResponseEntity<>(estadoService.getEstados(), HttpStatus.OK);
     };
 
-    //TAREA UPDATE
+    //ESTADO UPDATE
     @PutMapping("/estados/{id}")
     public ResponseEntity<?> updateEstado(@PathVariable Integer id,
                                         @Valid @RequestBody UpdateEstadoRequest request){

@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
+import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Habilidad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -84,6 +85,20 @@ public class HabilidadRepositoryImp implements  HabilidadRepository{
                     .addColumnMapping("id_habilidad", "id")
                     .addParameter("id_tarea", idTarea)
                     .executeAndFetch(Habilidad.class);
+        }
+    }
+
+    @Override
+    public void set(Habilidad habilidad){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE habilidad " +
+                    "SET descripcion = :descripcion " +
+                    "WHERE id_habilidad = :id_habilidad";
+            con.createQuery(sql)
+                    .addParameter("id_habilidad", habilidad.getId())
+                    .addParameter("descripcion", habilidad.getDescripcion())
+                    .executeUpdate();
+            con.commit();
         }
     }
 }
