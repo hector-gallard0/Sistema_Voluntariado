@@ -1,12 +1,11 @@
 package cl.vol.app_voluntario.controller;
 
 import cl.vol.app_voluntario.model.Institucion;
-import cl.vol.app_voluntario.request.CreateEmergenciaRequest;
-import cl.vol.app_voluntario.request.CreateInstitucionRequest;
-import cl.vol.app_voluntario.request.CreateTareaRequest;
-import cl.vol.app_voluntario.request.UpdateInstitucionRequest;
+import cl.vol.app_voluntario.model.Rol;
+import cl.vol.app_voluntario.request.*;
 import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.InstitucionService;
+import cl.vol.app_voluntario.service.RolService;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +20,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class InstitucionController {
+public class RolController {
 
-    private final InstitucionService institucionService;
+    private final RolService rolService;
 
     //CREATE
-    @PostMapping("/instituciones")
-    public ResponseEntity<?> createInstitucion(
-            @Valid @RequestBody CreateInstitucionRequest request,
+    @PostMapping("/roles")
+    public ResponseEntity<?> createRol(
+            @Valid @RequestBody CreateRolRequest request,
             BindingResult bindingResult
     ){
         if(bindingResult.hasErrors()){
@@ -40,9 +39,9 @@ public class InstitucionController {
                             HttpStatus.BAD_REQUEST);
         };
 
-        institucionService.createInstitucion(request);
+        rolService.createRol(request);
         Map<String, String> messages = new HashMap<>();
-        messages.put("exito", "Institución creada con éxito.");
+        messages.put("exito", "Rol creado con éxito.");
 
         return new ResponseEntity<>
                 (new ApiResponse().builder()
@@ -52,19 +51,18 @@ public class InstitucionController {
                         HttpStatus.OK);
     }
 
-    //READ ALL
-    @GetMapping("/instituciones")
+    @GetMapping("/roles")
     public ResponseEntity<?> getInstituciones(){
-        return new ResponseEntity<>(institucionService.getInstituciones(), HttpStatus.FOUND);
+        return new ResponseEntity<>(rolService.getRoles(), HttpStatus.FOUND);
     }
 
     //UPDATE
-    @PutMapping("/instituciones/{id}")
+    @PutMapping("/roles/{id}")
     public ResponseEntity<?> upateTarea(@PathVariable Integer id,
-                                        @Valid @RequestBody Institucion request){
-        institucionService.updateInstitucion(id, request);
+                                        @Valid @RequestBody Rol request){
+        rolService.updateRol(id, request);
         Map<String, String> messages = new HashMap<>();
-        messages.put("exito", "Institución editada con éxito.");
+        messages.put("exito", "Rol editado con éxito.");
 
         return new ResponseEntity<>
                 (new ApiResponse().builder()

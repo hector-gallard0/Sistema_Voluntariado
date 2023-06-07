@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
+import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Institucion;
 import cl.vol.app_voluntario.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,23 @@ import java.util.List;
 public class InstitucionRepositoryImp implements  InstitucionRepository{
     @Autowired
     private Sql2o sql2o;
+
+    @Override
+    public void save(Institucion institucion) {
+        try (Connection con = sql2o.beginTransaction()) {
+            Integer id = con.createQuery("SELECT nextval('institucion_seq')")
+                    .executeScalar(Integer.class);
+            String sql = "INSERT INTO institucion (id_institucion, nombre, descripcion) " +
+                    "VALUES (:id_institucion, :nombre, :descripcion)";
+            con.createQuery(sql)
+                    .addParameter("id_institucion", id)
+                    .addParameter("nombre", institucion.getNombre())
+                    .addParameter("descripcion", institucion.getDescripcion())
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
+        }
+    }
     @Override
     public Institucion findById(Integer idInstitucion) {
         try (Connection con = sql2o.open()) {
@@ -60,6 +78,22 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
             return con.createQuery(sql)
                     .addColumnMapping("id_institucion", "id")
                     .executeAndFetch(Institucion.class);
+        }
+    }
+
+    @Override
+    public void set(Institucion institucion){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE institucion " +
+                    "SET nombre = :nombre, " +
+                    "descripcion = :descripcion " +
+                    "WHERE id_institucion = :id_institucion";
+            con.createQuery(sql)
+                    .addParameter("id_institucion", institucion.getId())
+                    .addParameter("nombre", institucion.getNombre())
+                    .addParameter("descripcion", institucion.getDescripcion())
+                    .executeUpdate();
+            con.commit();
         }
     }
 }

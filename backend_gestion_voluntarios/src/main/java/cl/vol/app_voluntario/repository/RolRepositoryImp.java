@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
+import cl.vol.app_voluntario.model.Institucion;
 import cl.vol.app_voluntario.model.Rol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,30 @@ import java.util.List;
 public class RolRepositoryImp implements RolRepository{
     @Autowired
     private Sql2o sql2o;
+
+    public void save(Rol rol){
+        try (Connection con = sql2o.beginTransaction()) {
+            Integer id = con.createQuery("SELECT nextval('rol_seq')")
+                    .executeScalar(Integer.class);
+            String sql = "INSERT INTO rol (id_rol, nombre) " +
+                    "VALUES (:id_rol, :nombre)";
+            con.createQuery(sql)
+                    .addParameter("id_rol", id)
+                    .addParameter("nombre", rol.getNombre())
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
+        }
+    }
+
+    public List<Rol> findAll(){
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT * FROM rol";
+            return con.createQuery(sql)
+                    .addColumnMapping("id_rol", "id")
+                    .executeAndFetch(Rol.class);
+        }
+    }
     @Override
     public Rol findById(int idRol) {
         try (Connection con = sql2o.open()) {
@@ -31,6 +56,20 @@ public class RolRepositoryImp implements RolRepository{
                     .addColumnMapping("id_rol", "id")
                     .addParameter("id_usuario", idUsuario)
                     .executeAndFetch(Rol.class);
+        }
+    }
+
+    @Override
+    public void set(Rol rol){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE rol " +
+                    "SET nombre = :nombre " +
+                    "WHERE id_rol = :id_rol";
+            con.createQuery(sql)
+                    .addParameter("id_rol", rol.getId())
+                    .addParameter("nombre", rol.getNombre())
+                    .executeUpdate();
+            con.commit();
         }
     }
 }
