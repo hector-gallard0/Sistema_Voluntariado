@@ -1,6 +1,7 @@
 package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Coordinador;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -19,6 +20,7 @@ public class CoordinadorRepositoryImp implements CoordinadorRepository{
     @Override
     public Coordinador save(Coordinador coordinador) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('coordinador_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO coordinador (id_coordinador, id_usuario, id_institucion)" +

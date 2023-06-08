@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Rol;
 import cl.vol.app_voluntario.model.Usuario;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -52,6 +53,7 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Override
     public Usuario save(Usuario usuario) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('usuario_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO usuario (id_usuario, nombre, apellido, email, password) " +
@@ -72,6 +74,7 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Override
     public Usuario saveUserRoles(Integer idUsuario, List<Rol> roles) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             for(Rol rol : roles){
                 Integer idUsuarioRol = con.createQuery("SELECT nextval('usuario_rol_seq')")
                         .executeScalar(Integer.class);

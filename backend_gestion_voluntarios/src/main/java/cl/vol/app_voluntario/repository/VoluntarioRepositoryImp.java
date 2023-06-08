@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Voluntario;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -19,6 +20,7 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
     @Override
     public Voluntario save(Voluntario voluntario) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('voluntario_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO voluntario (id_voluntario, id_usuario)" +
@@ -63,6 +65,7 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
     @Override
     public Habilidad saveVolHabilidad(Integer idVoluntario, Integer idHabilidad) {
         try (Connection con = sql2o.open()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('vol_habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO vol_habilidad (id_voluntario_habilidad, id_voluntario, id_habilidad)" +

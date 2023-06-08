@@ -3,6 +3,7 @@ package cl.vol.app_voluntario.repository;
 import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Institucion;
 import cl.vol.app_voluntario.model.Usuario;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,7 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
     @Override
     public void save(Institucion institucion) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('institucion_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO institucion (id_institucion, nombre, descripcion) " +
@@ -84,6 +86,7 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
     @Override
     public void set(Institucion institucion){
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE institucion " +
                     "SET nombre = :nombre, " +
                     "descripcion = :descripcion " +

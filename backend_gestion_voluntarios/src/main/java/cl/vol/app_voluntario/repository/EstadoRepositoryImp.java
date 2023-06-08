@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Estado;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -17,6 +18,7 @@ public class EstadoRepositoryImp implements EstadoRepository{
     @Override
     public void save(Estado estado) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('estado_seq')")
                     .executeScalar(Integer.class);
 
@@ -66,6 +68,7 @@ public class EstadoRepositoryImp implements EstadoRepository{
     @Override
     public void set(Estado estado){
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE estado " +
                     "SET descripcion = :descripcion " +
                     "WHERE id_estado = :id_estado";

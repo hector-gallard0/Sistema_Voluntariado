@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Tarea;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -20,6 +21,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public Emergencia save(Emergencia emergencia) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('emergencia_seq')")
                     .executeScalar(Integer.class);
 
@@ -127,6 +129,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public void set(Emergencia emergencia){
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE emergencia " +
                     "SET descripcion = :descripcion, " +
                     "nombre = :nombre, " +

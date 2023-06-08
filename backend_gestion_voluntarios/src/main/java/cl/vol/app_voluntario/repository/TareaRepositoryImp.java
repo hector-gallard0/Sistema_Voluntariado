@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Tarea;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -22,6 +23,7 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public Tarea save(Tarea tarea) {
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('tarea_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO tarea (id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, id_emergencia, id_estado) " +
@@ -135,6 +137,7 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public void set(Tarea tarea){
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE tarea " +
                     "SET descripcion = :descripcion, " +
                     "nombre = :nombre, " +

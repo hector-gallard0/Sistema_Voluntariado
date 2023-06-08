@@ -3,6 +3,7 @@ package cl.vol.app_voluntario.repository;
 import cl.vol.app_voluntario.DatabaseContext;
 import cl.vol.app_voluntario.model.Institucion;
 import cl.vol.app_voluntario.model.Rol;
+import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -21,13 +22,7 @@ public class RolRepositoryImp implements RolRepository{
 
     public void save(Rol rol){
         try (Connection con = sql2o.beginTransaction()) {
-            con.createQuery("CREATE TEMPORARY TABLE temp_params(usuario varchar);")
-                    .executeUpdate();
-            con.createQuery("INSERT INTO temp_params(usuario) " +
-                    "VALUES (:usuario)")
-                    .addParameter("usuario", SecurityContextHolder.getContext().getAuthentication().getName())
-                    .executeUpdate();
-            System.out.println("TEMP PARAMS LISTO");
+            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('rol_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO rol (id_rol, nombre) " +
@@ -38,7 +33,6 @@ public class RolRepositoryImp implements RolRepository{
                     .executeUpdate()
                     .getResult();
             con.commit();
-            System.out.println("rol creado");
         };
     }
 
@@ -75,6 +69,7 @@ public class RolRepositoryImp implements RolRepository{
     @Override
     public void set(Rol rol){
         try (Connection con = sql2o.beginTransaction()) {
+            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE rol " +
                     "SET nombre = :nombre " +
                     "WHERE id_rol = :id_rol";
