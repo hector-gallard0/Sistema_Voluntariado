@@ -20,6 +20,7 @@ public class RolService {
         try{
             Rol rol = new Rol();
             rol.setNombre(request.getNombre());
+            System.out.println("creando rol");
             rolRepository.save(rol);
         }catch(Exception e){
             throw new ApiErrorException("No se pudo crear el rol " + e.getMessage());

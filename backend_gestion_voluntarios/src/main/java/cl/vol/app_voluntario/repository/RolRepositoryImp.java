@@ -1,21 +1,33 @@
 package cl.vol.app_voluntario.repository;
 
+import cl.vol.app_voluntario.DatabaseContext;
 import cl.vol.app_voluntario.model.Institucion;
 import cl.vol.app_voluntario.model.Rol;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
 public class RolRepositoryImp implements RolRepository{
+
     @Autowired
     private Sql2o sql2o;
 
     public void save(Rol rol){
         try (Connection con = sql2o.beginTransaction()) {
+            con.createQuery("CREATE TEMPORARY TABLE temp_params(usuario varchar);")
+                    .executeUpdate();
+            con.createQuery("INSERT INTO temp_params(usuario) " +
+                    "VALUES (:usuario)")
+                    .addParameter("usuario", SecurityContextHolder.getContext().getAuthentication().getName())
+                    .executeUpdate();
+            System.out.println("TEMP PARAMS LISTO");
             Integer id = con.createQuery("SELECT nextval('rol_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO rol (id_rol, nombre) " +
@@ -26,7 +38,8 @@ public class RolRepositoryImp implements RolRepository{
                     .executeUpdate()
                     .getResult();
             con.commit();
-        }
+            System.out.println("rol creado");
+        };
     }
 
     public List<Rol> findAll(){

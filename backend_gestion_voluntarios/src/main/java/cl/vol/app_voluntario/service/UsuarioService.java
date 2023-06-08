@@ -9,9 +9,7 @@ import cl.vol.app_voluntario.model.Voluntario;
 import cl.vol.app_voluntario.repository.*;
 import cl.vol.app_voluntario.request.AuthenticationRequest;
 import cl.vol.app_voluntario.request.RegisterRequest;
-import cl.vol.app_voluntario.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
