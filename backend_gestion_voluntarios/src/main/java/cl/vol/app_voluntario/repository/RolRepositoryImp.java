@@ -22,11 +22,11 @@ public class RolRepositoryImp implements RolRepository{
 
     public void save(Rol rol){
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('rol_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO rol (id_rol, nombre) " +
                     "VALUES (:id_rol, :nombre)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_rol", id)
                     .addParameter("nombre", rol.getNombre())
@@ -69,10 +69,10 @@ public class RolRepositoryImp implements RolRepository{
     @Override
     public void set(Rol rol){
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE rol " +
                     "SET nombre = :nombre " +
                     "WHERE id_rol = :id_rol";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_rol", rol.getId())
                     .addParameter("nombre", rol.getNombre())

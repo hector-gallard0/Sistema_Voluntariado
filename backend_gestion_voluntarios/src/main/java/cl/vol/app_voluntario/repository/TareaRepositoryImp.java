@@ -23,11 +23,11 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public Tarea save(Tarea tarea) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('tarea_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO tarea (id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, id_emergencia, id_estado) " +
                     "VALUES (:id_tarea, :nombre, :descripcion, :cant_vol_requeridos, :cant_vol_inscritos, :fecha_inicio, :fecha_fin, :id_emergencia, :id_estado)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                 .addColumnMapping("id_tarea", "id")
                 .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
@@ -63,6 +63,7 @@ public class TareaRepositoryImp implements TareaRepository{
                         .executeScalar(Integer.class);
                 String sql = "INSERT INTO tarea_habilidad (id_tarea_habilidad, id_eme_habilidad, id_tarea) " +
                         "VALUES (:id_tarea_habilidad, :id_eme_habilidad, :id_tarea)";
+                TransactionUtil.createTempTableWithUsername(con, sql);
                 con.createQuery(sql)
                         .addParameter("id_tarea_habilidad", id)
                         .addParameter("id_eme_habilidad", idEmeHabilidad)
@@ -137,7 +138,6 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public void set(Tarea tarea){
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE tarea " +
                     "SET descripcion = :descripcion, " +
                     "nombre = :nombre, " +
@@ -148,6 +148,7 @@ public class TareaRepositoryImp implements TareaRepository{
                     "id_emergencia = :id_emergencia, " +
                     "id_estado = :id_estado " +
                     "WHERE id_tarea = :id_tarea";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
                     .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")

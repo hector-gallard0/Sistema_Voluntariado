@@ -53,11 +53,11 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Override
     public Usuario save(Usuario usuario) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('usuario_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO usuario (id_usuario, nombre, apellido, email, password) " +
                     "VALUES (:id_usuario, :nombre, :apellido, :email, :password)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_usuario", "id")
                     .addParameter("id_usuario", id)
@@ -74,12 +74,12 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Override
     public Usuario saveUserRoles(Integer idUsuario, List<Rol> roles) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             for(Rol rol : roles){
                 Integer idUsuarioRol = con.createQuery("SELECT nextval('usuario_rol_seq')")
                         .executeScalar(Integer.class);
                 String sql = "INSERT INTO usuario_rol(id_usuario_rol, id_usuario, id_rol)" +
                         "VALUES (:id_usuario_rol, :id_usuario, :id_rol)";
+                TransactionUtil.createTempTableWithUsername(con, sql);
                 con.createQuery(sql)
                     .addParameter("id_usuario_rol", idUsuarioRol)
                     .addParameter("id_usuario", idUsuario)

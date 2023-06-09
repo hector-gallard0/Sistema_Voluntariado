@@ -18,11 +18,11 @@ public class HabilidadRepositoryImp implements  HabilidadRepository{
     @Override
     public Habilidad save(Habilidad habilidad) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO habilidad (id_habilidad, descripcion) " +
                     "VALUES (:id_habilidad, :descripcion)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_habilidad", "id")
                     .addParameter("id_habilidad", id)
@@ -93,10 +93,10 @@ public class HabilidadRepositoryImp implements  HabilidadRepository{
     @Override
     public void set(Habilidad habilidad){
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE habilidad " +
                     "SET descripcion = :descripcion " +
                     "WHERE id_habilidad = :id_habilidad";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_habilidad", habilidad.getId())
                     .addParameter("descripcion", habilidad.getDescripcion())

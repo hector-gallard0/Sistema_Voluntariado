@@ -18,12 +18,11 @@ public class EstadoRepositoryImp implements EstadoRepository{
     @Override
     public void save(Estado estado) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('estado_seq')")
                     .executeScalar(Integer.class);
-
             String sql = "INSERT INTO estado (id_estado, descripcion) " +
                     "VALUES (:id_estado, :descripcion)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_estado", id)
                     .addParameter("descripcion", estado.getDescripcion())
@@ -68,10 +67,10 @@ public class EstadoRepositoryImp implements EstadoRepository{
     @Override
     public void set(Estado estado){
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE estado " +
                     "SET descripcion = :descripcion " +
                     "WHERE id_estado = :id_estado";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_estado", estado.getId())
                     .addParameter("descripcion", estado.getDescripcion())

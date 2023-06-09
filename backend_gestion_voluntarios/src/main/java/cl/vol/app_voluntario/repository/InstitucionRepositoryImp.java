@@ -20,11 +20,11 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
     @Override
     public void save(Institucion institucion) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('institucion_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO institucion (id_institucion, nombre, descripcion) " +
                     "VALUES (:id_institucion, :nombre, :descripcion)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_institucion", id)
                     .addParameter("nombre", institucion.getNombre())
@@ -86,11 +86,11 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
     @Override
     public void set(Institucion institucion){
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE institucion " +
                     "SET nombre = :nombre, " +
                     "descripcion = :descripcion " +
                     "WHERE id_institucion = :id_institucion";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_institucion", institucion.getId())
                     .addParameter("nombre", institucion.getNombre())

@@ -21,12 +21,12 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public Emergencia save(Emergencia emergencia) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('emergencia_seq')")
                     .executeScalar(Integer.class);
 
             String sql = "INSERT INTO emergencia (id_emergencia, nombre, descripcion, fecha_inicio, fecha_fin, id_institucion) " +
                     "VALUES (:id_emergencia, :nombre, :descripcion, :fecha_inicio, :fecha_fin, :id_institucion)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id")
                     .addColumnMapping("nombre", "nombre")
@@ -129,7 +129,6 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public void set(Emergencia emergencia){
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             String sql = "UPDATE emergencia " +
                     "SET descripcion = :descripcion, " +
                     "nombre = :nombre, " +
@@ -137,6 +136,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                     "fecha_fin = :fecha_fin, " +
                     "id_institucion = :id_institucion " +
                     "WHERE id_emergencia = :id_emergencia";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id")
                     .addColumnMapping("fecha_inicio", "fechaInicio")

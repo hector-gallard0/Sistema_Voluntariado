@@ -20,11 +20,11 @@ public class CoordinadorRepositoryImp implements CoordinadorRepository{
     @Override
     public Coordinador save(Coordinador coordinador) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('coordinador_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO coordinador (id_coordinador, id_usuario, id_institucion)" +
                     "VALUES (:id_coordinador, :id_usuario, :id_institucion)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_coordinador", "id")
                     .addParameter("id_coordinador", id)

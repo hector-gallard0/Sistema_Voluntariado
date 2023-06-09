@@ -20,11 +20,11 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
     @Override
     public Voluntario save(Voluntario voluntario) {
         try (Connection con = sql2o.beginTransaction()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('voluntario_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO voluntario (id_voluntario, id_usuario)" +
                     "VALUES (:id_voluntario, :id_usuario)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                 .addColumnMapping("id_voluntario", "id")
                 .addParameter("id_voluntario", id)
@@ -65,11 +65,11 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
     @Override
     public Habilidad saveVolHabilidad(Integer idVoluntario, Integer idHabilidad) {
         try (Connection con = sql2o.open()) {
-            TransactionUtil.createTempTableWithUsername(con);
             Integer id = con.createQuery("SELECT nextval('vol_habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO vol_habilidad (id_voluntario_habilidad, id_voluntario, id_habilidad)" +
                     "VALUES (:id_voluntario_habilidad, :id_voluntario, :id_voluntario)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_voluntario_habilidad", id)
                     .addParameter("id_voluntario", idVoluntario)
