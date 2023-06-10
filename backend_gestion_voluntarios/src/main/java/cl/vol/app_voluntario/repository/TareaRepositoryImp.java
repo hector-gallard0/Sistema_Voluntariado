@@ -25,25 +25,27 @@ public class TareaRepositoryImp implements TareaRepository{
         try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('tarea_seq')")
                     .executeScalar(Integer.class);
-            String sql = "INSERT INTO tarea (id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, id_emergencia, id_estado) " +
-                    "VALUES (:id_tarea, :nombre, :descripcion, :cant_vol_requeridos, :cant_vol_inscritos, :fecha_inicio, :fecha_fin, :id_emergencia, :id_estado)";
+            String sql = "INSERT INTO tarea (id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, id_emergencia, id_estado, geom) " +
+                    "VALUES (:id_tarea, :nombre, :descripcion, :cant_vol_requeridos, :cant_vol_inscritos, :fecha_inicio, :fecha_fin, :id_emergencia, :id_estado, :geom)";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
-                .addColumnMapping("id_tarea", "id")
-                .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
-                .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
-                .addColumnMapping("fecha_inicio", "fechaInicio")
-                .addColumnMapping("fecha_fin", "fechaFin")
-                .addParameter("id_tarea", id)
-                .addParameter("nombre", tarea.getNombre())
-                .addParameter("descripcion", tarea.getDescripcion())
-                .addParameter("cant_vol_requeridos", tarea.getVoluntariosRequeridos())
-                .addParameter("cant_vol_inscritos", tarea.getVoluntariosInscritos())
-                .addParameter("fecha_inicio", tarea.getFechaInicio())
-                .addParameter("fecha_fin", tarea.getFechaFin())
-                .addParameter("id_emergencia", tarea.getEmergencia().getId())
-                .addParameter("id_estado", tarea.getEstado().getId())
-                .executeUpdate();
+                    .addColumnMapping("id_tarea", "id")
+                    .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
+                    .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
+                    .addColumnMapping("fecha_inicio", "fechaInicio")
+                    .addColumnMapping("fecha_fin", "fechaFin")
+                    .addColumnMapping("geom", "geom")
+                    .addParameter("id_tarea", id)
+                    .addParameter("nombre", tarea.getNombre())
+                    .addParameter("descripcion", tarea.getDescripcion())
+                    .addParameter("cant_vol_requeridos", tarea.getVoluntariosRequeridos())
+                    .addParameter("cant_vol_inscritos", tarea.getVoluntariosInscritos())
+                    .addParameter("fecha_inicio", tarea.getFechaInicio())
+                    .addParameter("fecha_fin", tarea.getFechaFin())
+                    .addParameter("id_emergencia", tarea.getEmergencia().getId())
+                    .addParameter("id_estado", tarea.getEstado().getId())
+                    .addParameter("geom", tarea.getGeom())
+                    .executeUpdate();
             con.commit();
             if(!saveTareaHabilidad(id, tarea.getHabilidades())) {
                 con.rollback();
@@ -78,13 +80,14 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public Tarea findById(Integer idTarea) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin FROM tarea t WHERE t.id_tarea = :id_tarea";
+            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin, t.geom FROM tarea t WHERE t.id_tarea = :id_tarea";
             Tarea tarea = con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
                     .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
+                    .addColumnMapping("geom", "geom")
                     .addParameter("id_tarea", idTarea)
                     .executeAndFetchFirst(Tarea.class);
             if (tarea == null) return null;
@@ -98,7 +101,7 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public List<Tarea> findAllByVoluntarioId(Integer idVoluntario) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin " +
+            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin, t.geom " +
                     "FROM tarea t " +
                     "JOIN ranking r ON r.id_voluntario = :id_voluntario AND r.id_tarea = t.id_tarea";
             List<Tarea> tareas = con.createQuery(sql)
@@ -107,6 +110,7 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
+                    .addColumnMapping("geom", "geom")
                     .addParameter("id_voluntario", idVoluntario)
                     .executeAndFetch(Tarea.class);
             for (Tarea tarea : tareas){
@@ -120,13 +124,14 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public List<Tarea> findAll() {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin FROM tarea";
+            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, geom FROM tarea";
             List<Tarea> tareas = con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
                     .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
+                    .addColumnMapping("geom", "geom")
                     .executeAndFetch(Tarea.class);
             for (Tarea tarea : tareas){
                 tarea.setEstado(estadoRepository.findByTareaId(tarea.getId()));
@@ -146,7 +151,8 @@ public class TareaRepositoryImp implements TareaRepository{
                     "fecha_inicio = :fecha_inicio, " +
                     "fecha_fin = :fecha_fin, " +
                     "id_emergencia = :id_emergencia, " +
-                    "id_estado = :id_estado " +
+                    "id_estado = :id_estado, " +
+                    "geom = :geom " +
                     "WHERE id_tarea = :id_tarea";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
@@ -155,6 +161,7 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
+                    .addColumnMapping("geom", "geom")
                     .addParameter("id_tarea", tarea.getId())
                     .addParameter("nombre", tarea.getNombre())
                     .addParameter("descripcion", tarea.getDescripcion())
@@ -164,6 +171,7 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addParameter("fecha_fin", tarea.getFechaFin())
                     .addParameter("id_emergencia", tarea.getEmergencia().getId())
                     .addParameter("id_estado", tarea.getEstado().getId())
+                    .addParameter("geom", tarea.getGeom())
                     .executeUpdate();
             con.commit();
         }

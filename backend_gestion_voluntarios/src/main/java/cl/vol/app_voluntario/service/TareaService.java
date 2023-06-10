@@ -53,6 +53,7 @@ public class TareaService {
         tarea.setEmergencia(emergencia);
         tarea.setEstado(estado);
         tarea.setHabilidades(habilidades);
+        tarea.setGeom(request.getGeom());
         tareaRepository.save(tarea);
     }
 
@@ -102,6 +103,9 @@ public class TareaService {
             }
             if(newTarea.getIdEstado() != null){
                 tarea.setEstado(estadoRepository.findById(newTarea.getIdEstado()));
+            }
+            if(newTarea.getGeom() != null){
+                tarea.setGeom(newTarea.getGeom());
             }
             tareaRepository.set(tarea);
         }catch(Exception e){
