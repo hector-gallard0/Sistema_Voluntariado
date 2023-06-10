@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.util.TransactionUtil;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -111,14 +112,14 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
         }
     }
     @Override
-    public String DecodeGeom(Double longit, Double latit){
+    public org.locationtech.jts.geom.Geometry DecodeGeom(Double longit, Double latit){
         System.out.println(longit + latit);
         try (Connection con = sql2o.open()) {
             String sql = "SELECT ST_SetSRID(ST_MakePoint(:longit,:latit), 4326)";
-            String outputGis = con.createQuery(sql)
+            org.locationtech.jts.geom.Geometry outputGis = con.createQuery(sql)
                     .addParameter("longit", longit)
                     .addParameter("latit", latit)
-                    .executeAndFetchFirst(String.class);
+                    .executeScalar(Geometry.class);
             System.out.println(outputGis);
             return outputGis;
         }

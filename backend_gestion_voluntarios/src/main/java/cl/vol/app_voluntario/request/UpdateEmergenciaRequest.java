@@ -20,5 +20,7 @@ public class UpdateEmergenciaRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date fechaFin;
     private Integer id_institucion;
-    private String geom;
+    private Double longit;
+    private Double latit;
+
 }

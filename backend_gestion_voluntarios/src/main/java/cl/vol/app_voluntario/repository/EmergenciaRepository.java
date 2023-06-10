@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Tarea;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.List;
 
@@ -12,6 +13,6 @@ public interface EmergenciaRepository {
     Emergencia findByTareaId(Integer idTarea);
     Integer findEmeHabilidadIdByHabilidadId(Integer idHabilidad);
     List<Emergencia> findAllByHabilidadId(Integer idHabilidad);
-    String DecodeGeom(Double longit, Double latit);
+   Geometry DecodeGeom(Double longit, Double latit);
     void set(Emergencia emergencia);
 }

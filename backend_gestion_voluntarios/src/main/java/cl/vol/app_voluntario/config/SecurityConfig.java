@@ -32,10 +32,6 @@ public class SecurityConfig {
                 .cors()
                 .configurationSource(corsConfigurationSource("*"))
                 .and()
-                .authorizeHttpRequests()
-                .requestMatchers("**")
-                .permitAll()
-                .and()
 //                white list
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/api/v1/login")

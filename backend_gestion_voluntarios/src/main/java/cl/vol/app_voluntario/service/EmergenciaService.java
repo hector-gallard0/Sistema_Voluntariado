@@ -15,6 +15,7 @@ import cl.vol.app_voluntario.request.CreateTareaRequest;
 import cl.vol.app_voluntario.request.UpdateEmergenciaRequest;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class EmergenciaService {
         emergencia.setFechaInicio(request.getFechaInicio());
         emergencia.setFechaFin(request.getFechaFin());
         emergencia.setInstitucion(institucion);
-        String geometry = emergenciaRepository.DecodeGeom(request.getLongit(), request.getLatit());
+        Geometry geometry = emergenciaRepository.DecodeGeom(request.getLongit(), request.getLatit());
         emergencia.setGeom(geometry);
         return new ResponseEntity<>(emergenciaRepository.save(emergencia), HttpStatus.CREATED);
     }
@@ -69,9 +70,6 @@ public class EmergenciaService {
             if(newEmergencia.getId_institucion() != null){
                 if(institucionRepository.findById(newEmergencia.getId_institucion()) == null) throw new ApiErrorException("La institución no existe.");
                 emergencia.setInstitucion(institucionRepository.findById(newEmergencia.getId_institucion()));
-            }
-            if(newEmergencia.getGeom() != null){
-                emergencia.setGeom(newEmergencia.getGeom());
             }
             emergenciaRepository.set(emergencia);
         }catch(Exception e){

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Geometry;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -25,5 +26,5 @@ public class Emergencia {
     private Institucion institucion;
     private List<Habilidad> habilidades = new ArrayList<>();
     private List<Tarea> tareas = new ArrayList<>();
-    private String geom;
+    private Geometry geom;
 }
