@@ -29,5 +29,6 @@ public class Tarea {
     private Estado estado;
     private List<Habilidad> habilidades = new ArrayList<>();
     private Emergencia emergencia;
-    private String geom;
+    private Double longit;
+    private Double latit;
 }

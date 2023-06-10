@@ -40,8 +40,8 @@ public class EmergenciaService {
         emergencia.setFechaInicio(request.getFechaInicio());
         emergencia.setFechaFin(request.getFechaFin());
         emergencia.setInstitucion(institucion);
-        Geometry geometry = emergenciaRepository.DecodeGeom(request.getLongit(), request.getLatit());
-        emergencia.setGeom(geometry);
+        emergencia.setLongit(request.getLongit());
+        emergencia.setLatit(request.getLatit());
         return new ResponseEntity<>(emergenciaRepository.save(emergencia), HttpStatus.CREATED);
     }
 
@@ -70,6 +70,12 @@ public class EmergenciaService {
             if(newEmergencia.getId_institucion() != null){
                 if(institucionRepository.findById(newEmergencia.getId_institucion()) == null) throw new ApiErrorException("La institución no existe.");
                 emergencia.setInstitucion(institucionRepository.findById(newEmergencia.getId_institucion()));
+            }
+            if(newEmergencia.getLongit() != null){
+                emergencia.setLongit(newEmergencia.getLongit());
+            }
+            if(newEmergencia.getLatit() != null){
+                emergencia.setLatit(newEmergencia.getLatit());
             }
             emergenciaRepository.set(emergencia);
         }catch(Exception e){

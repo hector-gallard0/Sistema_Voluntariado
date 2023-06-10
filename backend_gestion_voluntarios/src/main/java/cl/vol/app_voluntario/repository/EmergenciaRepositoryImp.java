@@ -25,8 +25,8 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
             Integer id = con.createQuery("SELECT nextval('emergencia_seq')")
                     .executeScalar(Integer.class);
 
-            String sql = "INSERT INTO emergencia (id_emergencia, nombre, descripcion, fecha_inicio, fecha_fin, id_institucion, geom) " +
-                    "VALUES (:id_emergencia, :nombre, :descripcion, :fecha_inicio, :fecha_fin, :id_institucion, :geom)";
+            String sql = "INSERT INTO emergencia (id_emergencia, nombre, descripcion, fecha_inicio, fecha_fin, id_institucion, geom ) " +
+                    "VALUES (:id_emergencia, :nombre, :descripcion, :fecha_inicio, :fecha_fin, :id_institucion, (SELECT ST_SetSRID(ST_MakePoint(:longit, :latit),4326)))";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id")
@@ -34,14 +34,16 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                     .addColumnMapping("descripcion", "descripcion")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_emergencia", id)
                     .addParameter("nombre", emergencia.getNombre())
                     .addParameter("descripcion", emergencia.getDescripcion())
                     .addParameter("fecha_inicio", emergencia.getFechaInicio())
                     .addParameter("fecha_fin", emergencia.getFechaFin())
                     .addParameter("id_institucion", emergencia.getInstitucion().getId())
-                    .addParameter("geom", emergencia.getGeom())
+                    .addParameter("longit", emergencia.getLongit())
+                    .addParameter("latit", emergencia.getLatit())
                     .executeUpdate()
                     .getResult();
             con.commit();
@@ -52,12 +54,13 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public Emergencia findById(Integer idEmergencia) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT e.id_emergencia, e.nombre, e.descripcion, e.fecha_inicio, e.fecha_fin, e.geom, FROM emergencia e WHERE e.id_emergencia = :id_emergencia";
+            String sql = "SELECT e.id_emergencia, e.nombre, e.descripcion, e.fecha_inicio, e.fecha_fin, ST_X(e.geom) AS longit, ST_Y(e.geom) AS latit FROM emergencia e WHERE e.id_emergencia = :id_emergencia";
             Emergencia emergencia = con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_emergencia", idEmergencia)
                     .executeAndFetchFirst(Emergencia.class);
             if(emergencia == null) return null;
@@ -69,12 +72,13 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public List<Emergencia> findAll() {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_emergencia, nombre, descripcion, fecha_inicio, fecha_fin, geom, FROM emergencia";
+            String sql = "SELECT id_emergencia, nombre, descripcion, fecha_inicio, fecha_fin, ST_X(e.geom) AS longit, ST_Y(e.geom) AS latit FROM emergencia";
             List<Emergencia> emergencias = con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id" )
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .executeAndFetch(Emergencia.class);
             for (Emergencia emergencia : emergencias) {
                 emergencia.setInstitucion(institucionRepository.findByEmergenciaId(emergencia.getId()));
@@ -87,12 +91,13 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public Emergencia findByTareaId(Integer idTarea) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT e.id_emergencia, e.nombre, e.descripcion, e.fecha_inicio, e.fecha_fin, e.geom, FROM emergencia e JOIN tarea t ON t.id_emergencia = e.id_emergencia AND t.id_tarea = :id_tarea";
+            String sql = "SELECT e.id_emergencia, e.nombre, e.descripcion, e.fecha_inicio, e.fecha_fin, ST_X(e.geom) AS longit, ST_Y(e.geom) AS latit FROM emergencia e JOIN tarea t ON t.id_emergencia = e.id_emergencia AND t.id_tarea = :id_tarea";
             Emergencia emergencia = con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id" )
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_tarea", idTarea)
                     .executeAndFetchFirst(Emergencia.class);
             if(emergencia == null) return null;
@@ -127,14 +132,15 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public List<Emergencia> findAllByHabilidadId(Integer idHabilidad){
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT e.id_emergencia, e.nombre, e.descripcion, e.fecha_inicio, e.fecha_fin, e.geom" +
+            String sql = "SELECT e.id_emergencia, e.nombre, e.descripcion, e.fecha_inicio, e.fecha_fin, ST_X(e.geom) AS longit, ST_Y(e.geom) AS latit " +
                     "FROM emergencia e " +
                     "JOIN eme_habilidad eh ON e.id_emergencia = eh.id_emergencia AND eh.id_habilidad = :id_habilidad";
             List<Emergencia> emergencias = con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id" )
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_habilidad", idHabilidad)
                     .executeAndFetch(Emergencia.class);
             for (Emergencia emergencia : emergencias) {
@@ -154,21 +160,23 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                     "fecha_inicio = :fecha_inicio, " +
                     "fecha_fin = :fecha_fin, " +
                     "id_institucion = :id_institucion, " +
-                    "geom = :geom " +
+                    "geom = (SELECT ST_SetSRID(ST_MakePoint(:longit, :latit),4326)) " +
                     "WHERE id_emergencia = :id_emergencia";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fec.ha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_emergencia", emergencia.getId())
                     .addParameter("nombre", emergencia.getNombre())
                     .addParameter("descripcion", emergencia.getDescripcion())
                     .addParameter("fecha_inicio", emergencia.getFechaInicio())
                     .addParameter("fecha_fin", emergencia.getFechaFin())
                     .addParameter("id_institucion", emergencia.getInstitucion().getId())
-                    .addParameter("geom", emergencia.getGeom())
+                    .addParameter("longit", emergencia.getLongit())
+                    .addParameter("latit", emergencia.getLatit())
                     .executeUpdate();
             con.commit();
         }

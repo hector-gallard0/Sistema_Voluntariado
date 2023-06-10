@@ -26,5 +26,6 @@ public class Emergencia {
     private Institucion institucion;
     private List<Habilidad> habilidades = new ArrayList<>();
     private List<Tarea> tareas = new ArrayList<>();
-    private Geometry geom;
+    private Double longit;
+    private Double latit;
 }
