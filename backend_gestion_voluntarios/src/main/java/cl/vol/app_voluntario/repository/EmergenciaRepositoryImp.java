@@ -111,7 +111,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
         }
     }
     @Override
-    public void DecodeGeom(Double longit, Double latit){
+    public String DecodeGeom(Double longit, Double latit){
         System.out.println(longit + latit);
         try (Connection con = sql2o.open()) {
             String sql = "SELECT ST_SetSRID(ST_MakePoint(:longit,:latit), 4326)";
@@ -120,6 +120,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                     .addParameter("latit", latit)
                     .executeAndFetchFirst(String.class);
             System.out.println(outputGis);
+            return outputGis;
         }
     }
     @Override

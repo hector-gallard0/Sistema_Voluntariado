@@ -29,16 +29,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmergenciaController {
     private final EmergenciaService emergenciaService;
-    private final EmergenciaRepository emergenciaRepository;
-
-    @PostMapping("/test")
-    public boolean test(
-            @RequestBody Test test){
-        emergenciaRepository.DecodeGeom(test.longit,
-                test.latit);
-        return true;
-    }
-
     //CREATE
     @PostMapping("/emergencias")
     public ResponseEntity<?> createEmergencia(

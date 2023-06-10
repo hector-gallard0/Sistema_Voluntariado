@@ -39,7 +39,8 @@ public class EmergenciaService {
         emergencia.setFechaInicio(request.getFechaInicio());
         emergencia.setFechaFin(request.getFechaFin());
         emergencia.setInstitucion(institucion);
-        emergencia.setGeom(request.getGeom());
+        String geometry = emergenciaRepository.DecodeGeom(request.getLongit(), request.getLatit());
+        emergencia.setGeom(geometry);
         return new ResponseEntity<>(emergenciaRepository.save(emergencia), HttpStatus.CREATED);
     }
 

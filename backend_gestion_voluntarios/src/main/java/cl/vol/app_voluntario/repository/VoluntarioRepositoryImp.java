@@ -22,15 +22,16 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
         try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('voluntario_seq')")
                     .executeScalar(Integer.class);
-            String sql = "INSERT INTO voluntario (id_voluntario, id_usuario)" +
-                    "VALUES (:id_voluntario, :id_usuario)";
+            String sql = "INSERT INTO voluntario (id_voluntario, id_usuario, geom)" +
+                    "VALUES (:id_voluntario, :id_usuario, :geom)";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
-                .addColumnMapping("id_voluntario", "id")
-                .addParameter("id_voluntario", id)
-                .addParameter("id_usuario", voluntario.getUsuario().getId())
-                .executeUpdate()
-                .getResult();
+                    .addColumnMapping("id_voluntario", "id")
+                    .addParameter("id_voluntario", id)
+                    .addParameter("id_usuario", voluntario.getUsuario().getId())
+                    .addParameter("geom", "geom")
+                    .executeUpdate()
+                    .getResult();
             con.commit();
             return findById(id);
         }

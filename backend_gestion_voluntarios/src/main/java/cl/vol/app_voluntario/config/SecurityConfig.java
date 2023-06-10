@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .configurationSource(corsConfigurationSource("*"))
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("*")
+                .requestMatchers("**")
                 .permitAll()
                 .and()
 //                white list
