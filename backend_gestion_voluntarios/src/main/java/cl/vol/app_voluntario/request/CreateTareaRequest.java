@@ -27,5 +27,6 @@ public class CreateTareaRequest {
     private Integer idEmergencia;
     private Integer idEstado;
     private Integer[] idsHabilidades;
-    private String geom;
+    private Double longit;
+    private Double latit;
 }

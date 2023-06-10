@@ -26,7 +26,7 @@ public class TareaRepositoryImp implements TareaRepository{
             Integer id = con.createQuery("SELECT nextval('tarea_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO tarea (id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, id_emergencia, id_estado, geom) " +
-                    "VALUES (:id_tarea, :nombre, :descripcion, :cant_vol_requeridos, :cant_vol_inscritos, :fecha_inicio, :fecha_fin, :id_emergencia, :id_estado, :geom)";
+                    "VALUES (:id_tarea, :nombre, :descripcion, :cant_vol_requeridos, :cant_vol_inscritos, :fecha_inicio, :fecha_fin, :id_emergencia, :id_estado, (SELECT ST_SetSRID(ST_MakePoint(:longit, :latit),4326)))";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
@@ -34,7 +34,8 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_tarea", id)
                     .addParameter("nombre", tarea.getNombre())
                     .addParameter("descripcion", tarea.getDescripcion())
@@ -44,13 +45,10 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addParameter("fecha_fin", tarea.getFechaFin())
                     .addParameter("id_emergencia", tarea.getEmergencia().getId())
                     .addParameter("id_estado", tarea.getEstado().getId())
-                    .addParameter("geom", tarea.getGeom())
+                    .addParameter("longit", tarea.getLongit())
+                    .addParameter("latit", tarea.getLatit())
                     .executeUpdate();
             con.commit();
-            if(!saveTareaHabilidad(id, tarea.getHabilidades())) {
-                con.rollback();
-                return null;
-            }
             return findById(id);
         }
     }
@@ -80,14 +78,15 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public Tarea findById(Integer idTarea) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin, t.geom FROM tarea t WHERE t.id_tarea = :id_tarea";
+            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin, ST_X(t.geom) AS longit, ST_Y(t.geom) AS latit FROM tarea t WHERE t.id_tarea = :id_tarea";
             Tarea tarea = con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
                     .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_tarea", idTarea)
                     .executeAndFetchFirst(Tarea.class);
             if (tarea == null) return null;
@@ -101,7 +100,7 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public List<Tarea> findAllByVoluntarioId(Integer idVoluntario) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin, t.geom " +
+            String sql = "SELECT t.id_tarea, t.nombre, t.descripcion, t.cant_vol_requeridos, t.cant_vol_inscritos, t.fecha_inicio, t.fecha_fin, ST_X(t.geom) AS longit, ST_Y(t.geom) AS latit " +
                     "FROM tarea t " +
                     "JOIN ranking r ON r.id_voluntario = :id_voluntario AND r.id_tarea = t.id_tarea";
             List<Tarea> tareas = con.createQuery(sql)
@@ -110,7 +109,8 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_voluntario", idVoluntario)
                     .executeAndFetch(Tarea.class);
             for (Tarea tarea : tareas){
@@ -124,14 +124,15 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public List<Tarea> findAll() {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, geom FROM tarea";
+            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, ST_X(t.geom) AS longit, ST_Y(t.geom) AS latit FROM tarea";
             List<Tarea> tareas = con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
                     .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .executeAndFetch(Tarea.class);
             for (Tarea tarea : tareas){
                 tarea.setEstado(estadoRepository.findByTareaId(tarea.getId()));
@@ -152,7 +153,7 @@ public class TareaRepositoryImp implements TareaRepository{
                     "fecha_fin = :fecha_fin, " +
                     "id_emergencia = :id_emergencia, " +
                     "id_estado = :id_estado, " +
-                    "geom = :geom " +
+                    "geom = (SELECT ST_SetSRID(ST_MakePoint(:longit, :latit),4326)) " +
                     "WHERE id_tarea = :id_tarea";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
@@ -161,7 +162,8 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addColumnMapping("cant_vol_inscritos", "voluntariosInscritos")
                     .addColumnMapping("fecha_inicio", "fechaInicio")
                     .addColumnMapping("fecha_fin", "fechaFin")
-                    .addColumnMapping("geom", "geom")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
                     .addParameter("id_tarea", tarea.getId())
                     .addParameter("nombre", tarea.getNombre())
                     .addParameter("descripcion", tarea.getDescripcion())
@@ -171,7 +173,8 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addParameter("fecha_fin", tarea.getFechaFin())
                     .addParameter("id_emergencia", tarea.getEmergencia().getId())
                     .addParameter("id_estado", tarea.getEstado().getId())
-                    .addParameter("geom", tarea.getGeom())
+                    .addParameter("longit", tarea.getLongit())
+                    .addParameter("latit", tarea.getLatit())
                     .executeUpdate();
             con.commit();
         }

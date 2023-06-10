@@ -53,8 +53,10 @@ public class TareaService {
         tarea.setEmergencia(emergencia);
         tarea.setEstado(estado);
         tarea.setHabilidades(habilidades);
-        tarea.setGeom(request.getGeom());
-        tareaRepository.save(tarea);
+        tarea.setLongit(request.getLongit());
+        tarea.setLatit(request.getLatit());
+        Tarea resultadoTarea = tareaRepository.save(tarea);
+        tareaRepository.saveTareaHabilidad(resultadoTarea.getId(), resultadoTarea.getHabilidades());
     }
 
     private boolean sameEmergencia(Integer idEmergencia, Integer idHabilidad){
@@ -104,8 +106,11 @@ public class TareaService {
             if(newTarea.getIdEstado() != null){
                 tarea.setEstado(estadoRepository.findById(newTarea.getIdEstado()));
             }
-            if(newTarea.getGeom() != null){
-                tarea.setGeom(newTarea.getGeom());
+            if(newTarea.getLongit() != null){
+                tarea.setLongit(newTarea.getLongit());
+            }
+            if(newTarea.getLatit() != null){
+                tarea.setLatit(newTarea.getLatit());
             }
             tareaRepository.set(tarea);
         }catch(Exception e){
