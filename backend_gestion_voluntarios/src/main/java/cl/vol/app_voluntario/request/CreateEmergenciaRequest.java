@@ -28,4 +28,6 @@ public class CreateEmergenciaRequest {
     private Date fechaFin;
     @NotNull(message = "Debe ingresar una institución válida.")
     private Integer id_institucion;
+    @NotNull(message = "Debe seleccionar una locación.")
+    private String geom;
 }

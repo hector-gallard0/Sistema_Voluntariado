@@ -39,6 +39,7 @@ public class EmergenciaService {
         emergencia.setFechaInicio(request.getFechaInicio());
         emergencia.setFechaFin(request.getFechaFin());
         emergencia.setInstitucion(institucion);
+        emergencia.setGeom(request.getGeom());
         return new ResponseEntity<>(emergenciaRepository.save(emergencia), HttpStatus.CREATED);
     }
 
@@ -67,6 +68,9 @@ public class EmergenciaService {
             if(newEmergencia.getId_institucion() != null){
                 if(institucionRepository.findById(newEmergencia.getId_institucion()) == null) throw new ApiErrorException("La institución no existe.");
                 emergencia.setInstitucion(institucionRepository.findById(newEmergencia.getId_institucion()));
+            }
+            if(newEmergencia.getGeom() != null){
+                emergencia.setGeom(newEmergencia.getGeom());
             }
             emergenciaRepository.set(emergencia);
         }catch(Exception e){

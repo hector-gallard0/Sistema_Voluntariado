@@ -25,4 +25,5 @@ public class Emergencia {
     private Institucion institucion;
     private List<Habilidad> habilidades = new ArrayList<>();
     private List<Tarea> tareas = new ArrayList<>();
+    private String geom;
 }

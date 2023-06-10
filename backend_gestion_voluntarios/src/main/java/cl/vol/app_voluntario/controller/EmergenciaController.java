@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.controller;
 
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Usuario;
+import cl.vol.app_voluntario.repository.EmergenciaRepository;
 import cl.vol.app_voluntario.request.CreateEmergenciaRequest;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
 import cl.vol.app_voluntario.request.RegisterRequest;
@@ -28,6 +29,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmergenciaController {
     private final EmergenciaService emergenciaService;
+    private final EmergenciaRepository emergenciaRepository;
+
+    @PostMapping("/test")
+    public boolean test(
+            @RequestBody Test test){
+        emergenciaRepository.DecodeGeom(test.longit,
+                test.latit);
+        return true;
+    }
 
     //CREATE
     @PostMapping("/emergencias")

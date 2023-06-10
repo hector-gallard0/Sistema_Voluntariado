@@ -9,11 +9,9 @@ public interface EmergenciaRepository {
     Emergencia save(Emergencia emergencia);
     Emergencia findById(Integer idEmergencia);
     List<Emergencia> findAll();
-
     Emergencia findByTareaId(Integer idTarea);
     Integer findEmeHabilidadIdByHabilidadId(Integer idHabilidad);
-
     List<Emergencia> findAllByHabilidadId(Integer idHabilidad);
-
+    void DecodeGeom(Double longit, Double latit);
     void set(Emergencia emergencia);
 }
