@@ -57,7 +57,7 @@
                     <v-btn color="primary" @click="$router.push(`/tasks/${route.params.id}/edit`)">
                         Editar
                     </v-btn>
-                    <v-btn color="red">
+                    <v-btn color="red" @click="deleteTask(Number(route.params.id))">
                         Eliminar
                     </v-btn>
                 </div>
@@ -69,16 +69,16 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import Tarea from '@/interfaces/Tarea';
-import { getTask } from '@/services/TareaService'
+import { getTask, deleteTask } from '@/services/TareaService'
 import { useAuth } from '@/store/auth';
 import { useRoute } from 'vue-router';
 import { getStateColor } from '@/services/EstadoService'
+
 const auth = useAuth();
 const route = useRoute();
 const task = ref<Tarea>({});
 
 onMounted(async () => {
-    console.log();
     task.value = await getTask(auth.token || '', parseInt(`${route.params.id}`) ?? -1)
     console.log(task.value);
 })

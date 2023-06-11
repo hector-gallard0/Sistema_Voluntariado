@@ -110,9 +110,11 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Override
     public Usuario findById(Integer idUsuario) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT * FROM usuario WHERE id_usuario = :id_usuario";
+            String sql = "SELECT id_usuario, nombre, apellido, email, ST_X(geom) AS longit, ST_Y(geom) AS latit FROM usuario WHERE id_usuario = :id_usuario";
             Usuario usuario = con.createQuery(sql)
                     .addColumnMapping("id_usuario", "id")
+                    .addColumnMapping("latit", "latit")
+                    .addColumnMapping("longit", "longit")
                     .addParameter("id_usuario", idUsuario)
                     .executeAndFetchFirst(Usuario.class);
             if(usuario == null) return null;

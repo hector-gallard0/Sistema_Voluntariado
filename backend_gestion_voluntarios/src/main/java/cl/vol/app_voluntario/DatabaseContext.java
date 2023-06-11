@@ -27,21 +27,6 @@ public class DatabaseContext implements TransactionManagementConfigurer {
         dataSource.setUsername("postgres");
         dataSource.setPassword("postgres");
 
-//        // Establecer la variable de sesión
-//        try (Connection connection = dataSource.getConnection()) {
-//            String query = "SET LOCAL var.logged_user = ?";
-//            try (PreparedStatement statement = connection.prepareStatement(query)) {
-//                // Obtener el usuario autenticado y establecerlo como valor de la variable de sesión
-//                System.out.println("preparedstatement");
-//                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//                String loggedUser = authentication.getName();
-//                statement.setString(1, loggedUser);
-//                statement.execute();
-//            }
-//        } catch (SQLException e) {
-//            // Manejo de excepciones
-//        }
-
         return dataSource;
     }
 

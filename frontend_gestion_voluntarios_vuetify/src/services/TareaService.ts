@@ -1,5 +1,6 @@
 import { API_URL } from "@/globals"
 import { useAuth } from '@/store/auth';
+import router from "@/router";
 import Tarea from "@/interfaces/Tarea";
 
 const createTask = async ({nombre, descripcion, voluntariosRequeridos, fechaInicio, fechaFin}:Tarea, idEmergencia:number, idsHabilidades:number[], token:string) => {    
@@ -86,6 +87,9 @@ const deleteTask = async (id: number) => {
       }
     });
     const rawResponse = await response.json();
+    if(rawResponse.status == 200) alert(rawResponse.messages.exito);
+    else alert("Error al elminar la tarea");
+    router.push("/tasks")
     return rawResponse;
     
 }
