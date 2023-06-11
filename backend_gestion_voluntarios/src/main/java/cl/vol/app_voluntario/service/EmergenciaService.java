@@ -3,13 +3,11 @@ package cl.vol.app_voluntario.service;
 import cl.vol.app_voluntario.errors.ApiErrorException;
 import cl.vol.app_voluntario.errors.InstitucionNotFoundException;
 import cl.vol.app_voluntario.errors.InvalidDatesException;
-import cl.vol.app_voluntario.model.Emergencia;
-import cl.vol.app_voluntario.model.Habilidad;
-import cl.vol.app_voluntario.model.Institucion;
-import cl.vol.app_voluntario.model.Tarea;
+import cl.vol.app_voluntario.model.*;
 import cl.vol.app_voluntario.repository.EmergenciaRepository;
 import cl.vol.app_voluntario.repository.HabilidadRepository;
 import cl.vol.app_voluntario.repository.InstitucionRepository;
+import cl.vol.app_voluntario.repository.UsuarioRepository;
 import cl.vol.app_voluntario.request.CreateEmergenciaRequest;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
 import cl.vol.app_voluntario.request.UpdateEmergenciaRequest;
@@ -28,6 +26,7 @@ public class EmergenciaService {
     private final EmergenciaRepository emergenciaRepository;
     private final InstitucionRepository institucionRepository;
     private final HabilidadRepository habilidadRepository;
+    private final UsuarioRepository usuarioRepository;
     public ResponseEntity<Emergencia> createEmergencia(CreateEmergenciaRequest request){
         try{
             if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())){
@@ -84,6 +83,15 @@ public class EmergenciaService {
             emergenciaRepository.set(emergencia);
         }catch(Exception e){
             throw new ApiErrorException("Error al actualizar la emergencia." + e.getMessage());
+        }
+    }
+
+    public List<Usuario> getVoluntariosEmergencia(Integer idEmergencia){
+        try{
+            if(emergenciaRepository.findById(idEmergencia) == null) throw new ApiErrorException("La emergencia no existe.");
+            return usuarioRepository.findAllVoluntariosByEmergenciaId(idEmergencia);
+        }catch(Exception e){
+            throw new ApiErrorException("Ha ocurrido un error al obtener a los voluntarios de la emergencia" + e.getMessage());
         }
     }
 }

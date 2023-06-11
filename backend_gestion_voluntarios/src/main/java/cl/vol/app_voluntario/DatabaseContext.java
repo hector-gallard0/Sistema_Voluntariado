@@ -20,24 +20,28 @@ import java.sql.SQLException;
 @EnableTransactionManagement
 public class DatabaseContext implements TransactionManagementConfigurer {
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource() throws SQLException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://localhost:5432/voluntariodb3");
         dataSource.setUsername("postgres");
         dataSource.setPassword("postgres");
-
+        dataSource.getConnection().setAutoCommit(false);
         return dataSource;
     }
 
     @Bean
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
-        return new DataSourceTransactionManager(dataSource());
+        try {
+            return new DataSourceTransactionManager(dataSource());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Bean
-    public Sql2o sql2o() {
+    public Sql2o sql2o() throws SQLException {
         return new Sql2o(dataSource());
     }
 

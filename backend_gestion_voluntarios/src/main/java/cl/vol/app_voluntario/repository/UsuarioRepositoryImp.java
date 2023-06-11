@@ -142,4 +142,30 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
             return usuarios;
         }
     }
+
+    @Override
+    public List<Usuario> findAllVoluntariosByEmergenciaId(Integer idEmergencia){
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT DISTINCT u.id_usuario, u.nombre, u.apellido, u.email, ST_X(u.geom) AS longit, ST_Y(u.geom) AS latit " +
+                    "FROM usuario u " +
+                    "JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario " +
+                    "JOIN rol r ON r.id_rol = ur.id_rol AND r.id_rol = 2 " +
+                    "JOIN voluntario v ON u.id_usuario = v.id_usuario " +
+                    "JOIN ranking ra ON ra.id_voluntario = v.id_voluntario " +
+                    "JOIN tarea t ON ra.id_tarea = t.id_tarea " +
+                    "JOIN emergencia e ON e.id_emergencia = t.id_emergencia " +
+                    "AND e.id_emergencia = :id_emergencia";
+            List<Usuario> usuarios = con.createQuery(sql)
+                    .addColumnMapping("id_usuario", "id")
+                    .addColumnMapping("latit", "latit")
+                    .addColumnMapping("longit", "longit")
+                    .addParameter("id_emergencia", idEmergencia)
+                    .executeAndFetch(Usuario.class);
+            for(Usuario usuario : usuarios) {
+                System.out.println(usuario.getLatit() + " AND " + usuario.getLongit());
+                usuario.setRoles(rolRepository.findAllByUserId(usuario.getId()));
+            }
+            return usuarios;
+        }
+    }
 }

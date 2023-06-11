@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import LoggedInLayout from '@/layouts/LoggedInLayout.vue'
 import NotLoggedInLayout from '@/layouts/NotLoggedInLayout.vue'
-import { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView } from '@/views/index'
+import { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView, MapView } from '@/views/index'
 import { useAuth } from '@/store/auth'
 
 interface RouteMeta extends Record<string, unknown> {
@@ -58,6 +58,16 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/tasks/:id/edit',
 		name: 'editTask',
 		component: EditTaskView,
+		meta: {
+			layout: LoggedInLayout,
+			requireAuth: true,
+			roles: ['COORDINADOR']
+		}
+	},
+	{
+		path: '/emergencies/:id/map',
+		name: 'map',
+		component: MapView,
 		meta: {
 			layout: LoggedInLayout,
 			requireAuth: true,

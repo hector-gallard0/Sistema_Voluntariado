@@ -55,14 +55,9 @@ public class TareaRepositoryImp implements TareaRepository{
 
     @Override
     public boolean saveTareaHabilidad(Integer idTarea, List<Habilidad> habilidades){
-        System.out.println("save tarea habilidad");
         try (Connection con = sql2o.beginTransaction()) {
-            System.out.println("save tarea habilidad trans");
-            System.out.println("habilidades: " + habilidades);
             for(Habilidad habilidad : habilidades){
-                System.out.println("habilidad -> " + habilidad);
                 Integer idEmeHabilidad = emergenciaRepository.findEmeHabilidadIdByHabilidadId(habilidad.getId());
-                System.out.println("id eme habilidad" + idEmeHabilidad);
                 if(idEmeHabilidad == null) return false;
                 Integer id = con.createQuery("SELECT nextval('tarea_habilidad_seq')")
                         .executeScalar(Integer.class);

@@ -11,4 +11,6 @@ export default interface Usuario {
     roles?: Rol[];
     coordinador?: Coordinador;
     voluntario?: Voluntario; 
+    latit?: number,
+    longit?: number
 }   

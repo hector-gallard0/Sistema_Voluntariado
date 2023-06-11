@@ -60,4 +60,10 @@ public class EmergenciaController {
                         .build(),
                         HttpStatus.OK);
     };
+
+    //TAREA UPDATE
+    @GetMapping("/emergencias/{id}/voluntarios")
+    public ResponseEntity<?> getVoluntariosEmergencia(@PathVariable Integer id) {
+        return new ResponseEntity<>(emergenciaService.getVoluntariosEmergencia(id), HttpStatus.OK);
+    }
 }

@@ -28,7 +28,6 @@ public class TareaService {
     private final HabilidadRepository habilidadRepository;
     public void createTarea(CreateTareaRequest request){
         try{
-
             if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())) throw new ApiErrorException("La fecha de inicio debe ser menor a la fecha final");
             Emergencia emergencia = emergenciaRepository.findById(request.getIdEmergencia());
 
@@ -55,7 +54,6 @@ public class TareaService {
             tarea.setFechaFin(request.getFechaFin());
             tarea.setEmergencia(emergencia);
             tarea.setEstado(estado);
-            System.out.println("HABILIDADES " + habilidades);
             tarea.setHabilidades(habilidades);
             tarea.setLongit(request.getLongit());
             tarea.setLatit(request.getLatit());

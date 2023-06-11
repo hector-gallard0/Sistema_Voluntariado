@@ -5,5 +5,6 @@ import EditTaskView from './tareas/EditTaskView.vue'
 import HomeView from './HomeView.vue'
 import LoginView from './LoginView.vue'
 import RegisterView from './RegisterView.vue'
+import MapView from './MapView.vue'
 
-export { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView };
+export { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView, MapView };
