@@ -23,9 +23,9 @@ public class DatabaseContext implements TransactionManagementConfigurer {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/voluntariodb");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/voluntariodb3");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("123");
+        dataSource.setPassword("postgres");
 
 //        // Establecer la variable de sesión
 //        try (Connection connection = dataSource.getConnection()) {

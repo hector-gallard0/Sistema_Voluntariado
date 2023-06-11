@@ -37,10 +37,6 @@ public class Usuario implements UserDetails {
     Voluntario voluntario;
     private Double longit;
     private Double latit;
-//
-//    public void addRol(Rol rol){
-//        roles.add(rol);
-//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

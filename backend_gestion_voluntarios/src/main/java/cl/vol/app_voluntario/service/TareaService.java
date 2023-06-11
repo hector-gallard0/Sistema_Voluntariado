@@ -27,37 +27,42 @@ public class TareaService {
     private final EstadoRepository estadoRepository;
     private final HabilidadRepository habilidadRepository;
     public void createTarea(CreateTareaRequest request){
-        if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())) throw new ApiErrorException("La fecha de inicio debe ser menor a la fecha final");
-        Emergencia emergencia = emergenciaRepository.findById(request.getIdEmergencia());
+        try{
 
-        if(emergencia == null) throw new ApiErrorException("Emergencia no encontrada.");
-        Estado estado = estadoRepository.findById(0);
+            if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())) throw new ApiErrorException("La fecha de inicio debe ser menor a la fecha final");
+            Emergencia emergencia = emergenciaRepository.findById(request.getIdEmergencia());
 
-        if(estado == null) throw new ApiErrorException("Estado no encontrado.");
-        List<Habilidad> habilidades = new ArrayList<>();
+            if(emergencia == null) throw new ApiErrorException("Emergencia no encontrada.");
+            Estado estado = estadoRepository.findById(0);
 
-        for(Integer id : request.getIdsHabilidades()){
-            Habilidad habilidad = habilidadRepository.findById(id);
-            if(habilidad == null) throw new ApiErrorException("Una habilidad no existe");
-            if(!sameEmergencia(emergencia.getId(), habilidad.getId())) throw new ApiErrorException("Una habilidad escogida no es parte de la emergencia.");
-            habilidades.add(habilidad);
+            if(estado == null) throw new ApiErrorException("Estado no encontrado.");
+            List<Habilidad> habilidades = new ArrayList<>();
+
+            for(Integer id : request.getIdsHabilidades()){
+                Habilidad habilidad = habilidadRepository.findById(id);
+                if(habilidad == null) throw new ApiErrorException("Una habilidad no existe");
+                if(!sameEmergencia(emergencia.getId(), habilidad.getId())) throw new ApiErrorException("Una habilidad escogida no es parte de la emergencia.");
+                habilidades.add(habilidad);
+            }
+
+            Tarea tarea = new Tarea();
+            tarea.setNombre(request.getNombre());
+            if(request.getDescripcion().length() > 300) throw new ApiErrorException("La descripción puede ser de máximo 300 caracteres.");
+            tarea.setDescripcion(request.getDescripcion());
+            tarea.setVoluntariosRequeridos(request.getVoluntariosRequeridos());
+            tarea.setVoluntariosInscritos(0);
+            tarea.setFechaInicio(request.getFechaInicio());
+            tarea.setFechaFin(request.getFechaFin());
+            tarea.setEmergencia(emergencia);
+            tarea.setEstado(estado);
+            tarea.setHabilidades(habilidades);
+            tarea.setLongit(request.getLongit());
+            tarea.setLatit(request.getLatit());
+            Tarea resultadoTarea = tareaRepository.save(tarea);
+            tareaRepository.saveTareaHabilidad(resultadoTarea.getId(), resultadoTarea.getHabilidades());
+        }catch(Exception e){
+            throw new ApiErrorException("Error al crear la tarea " + e.getMessage());
         }
-
-        Tarea tarea = new Tarea();
-        tarea.setNombre(request.getNombre());
-        if(request.getDescripcion().length() > 300) throw new ApiErrorException("La descripción puede ser de máximo 300 caracteres.");
-        tarea.setDescripcion(request.getDescripcion());
-        tarea.setVoluntariosRequeridos(request.getVoluntariosRequeridos());
-        tarea.setVoluntariosInscritos(0);
-        tarea.setFechaInicio(request.getFechaInicio());
-        tarea.setFechaFin(request.getFechaFin());
-        tarea.setEmergencia(emergencia);
-        tarea.setEstado(estado);
-        tarea.setHabilidades(habilidades);
-        tarea.setLongit(request.getLongit());
-        tarea.setLatit(request.getLatit());
-        Tarea resultadoTarea = tareaRepository.save(tarea);
-        tareaRepository.saveTareaHabilidad(resultadoTarea.getId(), resultadoTarea.getHabilidades());
     }
 
     private boolean sameEmergencia(Integer idEmergencia, Integer idHabilidad){

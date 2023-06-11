@@ -22,7 +22,7 @@ public class CoordinadorRepositoryImp implements CoordinadorRepository{
         try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('coordinador_seq')")
                     .executeScalar(Integer.class);
-            String sql = "INSERT INTO coordinador (id_coordinador, id_usuario, id_institucion)" +
+            String sql = "INSERT INTO coordinador (id_coordinador, id_usuario, id_institucion) " +
                     "VALUES (:id_coordinador, :id_usuario, :id_institucion)";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)

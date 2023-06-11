@@ -13,6 +13,5 @@ public interface EmergenciaRepository {
     Emergencia findByTareaId(Integer idTarea);
     Integer findEmeHabilidadIdByHabilidadId(Integer idHabilidad);
     List<Emergencia> findAllByHabilidadId(Integer idHabilidad);
-   Geometry DecodeGeom(Double longit, Double latit);
     void set(Emergencia emergencia);
 }

@@ -17,5 +17,4 @@ public class Voluntario {
     private Usuario usuario;
     private List<Tarea> tareas;
     private List<Habilidad> habilidades;
-    private String geom;
 }

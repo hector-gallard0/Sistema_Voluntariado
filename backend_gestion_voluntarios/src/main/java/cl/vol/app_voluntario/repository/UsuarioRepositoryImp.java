@@ -55,8 +55,8 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
         try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('usuario_seq')")
                     .executeScalar(Integer.class);
-            String sql = "INSERT INTO usuario (id_usuario, nombre, apellido, email, password) " +
-                    "VALUES (:id_usuario, :nombre, :apellido, :email, :password)";
+            String sql = "INSERT INTO usuario (id_usuario, nombre, apellido, email, password, geom) " +
+                    "VALUES (:id_usuario, :nombre, :apellido, :email, :password, (SELECT ST_SetSRID(ST_MakePoint(:longit, :latit),4326)))";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_usuario", "id")
@@ -65,6 +65,8 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
                     .addParameter("apellido", usuario.getApellido())
                     .addParameter("email", usuario.getEmail())
                     .addParameter("password", usuario.getPassword())
+                    .addParameter("longit", usuario.getLongit())
+                    .addParameter("latit", usuario.getLatit())
                     .executeUpdate();
             con.commit();
             return findById(id);
@@ -77,7 +79,7 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
             for(Rol rol : roles){
                 Integer idUsuarioRol = con.createQuery("SELECT nextval('usuario_rol_seq')")
                         .executeScalar(Integer.class);
-                String sql = "INSERT INTO usuario_rol(id_usuario_rol, id_usuario, id_rol)" +
+                String sql = "INSERT INTO usuario_rol(id_usuario_rol, id_usuario, id_rol) " +
                         "VALUES (:id_usuario_rol, :id_usuario, :id_rol)";
                 TransactionUtil.createTempTableWithUsername(con, sql);
                 con.createQuery(sql)

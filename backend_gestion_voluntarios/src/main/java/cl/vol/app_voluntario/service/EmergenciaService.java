@@ -29,20 +29,24 @@ public class EmergenciaService {
     private final InstitucionRepository institucionRepository;
     private final HabilidadRepository habilidadRepository;
     public ResponseEntity<Emergencia> createEmergencia(CreateEmergenciaRequest request){
-        if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())){
-            throw new InvalidDatesException("La fecha de inicio debe ser menor a la fecha final");
-        };
-        Institucion institucion = institucionRepository.findById(request.getId_institucion());
-        if(institucion == null) throw new ApiErrorException("La institución no existe.\n");
-        Emergencia emergencia = new Emergencia();
-        emergencia.setNombre(request.getNombre());
-        emergencia.setDescripcion(request.getDescripcion());
-        emergencia.setFechaInicio(request.getFechaInicio());
-        emergencia.setFechaFin(request.getFechaFin());
-        emergencia.setInstitucion(institucion);
-        emergencia.setLongit(request.getLongit());
-        emergencia.setLatit(request.getLatit());
-        return new ResponseEntity<>(emergenciaRepository.save(emergencia), HttpStatus.CREATED);
+        try{
+            if(!ValidationUtil.validateDates(request.getFechaInicio(), request.getFechaFin())){
+                throw new InvalidDatesException("La fecha de inicio debe ser menor a la fecha final");
+            };
+            Institucion institucion = institucionRepository.findById(request.getId_institucion());
+            if(institucion == null) throw new ApiErrorException("La institución no existe.\n");
+            Emergencia emergencia = new Emergencia();
+            emergencia.setNombre(request.getNombre());
+            emergencia.setDescripcion(request.getDescripcion());
+            emergencia.setFechaInicio(request.getFechaInicio());
+            emergencia.setFechaFin(request.getFechaFin());
+            emergencia.setInstitucion(institucion);
+            emergencia.setLongit(request.getLongit());
+            emergencia.setLatit(request.getLatit());
+            return new ResponseEntity<>(emergenciaRepository.save(emergencia), HttpStatus.CREATED);
+        }catch(Exception e){
+            throw new ApiErrorException("Error al crear la emergencia " + e.getMessage());
+        }
     }
 
     public List<Emergencia> getEmergencias(){

@@ -22,14 +22,13 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
         try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('voluntario_seq')")
                     .executeScalar(Integer.class);
-            String sql = "INSERT INTO voluntario (id_voluntario, id_usuario, geom)" +
-                    "VALUES (:id_voluntario, :id_usuario, :geom)";
+            String sql = "INSERT INTO voluntario (id_voluntario, id_usuario, geom) " +
+                    "VALUES (:id_voluntario, :id_usuario)";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addColumnMapping("id_voluntario", "id")
                     .addParameter("id_voluntario", id)
                     .addParameter("id_usuario", voluntario.getUsuario().getId())
-                    .addParameter("geom", "geom")
                     .executeUpdate()
                     .getResult();
             con.commit();
@@ -68,7 +67,7 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
         try (Connection con = sql2o.open()) {
             Integer id = con.createQuery("SELECT nextval('vol_habilidad_seq')")
                     .executeScalar(Integer.class);
-            String sql = "INSERT INTO vol_habilidad (id_voluntario_habilidad, id_voluntario, id_habilidad)" +
+            String sql = "INSERT INTO vol_habilidad (id_voluntario_habilidad, id_voluntario, id_habilidad) " +
                     "VALUES (:id_voluntario_habilidad, :id_voluntario, :id_voluntario)";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)

@@ -18,6 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class VoluntarioController {
     private final VoluntarioService voluntarioService;
 
+    @GetMapping("/voluntarios")
+    public ResponseEntity<?> getVoluntarios(){
+        return new ResponseEntity<>(voluntarioService.getVoluntarios(), HttpStatus.OK);
+    }
+
     @PutMapping("/{idVoluntario}/habilidades/{idHabilidad}")
     public ResponseEntity<?> addHabilidadVoluntario(
             @Valid @NotNull @PathVariable Integer idVoluntario,

@@ -47,12 +47,13 @@ public class UsuarioService {
                 throw new ApiErrorException("El correo electronico ya existe.");
             }
 
-            //guardar usuario
             Usuario usuario = new Usuario();
             usuario.setNombre(request.getNombre());
             usuario.setApellido(request.getApellido());
             usuario.setEmail(request.getEmail());
             usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+            usuario.setLatit(request.getLatit());
+            usuario.setLongit(request.getLongit());
             Usuario usuarioBD = usuarioRepository.save(usuario);
 
             //guardar roles
@@ -77,7 +78,7 @@ public class UsuarioService {
 
            usuarioBD = usuarioRepository.saveUserRoles(usuarioBD.getId(), roles);
         }catch(Exception e){
-            throw new ApiErrorException(e.getMessage());
+            throw new ApiErrorException("Error al crear usuario " + e.getMessage());
         }
     }
     public Usuario getUsuario(int id) {

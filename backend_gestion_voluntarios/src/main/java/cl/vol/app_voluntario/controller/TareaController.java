@@ -79,6 +79,7 @@ public class TareaController {
                         .build(),
                         HttpStatus.OK);
     };
+
     // DELETE
     @DeleteMapping("/tareas/{id}")
     public ResponseEntity<?> deleteTarea(@PathVariable Integer id){

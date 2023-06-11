@@ -72,7 +72,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
     @Override
     public List<Emergencia> findAll() {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_emergencia, nombre, descripcion, fecha_inicio, fecha_fin, ST_X(e.geom) AS longit, ST_Y(e.geom) AS latit FROM emergencia";
+            String sql = "SELECT id_emergencia, nombre, descripcion, fecha_inicio, fecha_fin, ST_X(geom) AS longit, ST_Y(geom) AS latit FROM emergencia";
             List<Emergencia> emergencias = con.createQuery(sql)
                     .addColumnMapping("id_emergencia", "id" )
                     .addColumnMapping("fecha_inicio", "fechaInicio")
@@ -116,19 +116,7 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                     .executeScalar(Integer.class);
         }
     }
-    @Override
-    public org.locationtech.jts.geom.Geometry DecodeGeom(Double longit, Double latit){
-        System.out.println(longit + latit);
-        try (Connection con = sql2o.open()) {
-            String sql = "SELECT ST_SetSRID(ST_MakePoint(:longit,:latit), 4326)";
-            org.locationtech.jts.geom.Geometry outputGis = con.createQuery(sql)
-                    .addParameter("longit", longit)
-                    .addParameter("latit", latit)
-                    .executeScalar(Geometry.class);
-            System.out.println(outputGis);
-            return outputGis;
-        }
-    }
+
     @Override
     public List<Emergencia> findAllByHabilidadId(Integer idHabilidad){
         try (Connection con = sql2o.open()) {

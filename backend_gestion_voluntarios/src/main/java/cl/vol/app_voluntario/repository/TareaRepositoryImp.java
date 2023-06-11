@@ -124,7 +124,7 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public List<Tarea> findAll() {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, ST_X(t.geom) AS longit, ST_Y(t.geom) AS latit FROM tarea t";
+            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, ST_X(geom) AS longit, ST_Y(geom) AS latit FROM tarea";
             List<Tarea> tareas = con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
                     .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
