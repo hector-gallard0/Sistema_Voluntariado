@@ -21,7 +21,8 @@
                 <template v-slot:item.acciones="{ item }">                    
                     <v-btn icon="mdi-eye-outline" variant="text" @click="$router.push(`/tasks/${item.value}`)"></v-btn>
                     <v-btn icon="mdi-pencil-outline" variant="text" @click="$router.push(`/tasks/${item.value}/edit`)"></v-btn>
-                    <v-btn icon="mdi-delete-outline" variant="text"></v-btn>
+                    <v-btn icon="mdi-delete-outline" variant="text" @click="deleteTask(item.value)"></v-btn>
+
                 </template>
             </v-data-table>
         </v-container>
@@ -33,6 +34,7 @@
 
 <script lang="ts" setup>
 import { getTasks } from '@/services/TareaService';
+import { deleteTask } from '@/services/TareaService';
 import { computed } from 'vue';
 import { onMounted } from 'vue';
 import { ref } from 'vue';

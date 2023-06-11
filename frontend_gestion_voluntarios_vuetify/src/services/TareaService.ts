@@ -1,4 +1,5 @@
 import { API_URL } from "@/globals"
+import { useAuth } from '@/store/auth';
 import Tarea from "@/interfaces/Tarea";
 
 const createTask = async ({nombre, descripcion, voluntariosRequeridos, fechaInicio, fechaFin}:Tarea, idEmergencia:number, idsHabilidades:number[], token:string) => {    
@@ -70,4 +71,24 @@ const updateTask = async ({id, nombre, descripcion, voluntariosInscritos, volunt
     return rawResponse;
 }
 
-export { createTask, getTasks, getTask, updateTask }
+const deleteTask = async (id: number) => {
+    console.log(id);
+    const auth = useAuth();
+    const token = auth.token;
+    console.log(token);
+  
+    const response = await fetch(`${API_URL}/tareas/${id}`,{
+      method: 'DELETE',
+      headers: {
+        'Accept': 'Application/json',
+        'Content-type': 'Application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const rawResponse = await response.json();
+    return rawResponse;
+    
+}
+
+
+export { createTask, getTasks, getTask, updateTask, deleteTask }

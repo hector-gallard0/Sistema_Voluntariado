@@ -17,4 +17,7 @@ public interface TareaRepository {
     List<Tarea> findAll();
 
     void set(Tarea tarea);
+
+    void delete(Integer idTarea);
+    void deleteTareaHabilidad(Integer idTarea);
 }

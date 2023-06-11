@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -115,6 +116,14 @@ public class TareaService {
             tareaRepository.set(tarea);
         }catch(Exception e){
             throw new ApiErrorException("Error al actualizar la tarea." + e.getMessage());
+        }
+    }
+
+    public void deleteTarea(Integer id) {
+        Tarea tarea = tareaRepository.findById(id);
+        if(tarea != null){
+            tareaRepository.deleteTareaHabilidad(id);
+            tareaRepository.delete(id);
         }
     }
 }

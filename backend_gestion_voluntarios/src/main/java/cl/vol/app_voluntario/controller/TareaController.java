@@ -79,5 +79,19 @@ public class TareaController {
                         .build(),
                         HttpStatus.OK);
     };
+    // DELETE
+    @DeleteMapping("/tareas/{id}")
+    public ResponseEntity<?> deleteTarea(@PathVariable Integer id){
+        System.out.println(id);
+        tareaService.deleteTarea(id);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Tarea eliminada con éxito.");
 
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(messages)
+                        .build(),
+                        HttpStatus.OK);
+    };
 }

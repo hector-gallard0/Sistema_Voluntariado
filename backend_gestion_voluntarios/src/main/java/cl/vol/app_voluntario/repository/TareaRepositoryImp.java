@@ -124,7 +124,7 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public List<Tarea> findAll() {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, ST_X(t.geom) AS longit, ST_Y(t.geom) AS latit FROM tarea";
+            String sql = "SELECT id_tarea, nombre, descripcion, cant_vol_requeridos, cant_vol_inscritos, fecha_inicio, fecha_fin, ST_X(t.geom) AS longit, ST_Y(t.geom) AS latit FROM tarea t";
             List<Tarea> tareas = con.createQuery(sql)
                     .addColumnMapping("id_tarea", "id")
                     .addColumnMapping("cant_vol_requeridos", "voluntariosRequeridos")
@@ -180,4 +180,30 @@ public class TareaRepositoryImp implements TareaRepository{
         }
     }
 
+    @Override
+    public void delete(Integer idTarea) {
+        try (Connection con = sql2o.open()) {
+            String sql = "DELETE FROM tarea WHERE id_tarea = :id_tarea; ";
+
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            Integer res = con.createQuery(sql)
+                    .addParameter("id_tarea", idTarea)
+                    .executeUpdate()
+                    .getResult();
+        }
+
+    }
+    @Override
+    public void deleteTareaHabilidad(Integer idTarea) {
+        try (Connection con = sql2o.open()) {
+            String sql = "DELETE FROM tarea_habilidad WHERE id_tarea = :id_tarea; ";
+
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            Integer res = con.createQuery(sql)
+                    .addParameter("id_tarea", idTarea)
+                    .executeUpdate()
+                    .getResult();
+        }
+
+    }
 }
