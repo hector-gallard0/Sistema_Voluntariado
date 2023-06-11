@@ -87,4 +87,8 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuario(@PathVariable Integer id){
         return new ResponseEntity<>(usuarioService.getUsuario(id), HttpStatus.FOUND);
     }
+    @GetMapping("/usuarios/voluntarios")
+    public ResponseEntity<?> getAllVoluntarios(){
+        return new ResponseEntity<>(usuarioService.getAllVoluntarios(), HttpStatus.OK);
+    }
 }

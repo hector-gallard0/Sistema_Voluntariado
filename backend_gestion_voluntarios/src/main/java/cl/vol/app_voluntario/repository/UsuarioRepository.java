@@ -12,6 +12,5 @@ public interface UsuarioRepository {
     Usuario save(Usuario usuario);
     Usuario findById(Integer idUsuario);
     Usuario saveUserRoles(Integer idUsuario, List<Rol> roles);
-
     Usuario findByCoordinadorId(Integer idCoordinador);
 }

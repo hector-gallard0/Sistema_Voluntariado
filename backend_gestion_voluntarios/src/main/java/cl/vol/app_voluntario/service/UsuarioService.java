@@ -83,7 +83,7 @@ public class UsuarioService {
     public Usuario getUsuario(int id) {
         return usuarioRepository.findById(id);
     }
-
+    public List<Usuario> getAllVoluntarios(){ return usuarioRepository.findAllByRoleId(2);}
     public String authentication(AuthenticationRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail());
 

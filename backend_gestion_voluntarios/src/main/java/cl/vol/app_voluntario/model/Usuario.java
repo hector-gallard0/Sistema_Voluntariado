@@ -35,6 +35,8 @@ public class Usuario implements UserDetails {
     private List<Rol> roles;
     Coordinador coordinador;
     Voluntario voluntario;
+    private Double longit;
+    private Double latit;
 //
 //    public void addRol(Rol rol){
 //        roles.add(rol);
