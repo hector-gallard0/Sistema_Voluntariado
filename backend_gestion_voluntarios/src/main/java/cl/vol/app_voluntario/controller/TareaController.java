@@ -42,6 +42,7 @@ public class TareaController {
             @Valid @RequestBody CreateTareaRequest request,
             BindingResult bindingResult
     ){
+        System.out.println(request);
         if(bindingResult.hasErrors()){
             return new ResponseEntity<>
                     (new ApiResponse().builder()

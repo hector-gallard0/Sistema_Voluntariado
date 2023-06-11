@@ -146,15 +146,9 @@ onMounted(async () => {
 const submitCreateTaskForm = async () => {
     console.log("Habilidades = ", idsHabilidades.value);
     const response = await createTask(tarea.value, idEmergencia.value ?? -1, idsHabilidades.value ?? [], auth.token || "");    
-    // if(response.status == 200){
-    //     success.value = true;
-    //     error.value = false;        
-    //     show.value = true;        
-    // }else{
-    //     error.value = true;
-    //     success.value = false;            
-    // }
-    // messages.value = response.messages;
+    if(response.status == 200){
+        console.log(response);
+    }
 }
 
 watch(selectedDate, (newSelectedDate) => {

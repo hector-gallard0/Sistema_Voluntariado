@@ -55,11 +55,12 @@ public class TareaService {
             tarea.setFechaFin(request.getFechaFin());
             tarea.setEmergencia(emergencia);
             tarea.setEstado(estado);
+            System.out.println("HABILIDADES " + habilidades);
             tarea.setHabilidades(habilidades);
             tarea.setLongit(request.getLongit());
             tarea.setLatit(request.getLatit());
             Tarea resultadoTarea = tareaRepository.save(tarea);
-            tareaRepository.saveTareaHabilidad(resultadoTarea.getId(), resultadoTarea.getHabilidades());
+            tareaRepository.saveTareaHabilidad(resultadoTarea.getId(), tarea.getHabilidades());
         }catch(Exception e){
             throw new ApiErrorException("Error al crear la tarea " + e.getMessage());
         }

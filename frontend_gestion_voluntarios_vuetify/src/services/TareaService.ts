@@ -91,7 +91,6 @@ const deleteTask = async (id: number) => {
     else alert("Error al elminar la tarea");
     router.push("/tasks")
     return rawResponse;
-    
 }
 
 
