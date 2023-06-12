@@ -14,8 +14,8 @@ export const useAuth = defineStore('auth', {
         }
     },
     actions: {
-        async register(nombre:string, apellido:string, email:string, password:string, idInstitucion:number, voluntario:boolean, coordinador:boolean){
-            const uri = `${API_URL}/register`
+        async register(nombre:string, apellido:string, email:string, password:string, idInstitucion:number, voluntario:boolean, coordinador:boolean, latit:number, longit:number){
+            const uri = `${API_URL}/register`            
             const rawResponse = await fetch(uri, {
                 method: 'POST',
                 headers: {
@@ -29,7 +29,10 @@ export const useAuth = defineStore('auth', {
                     password,
                     idInstitucion,
                     voluntario,
-                    coordinador
+                    coordinador,
+                    latit,
+                    longit
+
                 })
             })
             const response = await rawResponse.json();            

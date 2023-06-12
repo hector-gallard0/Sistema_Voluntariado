@@ -2,6 +2,7 @@ package cl.vol.app_voluntario.controller;
 
 import cl.vol.app_voluntario.request.AuthenticationRequest;
 import cl.vol.app_voluntario.request.RegisterRequest;
+import cl.vol.app_voluntario.request.UpdateUsuarioRequest;
 import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.UsuarioService;
 import cl.vol.app_voluntario.util.ValidationUtil;
@@ -87,4 +88,33 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuario(@PathVariable Integer id){
         return new ResponseEntity<>(usuarioService.getUsuario(id), HttpStatus.FOUND);
     }
+
+    //DELETE
+    @DeleteMapping("/usuarios/{id}")
+    public ResponseEntity<?> deleteUsuario(@PathVariable Integer id){
+        usuarioService.deleteUsuario(id);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Usuario eliminado con éxito.");
+
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(messages)
+                        .build(),
+                        HttpStatus.OK);
+    }
+
+//    @PutMapping("/usuarios/{id}")
+//    public ResponseEntity<?> updateUsuario(@PathVariable Integer id, @RequestBody UpdateUsuarioRequest request){
+//        usuarioService.updateUsuario(id, request);
+//        Map<String, String> messages = new HashMap<>();
+//        messages.put("exito", "Usuario editada con éxito.");
+//
+//        return new ResponseEntity<>
+//                (new ApiResponse().builder()
+//                        .status(HttpStatus.OK.value())
+//                        .messages(messages)
+//                        .build(),
+//                        HttpStatus.OK);
+//    }
 }

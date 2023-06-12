@@ -12,4 +12,6 @@ public interface VoluntarioRepository {
     Habilidad saveVolHabilidad(Integer idVoluntario, Integer idHabilidad);
 
     void saveVolTarea(Integer idVoluntario, Integer idTarea, CreateVolTareaRequest request);
+    void deleteVolHabilidadByVoluntarioId(Integer idVoluntario);
+    void delete(Integer idVoluntario);
 }

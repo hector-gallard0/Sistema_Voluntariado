@@ -20,6 +20,9 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Autowired
     private CoordinadorRepository coordinadorRepository;
 
+    @Autowired
+    private VoluntarioRepository voluntarioRepository;
+
     @Override
     public List<Usuario> findAll(){
         try (Connection con = sql2o.open()) {
@@ -94,20 +97,6 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     }
 
     @Override
-    public Usuario findByCoordinadorId(Integer idCoordinador) {
-        try (Connection con = sql2o.open()) {
-            String sql = "SELECT u.* FROM usuario u JOIN coordinador c ON c.id_usuario = u.id_usuario AND c.id_coordinador = :id_coordinador";
-            Usuario usuario = con.createQuery(sql)
-                    .addColumnMapping("id_usuario", "id")
-                    .addParameter("id_coordinador", idCoordinador)
-                    .executeAndFetchFirst(Usuario.class);
-            if(usuario == null) return null;
-            usuario.setRoles(rolRepository.findAllByUserId(usuario.getId()));
-            return usuario;
-        }
-    }
-
-    @Override
     public Usuario findById(Integer idUsuario) {
         try (Connection con = sql2o.open()) {
             String sql = "SELECT id_usuario, nombre, apellido, email, ST_X(geom) AS longit, ST_Y(geom) AS latit FROM usuario WHERE id_usuario = :id_usuario";
@@ -120,6 +109,8 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
             if(usuario == null) return null;
             usuario.setRoles(rolRepository.findAllByUserId(usuario.getId()));
             usuario.setCoordinador(coordinadorRepository.findByUserId(usuario.getId()));
+            usuario.setVoluntario(voluntarioRepository.findVoluntarioByUserId(usuario.getId()));
+            System.out.println("usuario " + usuario);
             return usuario;
         }
     }
@@ -166,6 +157,20 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
                 usuario.setRoles(rolRepository.findAllByUserId(usuario.getId()));
             }
             return usuarios;
+        }
+    }
+
+    @Override
+    public void delete(Integer idUsuario){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM usuario WHERE id_usuario = :id_usuario; ";
+
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            Integer res = con.createQuery(sql)
+                    .addParameter("id_usuario", idUsuario)
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
         }
     }
 }

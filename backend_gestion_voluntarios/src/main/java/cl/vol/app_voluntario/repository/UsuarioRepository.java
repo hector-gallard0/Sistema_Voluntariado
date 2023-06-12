@@ -12,6 +12,9 @@ public interface UsuarioRepository {
     Usuario save(Usuario usuario);
     Usuario findById(Integer idUsuario);
     Usuario saveUserRoles(Integer idUsuario, List<Rol> roles);
-    Usuario findByCoordinadorId(Integer idCoordinador);
     List<Usuario> findAllVoluntariosByEmergenciaId(Integer idEmergencia);
+
+    void delete(Integer id);
+
+//    void set(Usuario usuario);
 }

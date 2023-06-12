@@ -101,6 +101,8 @@ const coordinador = ref<boolean>(false);
 const error = ref<boolean>(false);
 const success = ref<boolean>(false);
 const messages = ref<object>({});
+const latit = ref<number>(0);
+const longit = ref<number>(0);
 
 onMounted(async () => {
     const instituciones:Institucion[] = await getInstituciones();
@@ -112,11 +114,25 @@ onMounted(async () => {
         })
     )    
 
+    const success = (position:any) => {
+        latit.value  = position.coords.latitude;
+        longit.value = position.coords.longitude;
+
+        console.log("coords", latit.value, longit.value);
+    };
+
+    const error = (err:any) => {
+        console.log(err)
+    };
+
+    // This will open permission popup
+    navigator.geolocation.getCurrentPosition(success, error);
     console.log(items);
 })
 
+
 const submitRegisterForm = async () => {
-    const response = await store.register(user.value.nombre ?? '', user.value.apellido ?? '', user.value.email ?? '', user.value.password ?? '', idInstitucion.value ?? -1, voluntario.value ?? false, coordinador.value ?? false);
+    const response = await store.register(user.value.nombre ?? '', user.value.apellido ?? '', user.value.email ?? '', user.value.password ?? '', idInstitucion.value ?? -1, voluntario.value ?? false, coordinador.value ?? false, latit.value ?? 0, longit.value ?? 0);
     console.log(response);
     if(response.status == 200 ){
         success.value = true;

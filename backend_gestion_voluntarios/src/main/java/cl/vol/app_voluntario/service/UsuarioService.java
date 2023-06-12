@@ -2,13 +2,11 @@ package cl.vol.app_voluntario.service;
 
 import cl.vol.app_voluntario.config.JwtService;
 import cl.vol.app_voluntario.errors.*;
-import cl.vol.app_voluntario.model.Coordinador;
-import cl.vol.app_voluntario.model.Rol;
-import cl.vol.app_voluntario.model.Usuario;
-import cl.vol.app_voluntario.model.Voluntario;
+import cl.vol.app_voluntario.model.*;
 import cl.vol.app_voluntario.repository.*;
 import cl.vol.app_voluntario.request.AuthenticationRequest;
 import cl.vol.app_voluntario.request.RegisterRequest;
+import cl.vol.app_voluntario.request.UpdateUsuarioRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +26,7 @@ public class UsuarioService {
     private final InstitucionRepository institucionRepository;
     private final CoordinadorRepository coordinadorRepository;
     private final VoluntarioRepository voluntarioRepository;
+    private final TareaRepository tareaRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -105,4 +104,48 @@ public class UsuarioService {
         Map<String, Object> extraClaims = jwtService.createExtraClaimWithIdAndRol(usuario.getId(), rol);
         return jwtService.generateToken(extraClaims, usuario);
     }
+
+    public void deleteUsuario(Integer id) {
+        try{
+            Usuario usuario = usuarioRepository.findById(id);
+            if(usuario == null) throw new ApiErrorException("El usuario no existe");
+
+            if(usuario.getCoordinador() != null) coordinadorRepository.delete(usuario.getCoordinador().getId());
+            if(usuario.getVoluntario() != null){
+                tareaRepository.deleteRankingByVoluntarioId(usuario.getVoluntario().getId());
+                voluntarioRepository.deleteVolHabilidadByVoluntarioId(usuario.getVoluntario().getId());
+                voluntarioRepository.delete(usuario.getVoluntario().getId());
+            }
+            usuarioRepository.delete(id);
+
+        }catch(Exception e){
+            throw new ApiErrorException("El usuario no ha podido ser eliminado " + e.getMessage());
+        }
+    }
+
+//    public void updateUsuario(Integer id, UpdateUsuarioRequest newUsuario) {
+//        try{
+//            Usuario usuario = usuarioRepository.findById(id);
+//            if(usuario == null) throw new ApiErrorException("El usuario no existe");
+//            if(newUsuario.getNombre() != null){
+//                usuario.setNombre(newUsuario.getNombre());
+//            }
+//            if(newUsuario.getApellido() != null){
+//                usuario.setApellido(newUsuario.getApellido());
+//            }
+//            if(newUsuario.getEmail() != null){
+//                usuario.setEmail(newUsuario.getEmail());
+//            }
+//            if(newUsuario.getPassword() != null){
+//                usuario.setPassword(passwordEncoder.encode(newUsuario.getPassword()));
+//            }
+//            if(newUsuario.getLatit() != null && newUsuario.getLongit() != null){
+//                usuario.setLatit(newUsuario.getLatit());
+//                usuario.setLongit(newUsuario.getLongit());
+//            }
+//            usuarioRepository.set(usuario);
+//        }catch(Exception e){
+//            throw new ApiErrorException("No se pudo actualizar el usuario " + e.getMessage());
+//        }
+//    }
 }

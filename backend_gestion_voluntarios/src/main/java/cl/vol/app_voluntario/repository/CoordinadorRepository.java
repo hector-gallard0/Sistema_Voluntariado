@@ -8,4 +8,6 @@ public interface CoordinadorRepository {
     Coordinador save(Coordinador coordinador);
     Coordinador findByUserId(Integer idUsuario);
     Coordinador findById(Integer idCoordinador);
+
+    void delete(Integer idCoordinador);
 }

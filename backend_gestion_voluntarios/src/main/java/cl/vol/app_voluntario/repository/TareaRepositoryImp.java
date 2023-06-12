@@ -203,7 +203,6 @@ public class TareaRepositoryImp implements TareaRepository{
                     .executeUpdate()
                     .getResult();
         }
-
     }
 
     @Override
@@ -221,6 +220,19 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addParameter("nombre_region", nombreRegion)
                     .executeAndFetch(Tarea.class);
             return tareas;
+        }
+    }
+
+    @Override
+    public void deleteRankingByVoluntarioId(Integer idVoluntario){
+        try (Connection con = sql2o.open()) {
+            String sql = "DELETE FROM ranking WHERE id_voluntario = :id_voluntario; ";
+
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            Integer res = con.createQuery(sql)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .executeUpdate()
+                    .getResult();
         }
     }
 }

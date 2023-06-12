@@ -22,4 +22,6 @@ public interface TareaRepository {
     void deleteTareaHabilidad(Integer idTarea);
 
     List<Tarea> findAllByNombreRegion(String nombreRegion);
+
+    void deleteRankingByVoluntarioId(Integer idUsuario);
 }

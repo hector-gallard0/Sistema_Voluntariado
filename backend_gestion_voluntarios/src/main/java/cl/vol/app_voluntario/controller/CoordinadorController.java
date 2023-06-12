@@ -20,4 +20,5 @@ public class CoordinadorController {
     public ResponseEntity<?> getCoordinadores(){
         return new ResponseEntity<>(coordinadorService.getCoordinadores(), HttpStatus.OK);
     }
+
 }

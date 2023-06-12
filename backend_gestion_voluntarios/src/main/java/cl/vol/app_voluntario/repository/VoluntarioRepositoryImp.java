@@ -111,5 +111,27 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
         }
     }
 
+    public void deleteVolHabilidadByVoluntarioId(Integer idVoluntario){
+        try (Connection con = sql2o.open()) {
+            String sql = "DELETE FROM vol_habilidad WHERE id_voluntario = :id_voluntario; ";
 
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            Integer res = con.createQuery(sql)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .executeUpdate()
+                    .getResult();
+        }
+    }
+
+    public void delete(Integer idVoluntario){
+        try (Connection con = sql2o.open()) {
+            String sql = "DELETE FROM voluntario WHERE id_voluntario = :id_voluntario; ";
+
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            Integer res = con.createQuery(sql)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .executeUpdate()
+                    .getResult();
+        }
+    }
 }
