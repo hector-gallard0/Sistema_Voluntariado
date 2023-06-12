@@ -20,4 +20,6 @@ public interface TareaRepository {
 
     void delete(Integer idTarea);
     void deleteTareaHabilidad(Integer idTarea);
+
+    List<Tarea> findAllByNombreRegion(String nombreRegion);
 }

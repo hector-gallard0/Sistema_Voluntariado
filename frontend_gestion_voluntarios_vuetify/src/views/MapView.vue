@@ -1,5 +1,8 @@
 <template>
-    <div id="map"></div>
+    <div class="d-flex flex-column align-center">
+        <p class="text-h4 mb-5">Ubicación voluntarios para emergencia {{ route.params.id }}</p>
+        <div id="map"></div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -18,24 +21,26 @@ onMounted(async () => {
     const markers = new Array(voluntarios.length);
 
     if(voluntarios != null) {
-        let map = L.map('map').setView([-33.309154, -70.892162], 13);
-        
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-    
-
-        for(let i = 0; i < voluntarios.length; i++){         
-            let voluntario = voluntarios[i]; 
-            
-            if(voluntario.longit && voluntario.latit){
-                markers[i] = L.marker([voluntario.latit, voluntario.longit]).addTo(map);
-                markers[i].bindPopup(`${voluntario.nombre} ${voluntario.apellido}`).openPopup();
+        if(voluntarios[0].latit && voluntarios[0].longit){
+                let map = L.map('map').setView([voluntarios[0].latit, voluntarios[0].longit], 3);
+                
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
+                
+                
+                for(let i = 0; i < voluntarios.length; i++){         
+                    let voluntario = voluntarios[i]; 
+                    
+                    if(voluntario.longit && voluntario.latit){
+                        markers[i] = L.marker([voluntario.latit, voluntario.longit]).addTo(map);
+                    markers[i].bindPopup(`${voluntario.nombre} ${voluntario.apellido}`).openPopup();
+                }
             }
         }        
     }
-
+    
 })
 
 </script>

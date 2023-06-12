@@ -4,6 +4,7 @@ import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Tarea;
 import cl.vol.app_voluntario.request.CreateEmergenciaRequest;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
+import cl.vol.app_voluntario.request.GetTareasRegionRequest;
 import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.TareaService;
 import cl.vol.app_voluntario.util.ValidationUtil;
@@ -80,6 +81,11 @@ public class TareaController {
                         .build(),
                         HttpStatus.OK);
     };
+
+    @PostMapping("/tareas/region")
+    public ResponseEntity<?> getTareasRegion(@Valid @RequestBody GetTareasRegionRequest request){
+        return new ResponseEntity<>(tareaService.getTareasRegion(request), HttpStatus.OK);
+    }
 
     // DELETE
     @DeleteMapping("/tareas/{id}")

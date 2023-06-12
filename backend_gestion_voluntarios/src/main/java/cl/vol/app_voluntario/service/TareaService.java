@@ -11,6 +11,7 @@ import cl.vol.app_voluntario.repository.EstadoRepository;
 import cl.vol.app_voluntario.repository.HabilidadRepository;
 import cl.vol.app_voluntario.repository.TareaRepository;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
+import cl.vol.app_voluntario.request.GetTareasRegionRequest;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -129,5 +130,9 @@ public class TareaService {
             tareaRepository.deleteTareaHabilidad(id);
             tareaRepository.delete(id);
         }
+    }
+
+    public List<Tarea> getTareasRegion(GetTareasRegionRequest request) {
+        return tareaRepository.findAllByNombreRegion(request.getNombreRegion());
     }
 }

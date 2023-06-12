@@ -205,4 +205,22 @@ public class TareaRepositoryImp implements TareaRepository{
         }
 
     }
+
+    @Override
+    public List<Tarea> findAllByNombreRegion(String nombreRegion) {
+        try (Connection con = sql2o.open()) {
+            String sql = "SELECT t.id_tarea, t.nombre, ST_X(t.geom) AS longit, ST_Y(t.geom) AS latit " +
+                    "FROM division_regional dr, tarea t " +
+                    "WHERE dr.nom_reg = :nombre_region  " +
+                    "AND ST_Contains(dr.geom, t.geom) ";
+            List<Tarea> tareas = con.createQuery(sql)
+                    .addColumnMapping("id_tarea", "id")
+                    .addColumnMapping("nombre", "nombre")
+                    .addColumnMapping("longit", "longit")
+                    .addColumnMapping("latit", "latit")
+                    .addParameter("nombre_region", nombreRegion)
+                    .executeAndFetch(Tarea.class);
+            return tareas;
+        }
+    }
 }

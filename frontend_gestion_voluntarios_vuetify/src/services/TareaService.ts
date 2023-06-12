@@ -78,7 +78,7 @@ const deleteTask = async (id: number) => {
     const token = auth.token;
     console.log(token);
   
-    const response = await fetch(`${API_URL}/tareas/${id}`,{
+    const response = await fetch(`${API_URL}/tareas/${id}`, {
       method: 'DELETE',
       headers: {
         'Accept': 'Application/json',
@@ -93,5 +93,24 @@ const deleteTask = async (id: number) => {
     return rawResponse;
 }
 
+const getTasksRegion = async (nombreRegion:string) => {
+    const auth = useAuth();
+    const token = auth.token;   
 
-export { createTask, getTasks, getTask, updateTask, deleteTask }
+    const response = await fetch(`${API_URL}/tareas/region`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'Application/json',
+            'Content-type': 'Application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            nombreRegion
+        })
+    });
+
+    const rawResponse = await response.json();
+    return rawResponse;
+}
+
+export { createTask, getTasks, getTask, updateTask, deleteTask, getTasksRegion }
