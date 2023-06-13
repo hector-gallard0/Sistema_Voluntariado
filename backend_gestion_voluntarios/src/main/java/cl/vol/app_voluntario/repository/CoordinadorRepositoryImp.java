@@ -67,7 +67,7 @@ public class CoordinadorRepositoryImp implements CoordinadorRepository{
 
     @Override
     public void delete(Integer idCoordinador) {
-        try (Connection con = sql2o.open()) {
+        try (Connection con = sql2o.beginTransaction()) {
             String sql = "DELETE FROM coordinador WHERE id_coordinador = :id_coordinador; ";
 
             TransactionUtil.createTempTableWithUsername(con, sql);
@@ -75,6 +75,26 @@ public class CoordinadorRepositoryImp implements CoordinadorRepository{
                     .addParameter("id_coordinador", idCoordinador)
                     .executeUpdate()
                     .getResult();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void set(Coordinador coordinador) {
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE coordinador " +
+                    "SET id_institucion = :id_institucion, " +
+                    "id_usuario = :id_usuario " +
+                    "WHERE id_coordinador = :id_coordinador; ";
+
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            Integer res = con.createQuery(sql)
+                    .addParameter("id_coordinador", coordinador.getId())
+                    .addParameter("id_institucion", coordinador.getInstitucion().getId())
+                    .addParameter("id_usuario", coordinador.getUsuario().getId())
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
         }
     }
 }

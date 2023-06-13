@@ -23,8 +23,8 @@ public class UpdateUsuarioRequest {
     private String email;
     private String password;
     private Integer idInstitucion;
-    private Integer voluntario;
-    private Integer coordinador;
+    private boolean voluntario;
+    private boolean coordinador;
     private Double longit;
     private Double latit;
 }

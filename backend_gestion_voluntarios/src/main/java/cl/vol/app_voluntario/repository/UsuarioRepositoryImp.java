@@ -1,6 +1,7 @@
 package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Rol;
+import cl.vol.app_voluntario.model.Tarea;
 import cl.vol.app_voluntario.model.Usuario;
 import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,11 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     @Override
     public List<Usuario> findAll(){
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT * FROM usuario";
+            String sql = "SELECT id_usuario, nombre, apellido, email, ST_X(geom) AS longit, ST_Y(geom) AS latit FROM usuario";
             List<Usuario> usuarios = con.createQuery(sql)
                     .addColumnMapping("id_usuario", "id")
+                    .addColumnMapping("latit", "latit")
+                    .addColumnMapping("longit", "longit")
                     .executeAndFetch(Usuario.class);
             for (Usuario usuario : usuarios) {
                 usuario.setRoles(rolRepository.findAllByUserId(usuario.getId()));
@@ -97,9 +100,40 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
     }
 
     @Override
+    public void saveUserRol(Integer idUsuario, Integer idRol){
+        try (Connection con = sql2o.beginTransaction()) {
+            Integer idUsuarioRol = con.createQuery("SELECT nextval('usuario_rol_seq')")
+                    .executeScalar(Integer.class);
+            String sql = "INSERT INTO usuario_rol(id_usuario_rol, id_usuario, id_rol) " +
+                    "VALUES (:id_usuario_rol, :id_usuario, :id_rol)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_usuario_rol", idUsuarioRol)
+                    .addParameter("id_usuario", idUsuario)
+                    .addParameter("id_rol", idRol)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void deleteUserRol(Integer idUsuario, Integer idRol){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM usuario_rol " +
+                    "WHERE id_usuario = :id_usuario AND id_rol = :id_rol ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_usuario", idUsuario)
+                    .addParameter("id_rol", idRol)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
     public Usuario findById(Integer idUsuario) {
         try (Connection con = sql2o.open()) {
-            String sql = "SELECT id_usuario, nombre, apellido, email, ST_X(geom) AS longit, ST_Y(geom) AS latit FROM usuario WHERE id_usuario = :id_usuario";
+            String sql = "SELECT id_usuario, password, nombre, apellido, email, ST_X(geom) AS longit, ST_Y(geom) AS latit FROM usuario WHERE id_usuario = :id_usuario";
             Usuario usuario = con.createQuery(sql)
                     .addColumnMapping("id_usuario", "id")
                     .addColumnMapping("latit", "latit")
@@ -170,6 +204,44 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
                     .addParameter("id_usuario", idUsuario)
                     .executeUpdate()
                     .getResult();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void set(Usuario usuario){
+        try (Connection con = sql2o.beginTransaction()) {
+            System.out.println("Usuario " + usuario);
+            String sql = "UPDATE usuario " +
+                    "SET nombre = :nombre, " +
+                    "apellido = :apellido, " +
+                    "email = :email, " +
+                    "password = :password, " +
+                    "geom = (SELECT ST_SetSRID(ST_MakePoint(:longit, :latit),4326)) " +
+                    "WHERE id_usuario = :id_usuario";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_usuario", usuario.getId())
+                    .addParameter("nombre", usuario.getNombre())
+                    .addParameter("apellido", usuario.getApellido())
+                    .addParameter("email", usuario.getEmail())
+                    .addParameter("password", usuario.getPassword())
+                    .addParameter("longit", usuario.getLongit())
+                    .addParameter("latit", usuario.getLatit())
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void deleteAllUserRoles(Integer idUsuario){
+        try(Connection con = sql2o.beginTransaction()){
+            String sql = "DELETE FROM usuario_rol " +
+                    "WHERE id_usuario = :id_usuario";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_usuario", idUsuario)
+                    .executeUpdate();
             con.commit();
         }
     }

@@ -124,11 +124,11 @@ public class TareaService {
         }
     }
 
-    public void deleteTarea(Integer id) {
-        Tarea tarea = tareaRepository.findById(id);
-        if(tarea != null){
-            tareaRepository.deleteTareaHabilidad(id);
-            tareaRepository.delete(id);
+    public void deleteTarea(Integer idTarea) {
+        try{
+            tareaRepository.delete(idTarea);
+        }catch(Exception e){
+            throw new ApiErrorException("La tarea no ha podido ser eliminada " + e.getMessage());
         }
     }
 

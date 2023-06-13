@@ -104,17 +104,17 @@ public class UsuarioController {
                         HttpStatus.OK);
     }
 
-//    @PutMapping("/usuarios/{id}")
-//    public ResponseEntity<?> updateUsuario(@PathVariable Integer id, @RequestBody UpdateUsuarioRequest request){
-//        usuarioService.updateUsuario(id, request);
-//        Map<String, String> messages = new HashMap<>();
-//        messages.put("exito", "Usuario editada con éxito.");
-//
-//        return new ResponseEntity<>
-//                (new ApiResponse().builder()
-//                        .status(HttpStatus.OK.value())
-//                        .messages(messages)
-//                        .build(),
-//                        HttpStatus.OK);
-//    }
+    @PutMapping("/usuarios/{id}")
+    public ResponseEntity<?> updateUsuario(@PathVariable Integer id, @RequestBody UpdateUsuarioRequest request){
+        usuarioService.updateUsuario(id, request);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Usuario editado con éxito.");
+
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(messages)
+                        .build(),
+                        HttpStatus.OK);
+    }
 }

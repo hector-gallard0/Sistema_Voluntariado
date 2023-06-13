@@ -10,4 +10,5 @@ public interface CoordinadorRepository {
     Coordinador findById(Integer idCoordinador);
 
     void delete(Integer idCoordinador);
+    void set(Coordinador coordinador);
 }

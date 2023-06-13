@@ -39,7 +39,7 @@ public class VoluntarioController {
         return new ResponseEntity<>(voluntarioService.addHabilidadVoluntario(idVoluntario, idHabilidad), HttpStatus.OK);
     }
 
-    @PutMapping("/voluntarios/{idVoluntario}/tareas/{idTarea}")
+    @PostMapping("/voluntarios/{idVoluntario}/tareas/{idTarea}")
     public ResponseEntity<?> addTareaVoluntario(
             @Valid @NotNull @PathVariable Integer idVoluntario,
             @Valid @NotNull @PathVariable Integer idTarea,

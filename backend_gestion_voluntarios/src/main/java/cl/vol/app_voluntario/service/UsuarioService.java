@@ -39,10 +39,10 @@ public class UsuarioService {
             if(!request.isVoluntario() && !request.isCoordinador()){
                 throw new ApiErrorException("No ha seleccionado el tipo de usuario a crear.");
             }
-            else if(request.isCoordinador() && institucionRepository.findById(request.getIdInstitucion()) == null){
+            if(request.isCoordinador() && institucionRepository.findById(request.getIdInstitucion()) == null){
                 throw new ApiErrorException("La institución seleccionada no existe.");
             }
-            else if(usuarioRepository.findByEmail(request.getEmail()) != null){
+            if(usuarioRepository.findByEmail(request.getEmail()) != null){
                 throw new ApiErrorException("El correo electronico ya existe.");
             }
 
@@ -110,12 +110,6 @@ public class UsuarioService {
             Usuario usuario = usuarioRepository.findById(id);
             if(usuario == null) throw new ApiErrorException("El usuario no existe");
 
-            if(usuario.getCoordinador() != null) coordinadorRepository.delete(usuario.getCoordinador().getId());
-            if(usuario.getVoluntario() != null){
-                tareaRepository.deleteRankingByVoluntarioId(usuario.getVoluntario().getId());
-                voluntarioRepository.deleteVolHabilidadByVoluntarioId(usuario.getVoluntario().getId());
-                voluntarioRepository.delete(usuario.getVoluntario().getId());
-            }
             usuarioRepository.delete(id);
 
         }catch(Exception e){
@@ -123,29 +117,63 @@ public class UsuarioService {
         }
     }
 
-//    public void updateUsuario(Integer id, UpdateUsuarioRequest newUsuario) {
-//        try{
-//            Usuario usuario = usuarioRepository.findById(id);
-//            if(usuario == null) throw new ApiErrorException("El usuario no existe");
-//            if(newUsuario.getNombre() != null){
-//                usuario.setNombre(newUsuario.getNombre());
-//            }
-//            if(newUsuario.getApellido() != null){
-//                usuario.setApellido(newUsuario.getApellido());
-//            }
-//            if(newUsuario.getEmail() != null){
-//                usuario.setEmail(newUsuario.getEmail());
-//            }
-//            if(newUsuario.getPassword() != null){
-//                usuario.setPassword(passwordEncoder.encode(newUsuario.getPassword()));
-//            }
-//            if(newUsuario.getLatit() != null && newUsuario.getLongit() != null){
-//                usuario.setLatit(newUsuario.getLatit());
-//                usuario.setLongit(newUsuario.getLongit());
-//            }
-//            usuarioRepository.set(usuario);
-//        }catch(Exception e){
-//            throw new ApiErrorException("No se pudo actualizar el usuario " + e.getMessage());
-//        }
-//    }
+    public void updateUsuario(Integer id, UpdateUsuarioRequest newUsuario) {
+        try{
+            if(newUsuario.isCoordinador() && institucionRepository.findById(newUsuario.getIdInstitucion()) == null){
+                throw new ApiErrorException("La institución seleccionada no existe.");
+            }
+            else if(usuarioRepository.findByEmail(newUsuario.getEmail()) != null){
+                throw new ApiErrorException("El correo electronico ya existe.");
+            }
+
+            Usuario usuario = usuarioRepository.findById(id);
+            if(usuario == null) throw new ApiErrorException("El usuario no existe");
+            if(newUsuario.getNombre() != null){
+                usuario.setNombre(newUsuario.getNombre());
+            }
+            if(newUsuario.getApellido() != null){
+                usuario.setApellido(newUsuario.getApellido());
+            }
+            if(newUsuario.getEmail() != null){
+                usuario.setEmail(newUsuario.getEmail());
+            }
+            if(newUsuario.getPassword() != null){
+                usuario.setPassword(passwordEncoder.encode(newUsuario.getPassword()));
+            }
+            if(newUsuario.getLatit() != null && newUsuario.getLongit() != null){
+                usuario.setLatit(newUsuario.getLatit());
+                usuario.setLongit(newUsuario.getLongit());
+            }
+            usuarioRepository.set(usuario);
+
+            System.out.println(" newusuari " + newUsuario);
+            if(newUsuario.isCoordinador() && usuario.getCoordinador() == null){
+                System.out.println("ENTRA");
+                Coordinador coordinador = new Coordinador();
+                coordinador.setUsuario(usuario);
+                coordinador.setInstitucion(institucionRepository.findById(newUsuario.getIdInstitucion()));
+                coordinador = coordinadorRepository.save(coordinador);
+                usuarioRepository.saveUserRol(usuario.getId(), 1);
+            }else if(!newUsuario.isCoordinador() && usuario.getCoordinador() != null){
+                coordinadorRepository.delete(usuario.getCoordinador().getId());
+                usuarioRepository.deleteUserRol(usuario.getId(), 1);
+            }
+
+            usuario.setVoluntario(voluntarioRepository.findVoluntarioByUserId(usuario.getId()));
+            if(newUsuario.isVoluntario() && usuario.getVoluntario() == null){
+                Voluntario voluntario = new Voluntario();
+                voluntario.setUsuario(usuario);
+                voluntario.setHabilidades(new ArrayList<>());
+                voluntario.setTareas(new ArrayList<>());
+                voluntario = voluntarioRepository.save(voluntario);
+                usuarioRepository.saveUserRol(usuario.getId(), 2);
+            }else if(!newUsuario.isVoluntario() && usuario.getVoluntario() != null){
+                voluntarioRepository.delete(usuario.getVoluntario().getId());
+                usuarioRepository.deleteUserRol(usuario.getId(), 2);
+            }
+
+        }catch(Exception e){
+            throw new ApiErrorException("No se pudo actualizar el usuario " + e.getMessage());
+        }
+    }
 }

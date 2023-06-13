@@ -12,9 +12,12 @@ public interface UsuarioRepository {
     Usuario save(Usuario usuario);
     Usuario findById(Integer idUsuario);
     Usuario saveUserRoles(Integer idUsuario, List<Rol> roles);
+    void saveUserRol(Integer idUsuario, Integer idRol);
+    void deleteUserRol(Integer idUsuario, Integer idRol);
     List<Usuario> findAllVoluntariosByEmergenciaId(Integer idEmergencia);
 
-    void delete(Integer id);
+    void delete(Integer idUsuario);
 
-//    void set(Usuario usuario);
+    void set(Usuario usuario);
+    void deleteAllUserRoles(Integer idUsuario);
 }
