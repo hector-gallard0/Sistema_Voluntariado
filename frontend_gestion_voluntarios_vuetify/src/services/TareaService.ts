@@ -22,6 +22,9 @@ const createTask = async ({nombre, descripcion, voluntariosRequeridos, fechaInic
         })
     })
     const rawResponse = await response.json();
+    if(rawResponse.status == 200) alert(rawResponse.messages.exito);
+    else alert("Tarea agregada con éxito.");
+    router.push("/tasks")
     return rawResponse;
 }
 
@@ -69,6 +72,9 @@ const updateTask = async ({id, nombre, descripcion, voluntariosInscritos, volunt
         })
     })
     const rawResponse = await response.json();
+    if(rawResponse.status == 200) alert(rawResponse.messages.exito);
+    else alert("Tarea actualizada con éxito.");
+    router.push("/tasks")
     return rawResponse;
 }
 
@@ -88,7 +94,7 @@ const deleteTask = async (id: number) => {
     });
     const rawResponse = await response.json();
     if(rawResponse.status == 200) alert(rawResponse.messages.exito);
-    else alert("Error al elminar la tarea");
+    else alert("Hubo un error al eliminar la tarea.");
     router.push("/tasks")
     return rawResponse;
 }
