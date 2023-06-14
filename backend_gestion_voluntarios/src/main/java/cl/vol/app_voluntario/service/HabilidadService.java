@@ -9,6 +9,8 @@ import cl.vol.app_voluntario.request.UpdateHabilidadRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class HabilidadService {
@@ -33,4 +35,20 @@ public class HabilidadService {
         }
     }
 
+    public List<Habilidad> getHabilidades() {
+        try{
+            return habilidadRepository.findAll();
+        }catch (Exception e){
+            throw new ApiErrorException("Hubo un error al obtener las habilidades. " + e.getMessage());
+        }
+    }
+
+    public void deleteHabilidad(Integer idHabilidad) {
+        try{
+            if(habilidadRepository.findById(idHabilidad) == null) throw new ApiErrorException("La habilidad no existe.");
+            habilidadRepository.delete(idHabilidad);
+        }catch(Exception e){
+            throw new ApiErrorException("Hubo un error al eliminar la habilidad. " + e.getMessage());
+        }
+    }
 }

@@ -53,4 +53,13 @@ public class EstadoService {
             throw new ApiErrorException("El estado no ha podido ser creado." + e.getMessage());
         }
     }
+
+    public void deleteEstado(Integer idEstado) {
+        try{
+            if(estadoRepository.findById(idEstado) == null) throw new ApiErrorException("El estado no existe");
+            estadoRepository.delete(idEstado);
+        }catch (Exception e){
+            throw new ApiErrorException("El estado no ha podido ser eliminado. " + e.getMessage());
+        }
+    }
 }
