@@ -1,8 +1,6 @@
 package cl.vol.app_voluntario.controller;
 
-import cl.vol.app_voluntario.request.CreateEmergenciaRequest;
 import cl.vol.app_voluntario.request.CreateEstadoRequest;
-import cl.vol.app_voluntario.request.UpdateEmergenciaRequest;
 import cl.vol.app_voluntario.request.UpdateEstadoRequest;
 import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.EstadoService;
@@ -51,6 +49,21 @@ public class EstadoController {
     public ResponseEntity<?> updateEstado(@PathVariable Integer id,
                                         @Valid @RequestBody UpdateEstadoRequest request){
         estadoService.updateEstado(id, request);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Estado editado con éxito.");
+
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(messages)
+                        .build(),
+                        HttpStatus.OK);
+    };
+
+    @DeleteMapping("/estados/{idEstado}")
+    public ResponseEntity<?> deleteEstado(@Valid @RequestBody @PathVariable Integer idEstado, BindingResult bindingResult){
+        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+        estadoService.deleteEstado(idEstado);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Estado editado con éxito.");
 
