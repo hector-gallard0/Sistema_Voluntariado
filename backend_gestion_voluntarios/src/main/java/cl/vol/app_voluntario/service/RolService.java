@@ -43,4 +43,12 @@ public class RolService {
             throw new ApiErrorException("Error al actualizar el rol " + e.getMessage());
         }
     }
+
+    public void deleteRol(Integer idRol){
+        try{
+            rolRepository.delete(idRol);
+        }catch(Exception e){
+            throw new ApiErrorException("Error al borrar el rol " + e.getMessage());
+        }
+    }
 }
