@@ -1,5 +1,5 @@
 <template>
-<v-container class="d-flex align-center h-screen">
+<v-container class="d-flex align-center">
     <v-container class="d-flex flex-column align-center w-75">
         <v-card width="500px" class="pa-5 text-center">
             <p class="text-h4 mb-5">Registrarse</p>
@@ -62,6 +62,17 @@
                     label="Institución"
                     required
                 ></v-select>
+                <v-label class="d-flex justify-start pa-4">                    
+                    <v-icon
+                    icon="mdi-map-marker-account-outline"
+                    ></v-icon>
+                    Seleccionar ubicación
+                </v-label>
+                <div class="d-flex flex-column justify-center mb-7">
+                    <div class="d-flex justify-center">
+                        <div id="map"></div>
+                    </div>
+                </div>
                 <v-btn
                     color="primary"
                     class="w-100"
@@ -85,6 +96,7 @@ import { useAuth } from '@/store/auth';
 import ErrorSVG from '@/components/ErrorSVG.vue'
 import SuccessSVG from '@/components/SuccessSVG.vue'
 import router from '@/router';
+import L from 'leaflet'
 import { Console } from 'console';
 
 const store = useAuth();
@@ -103,8 +115,29 @@ const success = ref<boolean>(false);
 const messages = ref<object>({});
 const latit = ref<number>(0);
 const longit = ref<number>(0);
+const marker = ref();
 
 onMounted(async () => {
+    let map = L.map('map').setView([-33.45694, -70.64827], 3);
+                
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    map.on('click', (e) => {
+        const latLng = e.latlng;
+        
+        if(marker.value){
+            map.removeLayer(marker.value);
+        }
+        marker.value = L.marker([latLng.lat, latLng.lng]).addTo(map);
+
+        latit.value = latLng.lat;
+        longit.value = latLng.lng;
+        console.log(latLng); // Aquí puedes hacer lo que desees con las coordenadas
+    });
+
     const instituciones:Institucion[] = await getInstituciones();
 
     instituciones.map(institucion => 
@@ -114,19 +147,19 @@ onMounted(async () => {
         })
     )    
 
-    const success = (position:any) => {
-        latit.value  = position.coords.latitude;
-        longit.value = position.coords.longitude;
+    // const success = (position:any) => {
+    //     latit.value  = position.coords.latitude;
+    //     longit.value = position.coords.longitude;
 
-        console.log("coords", latit.value, longit.value);
-    };
+    //     console.log("coords", latit.value, longit.value);
+    // };
 
-    const error = (err:any) => {
-        console.log(err)
-    };
+    // const error = (err:any) => {
+    //     console.log(err)
+    // };
 
-    // This will open permission popup
-    navigator.geolocation.getCurrentPosition(success, error);
+    // // This will open permission popup
+    // navigator.geolocation.getCurrentPosition(success, error);
     console.log(items);
 })
 
@@ -146,3 +179,10 @@ const submitRegisterForm = async () => {
     }
 }
 </script>
+
+<style>
+#map {
+    height: 400px;
+    width: 400px;
+}
+</style>
