@@ -52,7 +52,14 @@ public class EmergenciaService {
         return emergenciaRepository.findAll();
     }
 
-    public List<Habilidad> getHabilidades(Integer idEmergencia) { return habilidadRepository.findAllByEmergenciaId(idEmergencia); }
+    public List<Habilidad> getHabilidadesEmergencia(Integer idEmergencia) {
+        try{
+            if(emergenciaRepository.findById(idEmergencia) == null) throw new ApiErrorException("La emergencia no existe.");
+            return habilidadRepository.findAllByEmergenciaId(idEmergencia);
+        }catch(Exception e){
+            throw new ApiErrorException("Ha ocurrido un error al obtener las emergencias " + e.getMessage());
+        }
+    }
 
     public void updateEmergencia(Integer id, UpdateEmergenciaRequest newEmergencia){
         try{
@@ -91,7 +98,50 @@ public class EmergenciaService {
             if(emergenciaRepository.findById(idEmergencia) == null) throw new ApiErrorException("La emergencia no existe.");
             return usuarioRepository.findAllVoluntariosByEmergenciaId(idEmergencia);
         }catch(Exception e){
-            throw new ApiErrorException("Ha ocurrido un error al obtener a los voluntarios de la emergencia" + e.getMessage());
+            throw new ApiErrorException("Ha ocurrido un error al obtener a los voluntarios de la emergencia. " + e.getMessage());
         }
     }
+
+    public void deleteEmergencia(Integer idEmergencia) {
+        try{
+            if(emergenciaRepository.findById(idEmergencia) == null) throw new ApiErrorException("La emergencia no existe.");
+            emergenciaRepository.delete(idEmergencia);
+        }catch (Exception e){
+            throw new ApiErrorException("Ha ocurrido un error al eliminar la emergencia. " + e.getMessage());
+        }
+    }
+
+    public void addHabilidadEmergencia(Integer idEmergencia, Integer idHabilidad) {
+        try{
+            Emergencia emergencia = emergenciaRepository.findById(idEmergencia);
+            if(emergencia == null) throw new ApiErrorException("La emergencia no existe.");
+            if(habilidadRepository.findById(idHabilidad) == null) throw new ApiErrorException("La habilidad no existe");
+            emergenciaRepository.saveEmeHabilidad(idEmergencia, idHabilidad);
+        }catch(Exception e ){
+            throw new ApiErrorException("Ha ocurrido un error al agregar la habilidad a la emergencia. " + e.getMessage());
+        }
+    }
+
+    public void deleteHabilidadEmergencia(Integer idEmergencia, Integer idHabilidad) {
+        try{
+            Emergencia emergencia = emergenciaRepository.findById(idEmergencia);
+            if(emergencia == null) throw new ApiErrorException("La emergencia no existe.");
+            if(habilidadRepository.findById(idHabilidad) == null) throw new ApiErrorException("La habilidad no existe");
+            emergenciaRepository.deleteEmeHabilidad(idEmergencia, idHabilidad);
+        }catch(Exception e ){
+            throw new ApiErrorException("Ha ocurrido un error al eliminar la habilidad a la emergencia. " + e.getMessage());
+        }
+    }
+
+    public void updateHabilidadEmergencia(Integer idEmergencia, Integer idHabilidad, Integer newIdHabilidad) {
+        try{
+            Emergencia emergencia = emergenciaRepository.findById(idEmergencia);
+            if(emergencia == null) throw new ApiErrorException("La emergencia no existe.");
+            if(habilidadRepository.findById(idHabilidad) == null || habilidadRepository.findById(newIdHabilidad) == null) throw new ApiErrorException("Una de las habilidades no existe.");
+            emergenciaRepository.setEmeHabilidad(idEmergencia, idHabilidad, newIdHabilidad);
+        }catch(Exception e ){
+            throw new ApiErrorException("Ha ocurrido un error al actualizar la habilidad a la emergencia. " + e.getMessage());
+        }
+    }
+
 }
