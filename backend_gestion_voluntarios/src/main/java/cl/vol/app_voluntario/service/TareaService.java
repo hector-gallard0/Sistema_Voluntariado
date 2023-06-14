@@ -59,7 +59,7 @@ public class TareaService {
             tarea.setLongit(request.getLongit());
             tarea.setLatit(request.getLatit());
             Tarea resultadoTarea = tareaRepository.save(tarea);
-            tareaRepository.saveTareaHabilidad(resultadoTarea.getId(), tarea.getHabilidades());
+            tareaRepository.saveTareaHabilidades(resultadoTarea.getId(), tarea.getHabilidades());
         }catch(Exception e){
             throw new ApiErrorException("Error al crear la tarea " + e.getMessage());
         }
@@ -134,5 +134,44 @@ public class TareaService {
 
     public List<Tarea> getTareasRegion(GetTareasRegionRequest request) {
         return tareaRepository.findAllByNombreRegion(request.getNombreRegion());
+    }
+
+    public void addHabilidadTarea(Integer idTarea, Integer idHabilidad){
+        try{
+            if(habilidadRepository.findById(idHabilidad) == null) throw new ApiErrorException("La habilidad no existe.");
+            if(tareaRepository.findById(idTarea) == null) throw new ApiErrorException("La tarea no existe.");
+            tareaRepository.saveTareaHabilidad(idTarea, idHabilidad);
+        }catch (Exception e){
+            throw new ApiErrorException("Ha ocurrido un error al agregar la habilidad a la tarea. " + e.getMessage());
+        }
+    }
+
+    public void deleteHabilidadTarea(Integer idTarea, Integer idHabilidad){
+        try{
+            if(habilidadRepository.findById(idHabilidad) == null) throw new ApiErrorException("La habilidad no existe.");
+            if(tareaRepository.findById(idTarea) == null) throw new ApiErrorException("La tarea no existe.");
+            tareaRepository.deleteTareaHabilidad(idTarea, idHabilidad);
+        }catch (Exception e){
+            throw new ApiErrorException("Ha ocurrido un error al eliminar la habilidad a la tarea. " + e.getMessage());
+        }
+    }
+
+    public void updateHabilidadTarea(Integer idTarea, Integer idHabilidad, Integer newIdHabilidad){
+        try{
+            if(habilidadRepository.findById(idHabilidad) == null || habilidadRepository.findById(newIdHabilidad) == null) throw new ApiErrorException("Una de las habilidades no existe.");
+            if(tareaRepository.findById(idTarea) == null) throw new ApiErrorException("La tarea no existe.");
+            tareaRepository.setTareaHabilidad(idTarea, idHabilidad, newIdHabilidad);
+        }catch (Exception e){
+            throw new ApiErrorException("Ha ocurrido un error al actualizar la habilidad a la tarea. " + e.getMessage());
+        }
+    }
+
+    public List<Habilidad> getHabilidadesTarea(Integer idTarea) {
+        try{
+            if(tareaRepository.findById(idTarea) == null) throw new ApiErrorException("La tarea no existe.");
+            return habilidadRepository.findAllByTareaId(idTarea);
+        }catch (Exception e){
+            throw new ApiErrorException("Ha ocurrido un error al obtener las habilidades de la tarea. " + e.getMessage());
+        }
     }
 }
