@@ -176,4 +176,38 @@ public class UsuarioService {
             throw new ApiErrorException("No se pudo actualizar el usuario " + e.getMessage());
         }
     }
+
+    public List<Rol> getRolesUsuario(Integer idUsuario){
+        try{
+            return rolRepository.findAllByUserId(idUsuario);
+        }catch (Exception e){
+            throw new ApiErrorException("Hubo un error al leer los roles del usuario. " + e.getMessage());
+        }
+    }
+
+    public void addRolUsuario(Integer idUsuario, Integer idRol) {
+        try{
+            if(usuarioRepository.findById(idUsuario) == null) throw new ApiErrorException("El usuario no existe.");
+            if(rolRepository.findById(idRol) == null) throw new ApiErrorException("El rol no existe.");
+            usuarioRepository.saveUserRol(idUsuario, idRol);
+        }catch (Exception e){
+            throw new ApiErrorException("Hubo un error al añadir un rol al usuario. " + e.getMessage());
+        }
+    }
+
+    public void updateRolUsuario(Integer idUsuario, Integer idRol, Integer newIdRol){
+        try{
+            usuarioRepository.setUserRol(idUsuario, idRol, newIdRol);
+        }catch(Exception e){
+            throw new ApiErrorException("Hubo un error al actualizar el rol del usuario. " + e.getMessage());
+        }
+    }
+
+    public void deleteRolUsuario(Integer idUsuario, Integer idRol) {
+        try{
+            usuarioRepository.deleteUserRol(idUsuario, idRol);
+        }catch (Exception e){
+            throw new ApiErrorException("Hubo un error al eliminar el rol del usuario. " + e.getMessage());
+        }
+    }
 }
