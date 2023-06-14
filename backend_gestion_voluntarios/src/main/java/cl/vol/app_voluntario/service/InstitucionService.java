@@ -52,4 +52,14 @@ public class InstitucionService {
             throw new ApiErrorException("Error al actualizar la institución " + e.getMessage());
         }
     }
+
+    public void deleteInstitucion(Integer idInstitucion) {
+        try{
+            Institucion institucion = institucionRepository.findById(idInstitucion);
+            if(institucion == null) throw new ApiErrorException("La institucion no existe.");
+            institucionRepository.delete(idInstitucion);
+        }catch(Exception e){
+            throw new ApiErrorException("Error al eliminar la institución " + e.getMessage());
+        }
+    }
 }
