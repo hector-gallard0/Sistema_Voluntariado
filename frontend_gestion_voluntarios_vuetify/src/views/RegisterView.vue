@@ -107,14 +107,14 @@ const user = ref<Usuario>({
     apellido: "",
     email: "",
     password: "",
+    latit: 0,
+    longit: 0
 })
 const voluntario = ref<boolean>(false);
 const coordinador = ref<boolean>(false);
 const error = ref<boolean>(false);
 const success = ref<boolean>(false);
 const messages = ref<object>({});
-const latit = ref<number>(0);
-const longit = ref<number>(0);
 const marker = ref();
 
 onMounted(async () => {
@@ -133,8 +133,8 @@ onMounted(async () => {
         }
         marker.value = L.marker([latLng.lat, latLng.lng]).addTo(map);
 
-        latit.value = latLng.lat;
-        longit.value = latLng.lng;
+        user.value.latit = latLng.lat;
+        user.value.longit = latLng.lng;
         console.log(latLng); // Aquí puedes hacer lo que desees con las coordenadas
     });
 
@@ -165,7 +165,7 @@ onMounted(async () => {
 
 
 const submitRegisterForm = async () => {
-    const response = await store.register(user.value.nombre ?? '', user.value.apellido ?? '', user.value.email ?? '', user.value.password ?? '', idInstitucion.value ?? -1, voluntario.value ?? false, coordinador.value ?? false, latit.value ?? 0, longit.value ?? 0);
+    const response = await store.register(user.value.nombre ?? '', user.value.apellido ?? '', user.value.email ?? '', user.value.password ?? '', idInstitucion.value ?? -1, voluntario.value ?? false, coordinador.value ?? false, user.value.latit ?? 0, user.value.longit ?? 0);
     console.log(response);
     if(response.status == 200 ){
         success.value = true;
