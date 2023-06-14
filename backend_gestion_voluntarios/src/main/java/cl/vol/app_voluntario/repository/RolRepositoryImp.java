@@ -80,4 +80,16 @@ public class RolRepositoryImp implements RolRepository{
             con.commit();
         }
     }
+
+    @Override
+    public void delete(Integer idRol){
+        try(Connection con = sql2o.beginTransaction()){
+            String sql = "DELETE FROM rol WHERE id_rol = :id_rol";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_rol", idRol)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
 }

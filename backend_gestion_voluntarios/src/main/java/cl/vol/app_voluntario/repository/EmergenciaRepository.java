@@ -14,4 +14,10 @@ public interface EmergenciaRepository {
     Integer findEmeHabilidadIdByHabilidadId(Integer idHabilidad);
     List<Emergencia> findAllByHabilidadId(Integer idHabilidad);
     void set(Emergencia emergencia);
+
+    void delete(Integer idEmergencia);
+
+    void saveEmeHabilidad(Integer idEmergencia, Integer idHabilidad);
+    void deleteEmeHabilidad(Integer idEmergencia, Integer idHabilidad);
+    void setEmeHabilidad(Integer idEmergencia, Integer idHabilidad, Integer newIdHabilidad);
 }

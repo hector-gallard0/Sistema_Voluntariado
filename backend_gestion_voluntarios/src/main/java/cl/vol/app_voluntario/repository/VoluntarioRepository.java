@@ -9,9 +9,13 @@ public interface VoluntarioRepository {
     Voluntario findVoluntarioByUserId(Integer idUsuario);
 
     Voluntario findById(Integer idUsuario);
-    Habilidad saveVolHabilidad(Integer idVoluntario, Integer idHabilidad);
-
+    void saveVolHabilidad(Integer idVoluntario, Integer idHabilidad);
+    void deleteVolHabilidad(Integer idVoluntario, Integer idHabilidad);
+    void setVolHabilidad(Integer id, Integer idHabilidad, Integer newIdHabilidad);
     void saveVolTarea(Integer idVoluntario, Integer idTarea, CreateVolTareaRequest request);
+    void deleteVolTarea(Integer idVoluntario, Integer idTarea);
     void deleteVolHabilidadByVoluntarioId(Integer idVoluntario);
     void delete(Integer idVoluntario);
+    void setVolTarea(Integer id, Integer idTarea, Integer newIdTarea);
+
 }

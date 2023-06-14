@@ -245,4 +245,21 @@ public class UsuarioRepositoryImp implements UsuarioRepository{
             con.commit();
         }
     }
+
+    @Override
+    public void setUserRol(Integer idUsuario, Integer idRol, Integer newIdRol){
+        try(Connection con = sql2o.beginTransaction()){
+            String sql = "UPDATE usuario_rol " +
+                    "SET id_rol = :new_id_rol " +
+                    "WHERE id_rol = :id_rol " +
+                    "AND id_usuario = :id_usuario";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_usuario", idUsuario)
+                    .addParameter("id_rol", idRol)
+                    .addParameter("new_id_rol", newIdRol)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
 }

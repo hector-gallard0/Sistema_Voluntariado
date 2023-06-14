@@ -104,4 +104,26 @@ public class HabilidadRepositoryImp implements  HabilidadRepository{
             con.commit();
         }
     }
+
+    @Override
+    public List<Habilidad> findAll(){
+        try(Connection con = sql2o.open()){
+            String sql = "SELECT id_habilidad, descripcion FROM habilidad ";
+            return con.createQuery(sql)
+                    .executeAndFetch(Habilidad.class);
+        }
+    }
+
+    @Override
+    public void delete(Integer idHabilidad){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM habilidad " +
+                    "WHERE id_habilidad = :id_habilidad ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
 }

@@ -99,4 +99,17 @@ public class InstitucionRepositoryImp implements  InstitucionRepository{
             con.commit();
         }
     }
+
+    @Override
+    public void delete(Integer idInstitucion){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM institucion " +
+                    "WHERE id_institucion = :id_institucion";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_institucion", idInstitucion)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
 }

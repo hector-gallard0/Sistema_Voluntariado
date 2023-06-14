@@ -20,4 +20,5 @@ public interface UsuarioRepository {
 
     void set(Usuario usuario);
     void deleteAllUserRoles(Integer idUsuario);
+    void setUserRol(Integer idUsuario, Integer idRol, Integer newIdRol);
 }

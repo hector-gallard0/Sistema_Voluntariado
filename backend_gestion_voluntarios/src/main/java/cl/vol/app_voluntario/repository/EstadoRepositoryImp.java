@@ -78,4 +78,17 @@ public class EstadoRepositoryImp implements EstadoRepository{
             con.commit();
         }
     }
+
+    @Override
+    public void delete(Integer idEstado) {
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM estado " +
+                    "WHERE id_estado = :id_estado";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_estado", idEstado)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
 }

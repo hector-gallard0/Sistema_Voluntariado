@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Sistema_Voluntariado.iml" filepath="$PROJECT_DIR$/.idea/Sistema_Voluntariado.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend_gestion_voluntarios.main.iml" filepath="$PROJECT_DIR$/.idea/modules/backend_gestion_voluntarios.main.iml" />
     </modules>
   </component>
 </project>

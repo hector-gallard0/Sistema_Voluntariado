@@ -54,7 +54,7 @@ public class TareaRepositoryImp implements TareaRepository{
     }
 
     @Override
-    public boolean saveTareaHabilidad(Integer idTarea, List<Habilidad> habilidades){
+    public boolean saveTareaHabilidades(Integer idTarea, List<Habilidad> habilidades){
         try (Connection con = sql2o.beginTransaction()) {
             for(Habilidad habilidad : habilidades){
                 Integer idEmeHabilidad = emergenciaRepository.findEmeHabilidadIdByHabilidadId(habilidad.getId());
@@ -233,6 +233,53 @@ public class TareaRepositoryImp implements TareaRepository{
                     .addParameter("id_voluntario", idVoluntario)
                     .executeUpdate()
                     .getResult();
+        }
+    }
+
+    @Override
+    public void saveTareaHabilidad(Integer idTarea, Integer idHabilidad){
+        try (Connection con = sql2o.beginTransaction()) {
+            Integer id = con.createQuery("SELECT nextval('tarea_habilidad_seq')")
+                    .executeScalar(Integer.class);
+            String sql = "INSERT INTO tarea_habilidad (id_tarea_habilidad, id_eme_habilidad, id_tarea) " +
+                    "VALUES (:id_tarea_habilidad, " +
+                    "(SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :id_habilidad), " +
+                    ":id_tarea)";
+            con.createQuery(sql)
+                    .addParameter("id_tarea_habilidad", id)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .addParameter("id_tarea", idTarea)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void deleteTareaHabilidad(Integer idTarea, Integer idHabilidad){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM tarea_habilidad " +
+                    "WHERE id_tarea = :id_tarea " +
+                    "AND id_eme_habilidad = (SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :id_habilidad)  ";
+            con.createQuery(sql)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .addParameter("id_tarea", idTarea)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void setTareaHabilidad(Integer idTarea, Integer idHabilidad, Integer newIdHabilidad){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE tarea_habilidad " +
+                    "SET id_eme_habilidad = (SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :new_id_habilidad) " +
+                    "WHERE id_tarea = :id_tarea AND id_eme_habilidad = (SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :id_habilidad)";
+            con.createQuery(sql)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .addParameter("id_tarea", idTarea)
+                    .addParameter("new_id_habilidad", newIdHabilidad)
+                    .executeUpdate();
+            con.commit();
         }
     }
 }

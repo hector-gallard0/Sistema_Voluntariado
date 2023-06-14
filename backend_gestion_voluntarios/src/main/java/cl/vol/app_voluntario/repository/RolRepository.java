@@ -10,4 +10,5 @@ public interface RolRepository {
     Rol findById(int idRol);
     List<Rol> findAllByUserId(int idUsuario);
     void set(Rol rol);
+    void delete(Integer idRol);
 }

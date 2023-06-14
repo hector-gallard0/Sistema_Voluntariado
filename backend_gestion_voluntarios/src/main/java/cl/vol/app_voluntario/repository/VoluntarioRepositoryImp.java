@@ -66,9 +66,8 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
     }
 
     @Override
-    public Habilidad saveVolHabilidad(Integer idVoluntario, Integer idHabilidad) {
-        try (Connection con = sql2o.open()) {
-            con.getJdbcConnection().setAutoCommit(false);
+    public void saveVolHabilidad(Integer idVoluntario, Integer idHabilidad) {
+        try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('vol_habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO vol_habilidad (id_voluntario_habilidad, id_voluntario, id_habilidad) " +
@@ -81,16 +80,47 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
                     .executeUpdate()
                     .getResult();
             con.commit();
-            return habilidadRepository.findById(idHabilidad);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
+    public void deleteVolHabilidad(Integer idVoluntario, Integer idHabilidad) {
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM vol_habilidad " +
+                    "WHERE id_voluntario = :id_voluntario AND id_habilidad = :id_habilidad ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void setVolHabilidad(Integer idVoluntario, Integer idHabilidad, Integer newIdHabilidad) {
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE vol_habilidad " +
+                    "SET id_habilidad = :new_id_habilidad " +
+                    "WHERE id_voluntario = :id_voluntario AND id_habilidad = :id_habilidad ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .addParameter("new_id_habilidad", newIdHabilidad)
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
+        }
+    }
+
+
+    @Override
     public void saveVolTarea(Integer idVoluntario, Integer idTarea, CreateVolTareaRequest request) {
-        try (Connection con = sql2o.open()) {
-            con.getJdbcConnection().setAutoCommit(false);
+        try (Connection con = sql2o.beginTransaction()) {
             Integer id = con.createQuery("SELECT nextval('ranking_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO ranking (id_ranking, id_voluntario, id_tarea, puntaje, flag_invitado, flag_participa) " +
@@ -106,13 +136,11 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
                     .executeUpdate()
                     .getResult();
             con.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
     public void deleteVolHabilidadByVoluntarioId(Integer idVoluntario){
-        try (Connection con = sql2o.open()) {
+        try (Connection con = sql2o.beginTransaction()) {
             String sql = "DELETE FROM vol_habilidad WHERE id_voluntario = :id_voluntario; ";
 
             TransactionUtil.createTempTableWithUsername(con, sql);
@@ -120,11 +148,12 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
                     .addParameter("id_voluntario", idVoluntario)
                     .executeUpdate()
                     .getResult();
+            con.commit();
         }
     }
 
     public void delete(Integer idVoluntario){
-        try (Connection con = sql2o.open()) {
+        try (Connection con = sql2o.beginTransaction()) {
             String sql = "DELETE FROM voluntario WHERE id_voluntario = :id_voluntario; ";
 
             TransactionUtil.createTempTableWithUsername(con, sql);
@@ -132,6 +161,42 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
                     .addParameter("id_voluntario", idVoluntario)
                     .executeUpdate()
                     .getResult();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void deleteVolTarea(Integer idVoluntario, Integer idTarea) {
+        try (Connection con = sql2o.beginTransaction()) {
+            con.getJdbcConnection().setAutoCommit(false);
+            String sql = "DELETE FROM ranking " +
+                    "WHERE id_voluntario = :id_voluntario AND id_tarea = :id_tarea ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .addParameter("id_tarea", idTarea)
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void setVolTarea(Integer idVoluntario, Integer idTarea, Integer newIdTarea) {
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "UPDATE ranking " +
+                    "SET id_tarea = :new_id_tarea " +
+                    "WHERE id_voluntario = :id_voluntario AND id_tarea = :id_tarea ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_voluntario", idVoluntario)
+                    .addParameter("id_tarea", idTarea)
+                    .addParameter("new_id_tarea", newIdTarea)
+                    .executeUpdate()
+                    .getResult();
+            con.commit();
         }
     }
 }

@@ -16,4 +16,7 @@ public interface HabilidadRepository {
 
     List<Habilidad> findAllByTareaId(Integer idTarea);
     void set(Habilidad habilidad);
+
+    List<Habilidad> findAll();
+    void delete(Integer idHabilidad);
 }

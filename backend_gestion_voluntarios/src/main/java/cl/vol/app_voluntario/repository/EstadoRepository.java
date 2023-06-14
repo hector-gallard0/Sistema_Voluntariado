@@ -12,4 +12,6 @@ public interface EstadoRepository {
 
     Estado findById(Integer idEstado);
     void set(Estado estado);
+
+    void delete(Integer idEstado);
 }

@@ -15,4 +15,6 @@ public interface InstitucionRepository {
 
     List<Institucion> findAll();
     void set(Institucion institucion);
+
+    void delete(Integer idInstitucion);
 }

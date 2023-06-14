@@ -8,7 +8,7 @@ import java.util.List;
 public interface TareaRepository {
     Tarea save(Tarea tarea);
 
-    boolean saveTareaHabilidad(Integer idTarea, List<Habilidad> habilidades);
+    boolean saveTareaHabilidades(Integer idTarea, List<Habilidad> habilidades);
 
     Tarea findById(Integer idTarea);
 
@@ -24,4 +24,7 @@ public interface TareaRepository {
     List<Tarea> findAllByNombreRegion(String nombreRegion);
 
     void deleteRankingByVoluntarioId(Integer idUsuario);
+    void saveTareaHabilidad(Integer idTarea, Integer idHabilidad);
+    void deleteTareaHabilidad(Integer idTarea, Integer idHabilidad);
+    void setTareaHabilidad(Integer idTarea, Integer idHabilidad, Integer newIdHabilidad);
 }

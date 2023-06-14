@@ -1,6 +1,7 @@
 package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Emergencia;
+import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.util.TransactionUtil;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,6 +166,64 @@ public class EmergenciaRepositoryImp implements EmergenciaRepository{
                     .addParameter("id_institucion", emergencia.getInstitucion().getId())
                     .addParameter("longit", emergencia.getLongit())
                     .addParameter("latit", emergencia.getLatit())
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void delete(Integer idEmergencia){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM emergencia " +
+                    "WHERE id_emergencia = :id_emergencia";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_emergencia", idEmergencia)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void saveEmeHabilidad(Integer idEmergencia, Integer idHabilidad){
+        try (Connection con = sql2o.beginTransaction()) {
+            Integer id = con.createQuery("SELECT nextval('eme_habilidad_seq')")
+                    .executeScalar(Integer.class);
+            String sql = "INSERT INTO eme_habilidad (id_eme_habilidad, id_emergencia, id_habilidad) " +
+                    "VALUES(:id_eme_habilidad, :id_emergencia, :id_habilidad) ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
+            con.createQuery(sql)
+                    .addParameter("id_eme_habilidad", id)
+                    .addParameter("id_emergencia", idEmergencia)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void deleteEmeHabilidad(Integer idEmergencia, Integer idHabilidad){
+        try(Connection con = sql2o.beginTransaction()){
+            String sql = "DELETE FROM eme_habilidad " +
+                    " WHERE id_emergencia = :id_emergencia AND id_habilidad = :id_habilidad";
+            con.createQuery(sql)
+                    .addParameter("id_emergencia", idEmergencia)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
+
+    @Override
+    public void setEmeHabilidad(Integer idEmergencia, Integer idHabilidad, Integer newIdHabilidad){
+        try(Connection con = sql2o.beginTransaction()){
+            String sql = "UPDATE eme_habilidad " +
+                    "SET id_habilidad = :new_id_habilidad " +
+                    "WHERE id_emergencia = :id_emergencia AND id_habilidad = :id_habilidad";
+            con.createQuery(sql)
+                    .addParameter("id_emergencia", idEmergencia)
+                    .addParameter("id_habilidad", idHabilidad)
+                    .addParameter("new_id_habilidad", newIdHabilidad)
                     .executeUpdate();
             con.commit();
         }
