@@ -1,6 +1,7 @@
 <template>
-<v-container class="d-flex align-center h-screen">
+<v-container class="d-flex align-center h-screen"> 
     <v-container class="d-flex flex-column align-center w-75">
+        <v-alert v-if="error" class="my-7" type="error" :text="errorMessage"></v-alert>
         <v-card width="500px" class="pa-5 text-center">
             <p class="text-h4 mb-5">Iniciar sesión</p>
             <v-divider></v-divider>
@@ -65,19 +66,21 @@ const user = ref<Usuario>({
 const error = ref<boolean>(false);
 const success = ref<boolean>(false);
 const messages = ref<object>({});
+const errorMessage = ref<string>("");
 
 const submitLoginForm = async () => {
     const response = await store.login(user.value.email ?? '', user.value.password ?? '', idRol.value ?? -1);
     console.log(response);
-    if(response.status == 200 ){
+    if(response.status == 200){
         success.value = true;
         error.value = false;
         messages.value = response.messages || "Inicio de sesión exitoso.";    
         router.push({name: "tasks"});
     }else{
+        // alert("No pudo iniciar sesión");
         error.value = true;
         success.value = false;
-        messages.value = response.messages || "Hubo un error al iniciar sesión, intente nuevamente.";            
+        errorMessage.value = response.errorMessage || "Hubo un error al iniciar sesión, intente nuevamente.";            
     }
 }
 </script>
