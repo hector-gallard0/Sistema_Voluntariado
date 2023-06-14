@@ -31,4 +31,8 @@ public class Tarea {
     private Emergencia emergencia;
     private Double longit;
     private Double latit;
+
+    public List<Habilidad> getHabilidades() {
+        return habilidades;
+    }
 }

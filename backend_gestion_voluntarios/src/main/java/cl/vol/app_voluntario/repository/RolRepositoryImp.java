@@ -1,17 +1,12 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.DatabaseContext;
-import cl.vol.app_voluntario.model.Institucion;
 import cl.vol.app_voluntario.model.Rol;
 import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository

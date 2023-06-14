@@ -1,14 +1,12 @@
 package cl.vol.app_voluntario.controller;
 
 import cl.vol.app_voluntario.model.Institucion;
-import cl.vol.app_voluntario.request.CreateEmergenciaRequest;
 import cl.vol.app_voluntario.request.CreateInstitucionRequest;
-import cl.vol.app_voluntario.request.CreateTareaRequest;
-import cl.vol.app_voluntario.request.UpdateInstitucionRequest;
 import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.InstitucionService;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +52,7 @@ public class InstitucionController {
 
     //READ ALL
     @GetMapping("/instituciones")
-    public ResponseEntity<?> getInstituciones(){
+    public ResponseEntity<?>    getInstituciones(){
         return new ResponseEntity<>(institucionService.getInstituciones(), HttpStatus.FOUND);
     }
 
@@ -64,7 +62,23 @@ public class InstitucionController {
                                         @Valid @RequestBody Institucion request){
         institucionService.updateInstitucion(id, request);
         Map<String, String> messages = new HashMap<>();
-        messages.put("exito", "Institución editada con éxito.");
+        messages.put("exito", "Institución actualizada con éxito.");
+
+        return new ResponseEntity<>
+                (new ApiResponse().builder()
+                        .status(HttpStatus.OK.value())
+                        .messages(messages)
+                        .build(),
+                        HttpStatus.OK);
+    };
+
+    @DeleteMapping("/instituciones/{idInstitucion}")
+    public ResponseEntity<?> deleteInstitucion(@Valid @NotNull @PathVariable Integer idInstitucion,
+                                        BindingResult bindingResult){
+        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+        institucionService.deleteInstitucion(idInstitucion);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Institución eliminada con éxito.");
 
         return new ResponseEntity<>
                 (new ApiResponse().builder()

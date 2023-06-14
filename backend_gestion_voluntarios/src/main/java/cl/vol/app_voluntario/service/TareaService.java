@@ -1,7 +1,6 @@
 package cl.vol.app_voluntario.service;
 
 import cl.vol.app_voluntario.errors.ApiErrorException;
-import cl.vol.app_voluntario.errors.InvalidDatesException;
 import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Estado;
 import cl.vol.app_voluntario.model.Habilidad;

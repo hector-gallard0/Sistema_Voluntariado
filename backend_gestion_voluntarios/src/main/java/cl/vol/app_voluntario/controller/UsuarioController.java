@@ -117,4 +117,10 @@ public class UsuarioController {
                         .build(),
                         HttpStatus.OK);
     }
+
+    @GetMapping("/usuarios/{idUsuario}/roles")
+    public ResponseEntity<?> getRolesUsuario(@PathVariable Integer idUsuario){
+        return new ResponseEntity<>(usuarioService.getRolesUsuario(idUsuario), HttpStatus.OK);
+    }
+
 }

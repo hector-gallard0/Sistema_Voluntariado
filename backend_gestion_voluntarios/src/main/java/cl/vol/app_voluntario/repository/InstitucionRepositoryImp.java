@@ -1,11 +1,8 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Institucion;
-import cl.vol.app_voluntario.model.Usuario;
 import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;

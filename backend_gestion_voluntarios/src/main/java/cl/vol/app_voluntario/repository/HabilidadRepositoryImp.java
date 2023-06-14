@@ -1,6 +1,5 @@
 package cl.vol.app_voluntario.repository;
 
-import cl.vol.app_voluntario.model.Emergencia;
 import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
 import cl.vol.app_voluntario.model.Rol;
-import cl.vol.app_voluntario.model.Tarea;
 import cl.vol.app_voluntario.model.Usuario;
 import cl.vol.app_voluntario.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;

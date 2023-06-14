@@ -1,10 +1,8 @@
 package cl.vol.app_voluntario.controller;
 
-import cl.vol.app_voluntario.model.Institucion;
 import cl.vol.app_voluntario.model.Rol;
 import cl.vol.app_voluntario.request.*;
 import cl.vol.app_voluntario.response.ApiResponse;
-import cl.vol.app_voluntario.service.InstitucionService;
 import cl.vol.app_voluntario.service.RolService;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import jakarta.validation.Valid;
@@ -71,4 +69,19 @@ public class RolController {
                         .build(),
                         HttpStatus.OK);
     };
+
+    @DeleteMapping("/roles/{idRol}")
+    public ResponseEntity<?> deleteRol(@PathVariable Integer idRol){
+        rolService.deleteRol(idRol);
+
+        Map<String, String> messages = new HashMap<>();
+        messages.put("exito", "Rol eliminado con éxito.");
+
+        return new ResponseEntity<>
+            (new ApiResponse().builder()
+                    .status(HttpStatus.OK.value())
+                    .messages(messages)
+                    .build(),
+                    HttpStatus.OK);
+    }
 }
