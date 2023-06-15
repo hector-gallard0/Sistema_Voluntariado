@@ -10,7 +10,7 @@ import java.sql.Date;
 
 @Data
 public class UpdateTareaRequest {
-    @Length(min = 5, max=10, message = "El nombre debe tener entre 5 y 12 caracteres.")
+    @Length(min = 5, max=20, message = "El nombre debe tener entre 5 y 30 caracteres.")
     private String nombre;
     @Length(max=100, message = "La descripción debe tener máximo 100 caracteres.")
     private String descripcion;

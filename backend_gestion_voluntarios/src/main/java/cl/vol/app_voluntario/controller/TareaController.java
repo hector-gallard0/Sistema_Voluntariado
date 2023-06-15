@@ -33,7 +33,7 @@ public class TareaController {
     //READ ONE
     @GetMapping("/tareas/{id}")
     public ResponseEntity<?> getTarea(@PathVariable Integer id){
-        return new ResponseEntity<>(tareaService.getTarea(id), HttpStatus.FOUND);
+        return new ResponseEntity<>(tareaService.getTarea(id), HttpStatus.OK);
     };
 
     //CREATE
@@ -114,17 +114,8 @@ public class TareaController {
 
     @GetMapping("/tareas/{idTarea}/habilidades")
     public ResponseEntity<?> getHabilidadesTarea(
-            @Valid @NotNull @PathVariable Integer idTarea,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idTarea
     ){
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>
-                    (new ApiResponse().builder()
-                            .status(HttpStatus.BAD_REQUEST.value())
-                            .messages(ValidationUtil.getValidationErrors(bindingResult))
-                            .build(),
-                            HttpStatus.BAD_REQUEST);
-        }
 
         return new ResponseEntity<>(tareaService.getHabilidadesTarea(idTarea), HttpStatus.OK);
     }
@@ -132,18 +123,8 @@ public class TareaController {
     @PostMapping("/tareas/{idTarea}/habilidades/{idHabilidad}")
     public ResponseEntity<?> createTarea(
             @Valid @NotNull @PathVariable Integer idTarea,
-            @Valid @NotNull @PathVariable Integer idHabilidad,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idHabilidad
     ){
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>
-                    (new ApiResponse().builder()
-                            .status(HttpStatus.BAD_REQUEST.value())
-                            .messages(ValidationUtil.getValidationErrors(bindingResult))
-                            .build(),
-                            HttpStatus.BAD_REQUEST);
-        };
-
         tareaService.addHabilidadTarea(idTarea, idHabilidad);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Habilidad agregada a la tarea con éxito.");
@@ -159,18 +140,8 @@ public class TareaController {
     @DeleteMapping("/tareas/{idTarea}/habilidades/{idHabilidad}")
     public ResponseEntity<?> deleteTarea(
             @Valid @NotNull @PathVariable Integer idTarea,
-            @Valid @NotNull @PathVariable Integer idHabilidad,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idHabilidad
     ){
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>
-                    (new ApiResponse().builder()
-                            .status(HttpStatus.BAD_REQUEST.value())
-                            .messages(ValidationUtil.getValidationErrors(bindingResult))
-                            .build(),
-                            HttpStatus.BAD_REQUEST);
-        };
-
         tareaService.deleteHabilidadTarea(idTarea, idHabilidad);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Habilidad eliminada en la tarea con éxito.");

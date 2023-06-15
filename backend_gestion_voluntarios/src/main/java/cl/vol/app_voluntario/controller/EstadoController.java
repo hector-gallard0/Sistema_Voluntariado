@@ -47,7 +47,9 @@ public class EstadoController {
     //ESTADO UPDATE
     @PutMapping("/estados/{id}")
     public ResponseEntity<?> updateEstado(@PathVariable Integer id,
-                                        @Valid @RequestBody UpdateEstadoRequest request){
+                                        @Valid @RequestBody UpdateEstadoRequest request,
+                                          BindingResult bindingResult){
+        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         estadoService.updateEstado(id, request);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Estado editado con éxito.");
@@ -61,8 +63,7 @@ public class EstadoController {
     };
 
     @DeleteMapping("/estados/{idEstado}")
-    public ResponseEntity<?> deleteEstado(@Valid @RequestBody @PathVariable Integer idEstado, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> deleteEstado(@Valid @RequestBody @PathVariable Integer idEstado){
         estadoService.deleteEstado(idEstado);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Estado editado con éxito.");

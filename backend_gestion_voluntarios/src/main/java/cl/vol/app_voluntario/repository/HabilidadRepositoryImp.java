@@ -109,6 +109,7 @@ public class HabilidadRepositoryImp implements  HabilidadRepository{
         try(Connection con = sql2o.open()){
             String sql = "SELECT id_habilidad, descripcion FROM habilidad ";
             return con.createQuery(sql)
+                    .addColumnMapping("id_habilidad", "id")
                     .executeAndFetch(Habilidad.class);
         }
     }

@@ -78,9 +78,10 @@ public class TareaService {
 
     public Tarea getTarea(Integer id) {
         try{
+            if(tareaRepository.findById(id) == null) throw new ApiErrorException("La tarea no existe.");
             return tareaRepository.findById(id);
         }catch(Exception e){
-            throw new ApiErrorException("Tarea no encontrada.");
+            throw new ApiErrorException("Tarea no encontrada. " + e.getMessage());
         }
     }
 

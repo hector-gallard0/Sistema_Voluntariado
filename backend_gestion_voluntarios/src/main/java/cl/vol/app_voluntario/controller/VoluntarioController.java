@@ -27,20 +27,16 @@ public class VoluntarioController {
 
     @GetMapping("/voluntarios/{idUsuario}/habilidades")
     public ResponseEntity<?> getHabilidadesVoluntario(
-            @Valid @NotNull Integer idUsuario,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idUsuario
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(voluntarioService.getHabilidadesVoluntario(idUsuario), HttpStatus.OK);
     }
 
     @PostMapping("/voluntarios/{idUsuario}/habilidades/{idHabilidad}")
     public ResponseEntity<?> addHabilidadVoluntario(
             @Valid @NotNull @PathVariable Integer idUsuario,
-            @Valid @NotNull @PathVariable Integer idHabilidad,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idHabilidad
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         voluntarioService.addHabilidadVoluntario(idUsuario, idHabilidad);
         return new ResponseEntity<>("Éxito", HttpStatus.OK);
     }
@@ -48,10 +44,8 @@ public class VoluntarioController {
     @DeleteMapping("/voluntarios/{idUsuario}/habilidades/{idHabilidad}")
     public ResponseEntity<?> deleteHabilidadVoluntario(
             @Valid @NotNull @PathVariable Integer idUsuario,
-            @Valid @NotNull @PathVariable Integer idHabilidad,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idHabilidad
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         voluntarioService.deleteHabilidadVoluntario(idUsuario, idHabilidad);
         return new ResponseEntity<>("Éxito", HttpStatus.OK);
     }
@@ -70,10 +64,8 @@ public class VoluntarioController {
 
     @GetMapping("/voluntarios/{idUsuario}/tareas")
     public ResponseEntity<?> getTareasVoluntario(
-            @Valid @NotNull Integer idUsuario,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idUsuario
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(voluntarioService.getTareasVoluntario(idUsuario), HttpStatus.OK);
     }
 
@@ -104,10 +96,8 @@ public class VoluntarioController {
     @DeleteMapping("/voluntarios/{idUsuario}/tareas/{idTarea}")
     public ResponseEntity<?> updateTareaVoluntario(
             @Valid @NotNull @PathVariable Integer idUsuario,
-            @Valid @NotNull @PathVariable Integer idTarea,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idTarea
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         voluntarioService.deleteTareaVoluntario(idUsuario, idTarea);
         return new ResponseEntity<>("Exito", HttpStatus.OK);
     }

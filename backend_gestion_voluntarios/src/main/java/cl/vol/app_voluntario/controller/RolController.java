@@ -56,7 +56,7 @@ public class RolController {
 
     //UPDATE
     @PutMapping("/roles/{id}")
-    public ResponseEntity<?> upateTarea(@PathVariable Integer id,
+    public ResponseEntity<?> updateRol(@PathVariable Integer id,
                                         @Valid @RequestBody Rol request){
         rolService.updateRol(id, request);
         Map<String, String> messages = new HashMap<>();

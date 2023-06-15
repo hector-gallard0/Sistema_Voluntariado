@@ -68,7 +68,7 @@ public class VoluntarioRepositoryImp implements VoluntarioRepository{
             Integer id = con.createQuery("SELECT nextval('vol_habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO vol_habilidad (id_voluntario_habilidad, id_voluntario, id_habilidad) " +
-                    "VALUES (:id_voluntario_habilidad, :id_voluntario, :id_voluntario)";
+                    "VALUES (:id_voluntario_habilidad, :id_voluntario, :id_habilidad)";
             TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_voluntario_habilidad", id)

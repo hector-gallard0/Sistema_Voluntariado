@@ -1,5 +1,6 @@
 package cl.vol.app_voluntario.repository;
 
+import cl.vol.app_voluntario.errors.ApiErrorException;
 import cl.vol.app_voluntario.model.Habilidad;
 import cl.vol.app_voluntario.model.Tarea;
 import cl.vol.app_voluntario.util.TransactionUtil;
@@ -239,15 +240,19 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public void saveTareaHabilidad(Integer idTarea, Integer idHabilidad){
         try (Connection con = sql2o.beginTransaction()) {
+            Integer idEmeHabilidad = emergenciaRepository.findEmeHabilidadIdByHabilidadId(idHabilidad);
+            if(idEmeHabilidad == null) throw new ApiErrorException("La habilidad no se corresponde con la emergencia de esta tarea");
             Integer id = con.createQuery("SELECT nextval('tarea_habilidad_seq')")
                     .executeScalar(Integer.class);
             String sql = "INSERT INTO tarea_habilidad (id_tarea_habilidad, id_eme_habilidad, id_tarea) " +
                     "VALUES (:id_tarea_habilidad, " +
-                    "(SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :id_habilidad), " +
+                    ":id_eme_habilidad" +
                     ":id_tarea)";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_tarea_habilidad", id)
                     .addParameter("id_habilidad", idHabilidad)
+                    .addParameter("id_eme_habilidad", idEmeHabilidad)
                     .addParameter("id_tarea", idTarea)
                     .executeUpdate();
             con.commit();
@@ -260,6 +265,7 @@ public class TareaRepositoryImp implements TareaRepository{
             String sql = "DELETE FROM tarea_habilidad " +
                     "WHERE id_tarea = :id_tarea " +
                     "AND id_eme_habilidad = (SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :id_habilidad)  ";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
                     .addParameter("id_habilidad", idHabilidad)
                     .addParameter("id_tarea", idTarea)
@@ -271,12 +277,15 @@ public class TareaRepositoryImp implements TareaRepository{
     @Override
     public void setTareaHabilidad(Integer idTarea, Integer idHabilidad, Integer newIdHabilidad){
         try (Connection con = sql2o.beginTransaction()) {
+            Integer idEmeHabilidad = emergenciaRepository.findEmeHabilidadIdByHabilidadId(idHabilidad);
+            if(idEmeHabilidad == null) throw new ApiErrorException("La habilidad no se corresponde con la emergencia de esta tarea");
             String sql = "UPDATE tarea_habilidad " +
                     "SET id_eme_habilidad = (SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :new_id_habilidad) " +
-                    "WHERE id_tarea = :id_tarea AND id_eme_habilidad = (SELECT eh.id_eme_habilidad FROM eme_habilidad eh WHERE eh.id_habilidad = :id_habilidad)";
+                    "WHERE id_tarea = :id_tarea AND id_eme_habilidad = :id_eme_habilidad";
+            TransactionUtil.createTempTableWithUsername(con, sql);
             con.createQuery(sql)
-                    .addParameter("id_habilidad", idHabilidad)
                     .addParameter("id_tarea", idTarea)
+                    .addParameter("id_eme_habilidad", idEmeHabilidad)
                     .addParameter("new_id_habilidad", newIdHabilidad)
                     .executeUpdate();
             con.commit();

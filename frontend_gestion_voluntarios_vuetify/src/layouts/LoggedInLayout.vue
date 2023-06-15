@@ -7,7 +7,7 @@
       <v-list>
         <v-list-item
         prepend-icon="mdi-account-circle-outline"		
-        :title="nombre"
+        :title="`${nombre} ${apellido}`"
         :subtitle="email"
         
         ></v-list-item>
@@ -31,11 +31,13 @@ import { getUsuario } from '@/services/UsuarioService'
 const auth = useAuth();
 
 const nombre = ref<String>("");
+const apellido = ref<String>("");
 const email = ref<String>("");
 
 onMounted(async () => {
 	const response = await getUsuario();
 	nombre.value = response.nombre;
+	apellido.value = response.apellido;
 	email.value = response.email;
 })
 

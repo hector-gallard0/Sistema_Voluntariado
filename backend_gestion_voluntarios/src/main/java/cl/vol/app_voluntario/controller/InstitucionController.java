@@ -73,9 +73,7 @@ public class InstitucionController {
     };
 
     @DeleteMapping("/instituciones/{idInstitucion}")
-    public ResponseEntity<?> deleteInstitucion(@Valid @NotNull @PathVariable Integer idInstitucion,
-                                        BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> deleteInstitucion(@Valid @NotNull @PathVariable Integer idInstitucion){
         institucionService.deleteInstitucion(idInstitucion);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Institución eliminada con éxito.");

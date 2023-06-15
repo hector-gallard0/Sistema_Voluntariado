@@ -56,9 +56,7 @@ public class EmergenciaController {
     }
 
     @DeleteMapping("/emergencias/{idEmergencia}")
-    public ResponseEntity<?> deleteEmergencia(@Valid @NotNull  @PathVariable Integer idEmergencia,
-                                              BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> deleteEmergencia(@Valid @NotNull @PathVariable Integer idEmergencia){
         emergenciaService.deleteEmergencia(idEmergencia);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Emergencia eliminada con éxito.");
@@ -79,18 +77,15 @@ public class EmergenciaController {
     }
 
     @GetMapping("/emergencias/{idEmergencia}/habilidades")
-    public ResponseEntity<?> getHabilidadesEmergencia(@Valid @NotNull @PathVariable Integer idEmergencia, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> getHabilidadesEmergencia(@Valid @NotNull @PathVariable Integer idEmergencia) {
         return new ResponseEntity<>(emergenciaService.getHabilidadesEmergencia(idEmergencia), HttpStatus.OK);
     }
 
     @PostMapping("/emergencias/{idEmergencia}/habilidades/{idHabilidad}")
     public ResponseEntity<?> addHabilidadEmergencia(
             @Valid @NotNull @PathVariable Integer idEmergencia,
-            @Valid @NotNull @PathVariable Integer idHabilidad,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idHabilidad
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         emergenciaService.addHabilidadEmergencia(idEmergencia, idHabilidad);
         return new ResponseEntity<>("Éxito", HttpStatus.OK);
     }
@@ -98,10 +93,8 @@ public class EmergenciaController {
     @DeleteMapping("/emergencias/{idEmergencia}/habilidades/{idHabilidad}")
     public ResponseEntity<?> deleteHabilidadEmergencia(
             @Valid @NotNull @PathVariable Integer idEmergencia,
-            @Valid @NotNull @PathVariable Integer idHabilidad,
-            BindingResult bindingResult
+            @Valid @NotNull @PathVariable Integer idHabilidad
     ){
-        if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);
         emergenciaService.deleteHabilidadEmergencia(idEmergencia, idHabilidad);
         return new ResponseEntity<>("Éxito", HttpStatus.OK);
     }
