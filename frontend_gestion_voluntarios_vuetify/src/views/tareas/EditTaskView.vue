@@ -1,6 +1,8 @@
 <template>
     <v-container>
         <v-container class="d-flex flex-column align-center">
+            <v-alert v-for="(msg, i) in Object.values(messages)" :key="i" v-if="error" class="my-2" width="500px" type="error">{{ `${i + 1}. ${msg}` }}</v-alert>
+            <v-alert v-if="success" class="my-2" type="success" width="500px"><ul><li v-for="(msg, i) in Object.values(messages)" :key="i">{{ `${i + 1}. ${msg}` }}</li></ul></v-alert>
             <v-sheet width="500px" class="my-5">
                 <v-btn color="terciary" variant="outlined" @click="$router.push('/tasks')">Volver</v-btn>
             </v-sheet>
@@ -16,6 +18,7 @@
                     item-title="label"
                     item-value="value"                    
                     label="Emergencia"
+                    variant="outlined"
                     required
                 ></v-select>
                 
@@ -23,6 +26,7 @@
                     v-model="task.nombre"                                                       
                     prepend-inner-icon="mdi-email-outline"
                     label="Nombre"                    
+                    variant="outlined"
                     required
                 ></v-text-field>
 
@@ -31,6 +35,7 @@
                     prepend-inner-icon="mdi-lock-outline"
                     label="Voluntarios inscritos"                    
                     type="number"
+                    variant="outlined"
                     required
                 ></v-text-field>                            
 
@@ -39,6 +44,7 @@
                     prepend-inner-icon="mdi-lock-outline"
                     label="Voluntarios requeridos"                    
                     type="number"
+                    variant="outlined"
                     required
                 ></v-text-field>                
                 
@@ -47,6 +53,7 @@
                     prepend-inner-icon="mdi-calendar-start-outline"                                                                                     
                     label="Fecha inicio"                                                         
                     readonly
+                    variant="outlined"
                     required                            
                 >            
                     <v-menu                         
@@ -62,6 +69,7 @@
                     prepend-inner-icon="mdi-calendar-end-outline"                                                                                     
                     label="Fecha fin"                                                         
                     readonly
+                    variant="outlined"
                     required                            
                 >            
                     <v-menu                         
@@ -79,6 +87,7 @@
                     item-title="label"
                     item-value="value"                    
                     label="Estado"
+                    variant="outlined"
                     required
                 ></v-select>
 
@@ -90,14 +99,28 @@
                     :items="emergencias.find(e => e.id == idEmergencia)?.habilidades"
                     item-title="descripcion"
                     item-value="id"   
+                    variant="outlined"
                     multiple                    
                 ></v-select>   
 
                 <v-textarea 
                     v-model="task.descripcion"
                     prepend-inner-icon="mdi-text-long"    
+                    variant="outlined"
                     label="Descripción"                
                 />
+
+                <v-container class="text-left mb-7">
+                    <v-label class="mb-5">                    
+                        <v-icon
+                        icon="mdi-map-marker-account-outline"
+                        ></v-icon>
+                        Seleccionar ubicación
+                    </v-label>
+                    <div class="d-flex justify-center">
+                        <div id="map"></div>
+                    </div>
+                </v-container>
 
                 <v-btn
                     color="primary"
@@ -122,9 +145,11 @@ import {useAuth} from '@/store/auth'
 import { getEmergencias } from '@/services/EmergenciaService'
 import { updateTask, getTask } from '@/services/TareaService'
 import { getEstados } from '@/services/EstadoService';
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import L from 'leaflet'
 
 const route = useRoute();
+const router = useRouter();
 const auth = useAuth();
 const selectedDate = ref<Date|null>(null);
 const selectedDate2 = ref<Date|null>(null);
@@ -138,7 +163,9 @@ const task = ref<Tarea>({
     voluntariosInscritos: undefined,
     estado: undefined,
     fechaInicio: "",
-    fechaFin: ""
+    fechaFin: "",
+    latit: 0,
+    longit: 0
 });
 const estadoItems = ref<object[]>([]);
 const idEstado = ref<number|undefined>(undefined);
@@ -146,6 +173,7 @@ const idEmergencia = ref<number|undefined>(undefined);
 const items = ref<object[]>([])
 const idsHabilidades = ref<number[]|undefined>(undefined);
 const emergencias = ref<Emergencia[]>([]);
+const marker = ref();
 
 const show = ref<boolean>(false);
 const error = ref<boolean>(false);
@@ -181,11 +209,45 @@ onMounted(async () => {
 
     idEstado.value = task.value.estado?.id;    
     console.log(task.value);
+
+    let map = L.map('map').setView([task.value.latit || -33.45694, task.value.longit || -70.64827], 3);
+                
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    marker.value = L.marker([task.value.latit || -33.45694, task.value.longit || -70.64827]).addTo(map);
+    marker.value.options.riseOnHover = false;
+    
+    map.on('click', (e) => {
+        const latLng = e.latlng;
+        
+        if(marker.value){
+            map.removeLayer(marker.value);
+        }
+        marker.value = L.marker([latLng.lat, latLng.lng]).addTo(map);
+        marker.value.options.riseOnHover = false;
+        map.addLayer(marker.value);
+
+        task.value.latit = latLng.lat;
+        task.value.longit = latLng.lng;            
+});
 })
 
 const submitEditTaskForm = async () => {
-    const response = await updateTask(task.value, idEmergencia.value ?? -1, idEstado.value ?? -1, auth.token || "");    
-    console.log(response);
+    if(idsHabilidades == null) return;
+    const response = await updateTask(task.value, idEmergencia.value ?? -1, idEstado.value ?? -1, auth.token || "", idsHabilidades.value ?? []);    
+    if(response.status == 200){
+        success.value = true;
+        error.value = false;
+        alert("Tarea editada con éxito");
+        router.push({name: "tasks"});
+    }else{        
+        error.value = true;
+        success.value = false;
+        messages.value = response.messages || "Hubo un error al crear la tarea, intente nuevamente.";            
+    }
 }
 
 watch(selectedDate, (newSelectedDate) => {

@@ -13,4 +13,6 @@ export default interface Tarea {
     estado?: Estado;
     habilidades?: Habilidad[];
     emergencia?: Emergencia;
+    latit?: number,
+    longit?: number
 }

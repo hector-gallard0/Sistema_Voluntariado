@@ -1,58 +1,66 @@
 <template>
-<v-container class="d-flex align-center">
+<v-container class="d-flex flex-column align-center">
+    <v-sheet width="600px" class="my-5">
+        <v-btn color="terciary" variant="outlined" @click="$router.push({ name: 'login' })">Volver</v-btn>
+    </v-sheet>
     <v-container class="d-flex flex-column align-center w-75">
-        <v-card width="500px" class="pa-5 text-center">
+        <v-card width="600px" class="pa-5 text-center">
             <p class="text-h4 mb-5">Registrarse</p>
             <v-divider></v-divider>
-            <v-form @submit.prevent="submitRegisterForm" class="my-5">    
-                <v-text-field
-                    v-model="user.nombre"                                                                       
-                    prepend-inner-icon="mdi-account-outline"
-                    label="Nombre"
-                    required
-                ></v-text-field>
-                <v-text-field
-                    v-model="user.apellido"        
-                    prepend-inner-icon="mdi-label-outline"                                                               
-                    label="Apellido"                
-                    required
-                ></v-text-field>
-                <v-text-field
-                    v-model="user.email"                                                                       
-                    prepend-inner-icon="mdi-email-outline"
-                    label="E-mail"
-                    type="email"                
-                    required
-                ></v-text-field>
-                <v-text-field
-                    v-model="user.password"    
-                    prepend-inner-icon="mdi-lock-outline"                                                                   
-                    label="Contraseña"    
-                    type="password"            
-                    required
-                ></v-text-field>                
-                
-                <v-container class="text-left">
-                    <v-label>                    
-                        <v-icon
-                        icon="mdi-account-wrench-outline"
-                        ></v-icon>
-                        Tipo de usuario
-                    </v-label>
-                    <div class="d-flex">
-                        <v-checkbox                    
-                        v-model="voluntario"
-                        label="Voluntario"
-                        color="primary"                        
-                        ></v-checkbox>
-                        <v-checkbox
-                        v-model="coordinador"
-                        label="Coordinador"
-                        color="primary"
-                        ></v-checkbox>
-                    </div>                
-                </v-container>                        
-                <v-select
+            <div class="d-flex justify-center">
+                <v-form @submit.prevent="submitRegisterForm" class="my-5 w-75">    
+                        <v-text-field
+                        v-model="user.nombre"                                                                       
+                        prepend-inner-icon="mdi-account-outline"
+                        label="Nombre"
+                        variant="outlined"
+                        required
+                        ></v-text-field>
+                        <v-text-field
+                        v-model="user.apellido"        
+                        prepend-inner-icon="mdi-label-outline"                                                               
+                        label="Apellido"                
+                        variant="outlined"
+                        required
+                        ></v-text-field>
+                    <v-text-field
+                        v-model="user.email"                                                                       
+                        prepend-inner-icon="mdi-email-outline"
+                        label="E-mail"
+                        type="email"      
+                        variant="outlined"          
+                        required
+                        ></v-text-field>
+                        <v-text-field
+                        v-model="user.password"    
+                        prepend-inner-icon="mdi-lock-outline"                                                                   
+                        label="Contraseña"    
+                        type="password"   
+                        variant="outlined"         
+                        required
+                        ></v-text-field>                
+                        
+                        <v-container class="text-left">
+                            <v-label>                    
+                                <v-icon
+                                icon="mdi-account-wrench-outline"
+                                ></v-icon>
+                                Tipo de usuario
+                            </v-label>
+                            <div class="d-flex">
+                                <v-checkbox                    
+                                v-model="voluntario"
+                                label="Voluntario"
+                                color="primary"                        
+                                ></v-checkbox>
+                                <v-checkbox
+                                v-model="coordinador"
+                            label="Coordinador"
+                            color="primary"
+                            ></v-checkbox>
+                        </div>                
+                    </v-container>                        
+                    <v-select
                     v-model="idInstitucion"
                     v-if="coordinador"
                     prepend-inner-icon="mdi-account-wrench-outline"
@@ -60,28 +68,31 @@
                     item-title="label"
                     item-value="value"                    
                     label="Institución"
+                    variant="outlined"
                     required
-                ></v-select>
-                <v-label class="d-flex justify-start pa-4">                    
-                    <v-icon
-                    icon="mdi-map-marker-account-outline"
-                    ></v-icon>
-                    Seleccionar ubicación
-                </v-label>
-                <div class="d-flex flex-column justify-center mb-7">
-                    <div class="d-flex justify-center">
-                        <div id="map"></div>
-                    </div>
-                </div>
-                <v-btn
-                    color="primary"
-                    class="w-100"
+                    ></v-select>
+                    
+                    <v-container class="text-left mb-7">
+                        <v-label class="mb-5">                    
+                            <v-icon
+                            icon="mdi-map-marker-account-outline"
+                            ></v-icon>
+                            Seleccionar ubicación
+                        </v-label>
+                        <div class="d-flex justify-center">
+                            <div id="map"></div>
+                        </div>
+                    </v-container>
+                    <v-btn
+                    color="primary"                    
                     type="submit"
                     size="large"
-                >
-                    ENVIAR
-                </v-btn>
-            </v-form>
+                    class="w-100"
+                    >
+                        REGISTRARSE
+                    </v-btn>
+                </v-form>
+            </div>
         </v-card>
     </v-container>
 </v-container>
@@ -132,7 +143,8 @@ onMounted(async () => {
             map.removeLayer(marker.value);
         }
         marker.value = L.marker([latLng.lat, latLng.lng]).addTo(map);
-
+        marker.value.options.riseOnHover = false;
+        
         user.value.latit = latLng.lat;
         user.value.longit = latLng.lng;
         console.log(latLng); // Aquí puedes hacer lo que desees con las coordenadas
@@ -182,7 +194,7 @@ const submitRegisterForm = async () => {
 
 <style>
 #map {
-    height: 400px;
-    width: 400px;
+    height: 500px;
+    width: 500px;
 }
 </style>

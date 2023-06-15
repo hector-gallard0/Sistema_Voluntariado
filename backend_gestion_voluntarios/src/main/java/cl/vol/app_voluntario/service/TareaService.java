@@ -11,6 +11,7 @@ import cl.vol.app_voluntario.repository.HabilidadRepository;
 import cl.vol.app_voluntario.repository.TareaRepository;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
 import cl.vol.app_voluntario.request.GetTareasRegionRequest;
+import cl.vol.app_voluntario.request.UpdateTareaRequest;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -83,8 +84,9 @@ public class TareaService {
         }
     }
 
-    public void updateTarea(Integer id, CreateTareaRequest newTarea){
+    public void updateTarea(Integer id, UpdateTareaRequest newTarea){
         try{
+            System.out.println(id + " " + newTarea);
             Tarea tarea = tareaRepository.findById(id);
             if(tarea == null) throw new ApiErrorException("La tarea a actualizar no existe");
             if(newTarea.getNombre() != null) {
@@ -117,6 +119,21 @@ public class TareaService {
             if(newTarea.getLatit() != null){
                 tarea.setLatit(newTarea.getLatit());
             }
+            if(newTarea.getIdsHabilidades() != null){
+                tarea.setHabilidades(habilidadRepository.findAllByTareaId(tarea.getId()));
+            }
+
+            tareaRepository.deleteAllTareaHabilidad(tarea.getId());
+            List<Habilidad> habilidades = new ArrayList<>();
+            for(Integer newIdHabilidad : newTarea.getIdsHabilidades()){
+                Habilidad habilidad = habilidadRepository.findById(newIdHabilidad);
+                if(habilidad == null) throw new ApiErrorException("Una habilidad no existe");
+                if(!sameEmergencia(tarea.getEmergencia().getId(), habilidad.getId())) throw new ApiErrorException("Una habilidad escogida no es parte de la emergencia.");
+                habilidades.add(habilidad);
+            }
+
+            System.out.println(habilidades);
+            tareaRepository.saveTareaHabilidades(tarea.getId(), habilidades);
             tareaRepository.set(tarea);
         }catch(Exception e){
             throw new ApiErrorException("Error al actualizar la tarea." + e.getMessage());

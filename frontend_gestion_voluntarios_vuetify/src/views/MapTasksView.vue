@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column align-center">
         <v-card width="500px" class="pa-5 my-7 text-center">
-            <p class="text-h4 mb-5">Visualizar ubicación tareas</p>
+            <p class="text-h4 mb-5">Ubicación tareas</p>
             <v-divider></v-divider>
             <v-form class="my-5" @submit.prevent="submitGetTasksRegion">
                 <v-select
@@ -31,7 +31,6 @@
 import { ref, onMounted } from 'vue';
 import { getTasksRegion } from '@/services/TareaService';
 import L from 'leaflet'
-import { Map } from 'leaflet';
 
 const nombreRegion = ref<string>(""); 
 const regiones = [
@@ -76,6 +75,7 @@ const submitGetTasksRegion = async () => {
                 if(tarea.longit && tarea.latit){
                     markers[i] = L.marker([tarea.latit, tarea.longit]).addTo(map.value);
                     markers[i].bindPopup(`${tarea.nombre}`).openPopup();
+                    markers[i].options.riseOnHover = false;
                 }
             }
         }
@@ -95,7 +95,7 @@ onMounted(() => {
 
 <style scoped>
 #map{
-    width: 400px;
-    height: 400px;
+    width: 500px;
+    height: 500px;
 }
 </style>

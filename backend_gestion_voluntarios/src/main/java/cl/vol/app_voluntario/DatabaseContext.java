@@ -23,10 +23,9 @@ public class DatabaseContext implements TransactionManagementConfigurer {
     public DataSource dataSource() throws SQLException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/voluntariodb");
+        dataSource.setUrl("jdbc:postgresql://localhost:5433/voluntariodb");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("123");
-        dataSource.getConnection().setAutoCommit(false);
+        dataSource.setPassword("postgres");
         return dataSource;
     }
 

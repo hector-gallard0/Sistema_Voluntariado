@@ -3,6 +3,7 @@ package cl.vol.app_voluntario.controller;
 import cl.vol.app_voluntario.request.CreateTareaRequest;
 import cl.vol.app_voluntario.request.GetTareasRegionRequest;
 import cl.vol.app_voluntario.request.UpdateHabilidadTareaRequest;
+import cl.vol.app_voluntario.request.UpdateTareaRequest;
 import cl.vol.app_voluntario.response.ApiResponse;
 import cl.vol.app_voluntario.service.TareaService;
 import cl.vol.app_voluntario.util.ValidationUtil;
@@ -67,7 +68,17 @@ public class TareaController {
     //TAREA UPDATE
     @PutMapping("/tareas/{id}")
     public ResponseEntity<?> upateTarea(@PathVariable Integer id,
-                                        @Valid @RequestBody CreateTareaRequest request){
+                                        @Valid @RequestBody UpdateTareaRequest request,
+                                        BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>
+                    (new ApiResponse().builder()
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .messages(ValidationUtil.getValidationErrors(bindingResult))
+                            .build(),
+                            HttpStatus.BAD_REQUEST);
+        };
+
         tareaService.updateTarea(id, request);
         Map<String, String> messages = new HashMap<>();
         messages.put("exito", "Tarea editada con éxito.");

@@ -1,16 +1,19 @@
 <template>
 <v-container class="d-flex align-center h-screen"> 
-    <v-container class="d-flex flex-column align-center w-75">
-        <v-alert v-if="error" class="my-7" type="error" :text="errorMessage"></v-alert>
-        <v-card width="500px" class="pa-5 text-center">
+    <v-container class="d-flex flex-column align-center">
+        <v-alert v-for="(msg, i) in Object.values(messages)" :key="i" v-if="error" class="my-2" width="500px" type="error">{{ `${i + 1}. ${msg}` }}</v-alert>
+        <v-alert v-if="success" class="my-2" type="success" width="500px"><ul><li v-for="(msg, i) in Object.values(messages)" :key="i">{{ `${i + 1}. ${msg}` }}</li></ul></v-alert>
+        
+        <v-card width="500px" class="mt-7 pa-5 text-center">
             <p class="text-h4 mb-5">Iniciar sesión</p>
-            <v-divider></v-divider>
+            <v-divider ></v-divider>
             <v-form @submit.prevent="submitLoginForm" v-model="valid" class="my-5">    
                 <v-text-field
                     v-model="user.email"                                                       
                     prepend-inner-icon="mdi-email-outline"
                     label="E-mail"
                     type="email"
+                    variant="outlined"
                     required
                 ></v-text-field>
                 
@@ -19,27 +22,44 @@
                     prepend-inner-icon="mdi-lock-outline"
                     label="Contraseña"
                     type="password"
+                    variant="outlined"
                     required
                 ></v-text-field>
 
-                <v-select
+                <v-select 
+                    class="mb-7"
                     v-model="idRol"
                     prepend-inner-icon="mdi-account-wrench-outline"
                     :items="items"
                     item-title="label"
                     item-value="value"
-                    :rules="[v => !!v || 'Seleccione un tipo de usuario']"
                     label="Tipo de usuario"
+                    variant="outlined"
                     required
                 ></v-select>
+
                 <v-btn
                     color="primary"
-                    class="w-100"
+                    class="w-100 mb-5"
                     type="submit"
                     size="large"
                 >
                     Ingresar
                 </v-btn>
+
+                <v-btn                           
+                    class="w-100 mb-5"
+                    type="submit"                    
+                    size="large"        
+                    @click="$router.push('/register')"
+                >
+                    Registrarse
+                </v-btn>
+
+                <router-link :to="{ name: 'login'}">
+                    ¿Olvidaste tu contraseña?
+                </router-link>
+
             </v-form>
         </v-card>
     </v-container>
@@ -51,6 +71,7 @@ import { ref } from 'vue'
 import Usuario from "@/interfaces/Usuario"
 import { useAuth } from '@/store/auth';
 import router from '@/router';
+
 
 const store = useAuth();
 const valid = ref<boolean>(false);
@@ -66,7 +87,7 @@ const user = ref<Usuario>({
 const error = ref<boolean>(false);
 const success = ref<boolean>(false);
 const messages = ref<object>({});
-const errorMessage = ref<string>("");
+
 
 const submitLoginForm = async () => {
     const response = await store.login(user.value.email ?? '', user.value.password ?? '', idRol.value ?? -1);
@@ -76,11 +97,10 @@ const submitLoginForm = async () => {
         error.value = false;
         messages.value = response.messages || "Inicio de sesión exitoso.";    
         router.push({name: "tasks"});
-    }else{
-        // alert("No pudo iniciar sesión");
+    }else{     
         error.value = true;
         success.value = false;
-        errorMessage.value = response.errorMessage || "Hubo un error al iniciar sesión, intente nuevamente.";            
+        messages.value = response.messages || "Hubo un error al iniciar sesión, intente nuevamente.";            
     }
 }
 </script>

@@ -3,7 +3,7 @@ import { useAuth } from '@/store/auth';
 import router from "@/router";
 import Tarea from "@/interfaces/Tarea";
 
-const createTask = async ({nombre, descripcion, voluntariosRequeridos, fechaInicio, fechaFin}:Tarea, idEmergencia:number, idsHabilidades:number[], token:string) => {    
+const createTask = async ({nombre, descripcion, voluntariosRequeridos, fechaInicio, fechaFin, latit, longit}:Tarea, idEmergencia:number, idsHabilidades:number[], token:string) => {    
     const response = await fetch(`${API_URL}/tareas`,{
         method: 'POST',
         headers: {
@@ -18,13 +18,12 @@ const createTask = async ({nombre, descripcion, voluntariosRequeridos, fechaInic
             fechaInicio,
             fechaFin,
             idEmergencia,
-            idsHabilidades
+            idsHabilidades,
+            latit,
+            longit
         })
     })
-    const rawResponse = await response.json();
-    if(rawResponse.status == 200) alert(rawResponse.messages.exito);
-    else alert("Tarea agregada con éxito.");
-    router.push("/tasks")
+    const rawResponse = await response.json();    
     return rawResponse;
 }
 
@@ -52,7 +51,8 @@ const getTask = async (token:string, id:number) => {
     return rawResponse;
 }
 
-const updateTask = async ({id, nombre, descripcion, voluntariosInscritos, voluntariosRequeridos, fechaInicio, fechaFin}:Tarea, idEmergencia:number, idEstado:number, token:string) => {
+const updateTask = async ({id, nombre, descripcion, voluntariosInscritos, voluntariosRequeridos, fechaInicio, fechaFin, latit, longit}:Tarea, idEmergencia:number, idEstado:number, token:string, idsHabilidades:number[]) => {
+    console.log(latit, longit)
     const response = await fetch(`${API_URL}/tareas/${id}`,{
         method: 'PUT',
         headers: {
@@ -68,13 +68,13 @@ const updateTask = async ({id, nombre, descripcion, voluntariosInscritos, volunt
             fechaInicio,
             fechaFin,
             idEstado,
-            idEmergencia
+            idEmergencia,
+            idsHabilidades,
+            latit,
+            longit
         })
     })
-    const rawResponse = await response.json();
-    if(rawResponse.status == 200) alert(rawResponse.messages.exito);
-    else alert("Tarea actualizada con éxito.");
-    router.push("/tasks")
+    const rawResponse = await response.json();    
     return rawResponse;
 }
 
@@ -93,8 +93,7 @@ const deleteTask = async (id: number) => {
       }
     });
     const rawResponse = await response.json();
-    if(rawResponse.status == 200) alert(rawResponse.messages.exito);
-    else alert("Hubo un error al eliminar la tarea.");
+    if(rawResponse.status == 200) alert("La tarea ha sido eliminada con éxito");
     router.push("/tasks")
     return rawResponse;
 }

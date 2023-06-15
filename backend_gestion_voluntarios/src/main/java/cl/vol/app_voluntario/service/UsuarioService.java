@@ -90,7 +90,7 @@ public class UsuarioService {
         System.out.println("AUTH EMAIL = " + usuario);
 
         if(usuario == null){
-            throw new AuthenticationException("El usuario no existe.");
+            throw new ApiErrorException("El usuario no existe.");
         }
 
         Authentication authenticate = authenticationManager.authenticate(

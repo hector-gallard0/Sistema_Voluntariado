@@ -27,4 +27,5 @@ public interface TareaRepository {
     void saveTareaHabilidad(Integer idTarea, Integer idHabilidad);
     void deleteTareaHabilidad(Integer idTarea, Integer idHabilidad);
     void setTareaHabilidad(Integer idTarea, Integer idHabilidad, Integer newIdHabilidad);
+    void deleteAllTareaHabilidad(Integer idTarea);
 }

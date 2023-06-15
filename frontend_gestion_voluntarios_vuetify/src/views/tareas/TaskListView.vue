@@ -22,7 +22,6 @@
                     <v-btn icon="mdi-eye-outline" variant="text" @click="$router.push(`/tasks/${item.value}`)"></v-btn>
                     <v-btn icon="mdi-pencil-outline" variant="text" @click="$router.push(`/tasks/${item.value}/edit`)"></v-btn>
                     <v-btn icon="mdi-delete-outline" variant="text" @click="deleteTask(item.value)"></v-btn>
-
                 </template>
             </v-data-table>
         </v-container>
@@ -83,7 +82,7 @@ const updateItemsPerPage = (newItemsPerPage:number) => {
     itemsPerPage.value = newItemsPerPage;
 }
 
-onMounted(async () => {
+onMounted(async () => {    
     const tareas = await getTasks(auth.token || '');
     if(tareas){
         tareas.map((tarea:Tarea) => {

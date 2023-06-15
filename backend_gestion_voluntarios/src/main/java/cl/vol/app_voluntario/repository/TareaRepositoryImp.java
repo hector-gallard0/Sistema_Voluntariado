@@ -282,4 +282,16 @@ public class TareaRepositoryImp implements TareaRepository{
             con.commit();
         }
     }
+
+    @Override
+    public void deleteAllTareaHabilidad(Integer idTarea){
+        try (Connection con = sql2o.beginTransaction()) {
+            String sql = "DELETE FROM tarea_habilidad " +
+                    "WHERE id_tarea = :id_tarea";
+            con.createQuery(sql)
+                    .addParameter("id_tarea", idTarea)
+                    .executeUpdate();
+            con.commit();
+        }
+    }
 }

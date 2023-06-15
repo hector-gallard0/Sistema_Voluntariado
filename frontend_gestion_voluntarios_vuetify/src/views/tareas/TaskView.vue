@@ -1,5 +1,5 @@
 <template>
-    <v-container class="d-flex flex-column align-center h-screen">
+    <v-container class="d-flex flex-column align-center">
         <v-sheet width="500px" class="my-5">
             <v-btn color="terciary" variant="outlined" @click="$router.push({ name: 'tasks' })">Volver</v-btn>
         </v-sheet>
@@ -52,6 +52,15 @@
                 </div>
             </v-card-item>
 
+            <v-card-item>                    
+                <p class="text-subtitle-2"><v-icon icon="mdi-map-outline" class="mr-2"></v-icon>Ubicación</p>
+            </v-card-item>            
+            <v-divider></v-divider>
+            <v-card-item>
+                <div id="map"></div>
+            </v-card-item>
+            <v-divider></v-divider>
+
             <v-card-actions>
                 <div class="w-100 d-flex justify-end">
                     <v-btn color="primary" @click="$router.push(`/tasks/${route.params.id}/edit`)">
@@ -73,14 +82,25 @@ import { getTask, deleteTask } from '@/services/TareaService'
 import { useAuth } from '@/store/auth';
 import { useRoute } from 'vue-router';
 import { getStateColor } from '@/services/EstadoService'
+import L from 'leaflet'
 
 const auth = useAuth();
 const route = useRoute();
 const task = ref<Tarea>({});
+const marker = ref();
 
 onMounted(async () => {
     task.value = await getTask(auth.token || '', parseInt(`${route.params.id}`) ?? -1)
-    console.log(task.value);
+
+    let map = L.map('map').setView([task.value.latit || -33.45694, task.value.longit || -70.64827], 3);
+                
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    marker.value = L.marker([task.value.latit || -33.45694, task.value.longit || -70.64827]).addTo(map);
+    marker.value.options.riseOnHover = false;    
 })
 </script>
 

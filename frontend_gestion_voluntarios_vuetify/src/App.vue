@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="app">
     <component :is="$route.meta.layout">
       <RouterView/>
     </component>
@@ -7,4 +7,8 @@
 </template>
 
 <script setup lang="ts">  
+
 </script>
+
+<style>
+</style>

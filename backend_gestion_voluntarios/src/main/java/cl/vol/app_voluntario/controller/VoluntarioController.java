@@ -3,6 +3,7 @@ package cl.vol.app_voluntario.controller;
 import cl.vol.app_voluntario.request.CreateVolTareaRequest;
 import cl.vol.app_voluntario.request.UpdateHabilidadVoluntarioRequest;
 import cl.vol.app_voluntario.request.UpdateTareaRequest;
+import cl.vol.app_voluntario.request.UpdateTareaVoluntarioRequest;
 import cl.vol.app_voluntario.service.VoluntarioService;
 import cl.vol.app_voluntario.util.ValidationUtil;
 import jakarta.validation.Valid;
@@ -92,7 +93,7 @@ public class VoluntarioController {
     public ResponseEntity<?> updateTareaVoluntario(
             @Valid @NotNull @PathVariable Integer idUsuario,
             @Valid @NotNull @PathVariable Integer idTarea,
-            @Valid @RequestBody UpdateTareaRequest request,
+            @Valid @RequestBody UpdateTareaVoluntarioRequest request,
             BindingResult bindingResult
     ){
         if(bindingResult.hasErrors()) return new ResponseEntity<>(ValidationUtil.getValidationErrors(bindingResult), HttpStatus.BAD_REQUEST);

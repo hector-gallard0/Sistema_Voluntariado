@@ -7,5 +7,7 @@ import LoginView from './LoginView.vue'
 import RegisterView from './RegisterView.vue'
 import MapView from './MapView.vue'
 import MapTasksView from './MapTasksView.vue'
+import LogOutView from './LogOutView.vue'
+import MapEmergenciesView from './MapEmergenciesView.vue'
 
-export { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView, MapView, MapTasksView };
+export { TaskListView, TaskView, CreateTaskView, EditTaskView, HomeView, LoginView, RegisterView, MapView, MapTasksView, LogOutView, MapEmergenciesView };
